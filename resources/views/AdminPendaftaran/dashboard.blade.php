@@ -26,39 +26,21 @@
 <section class="chart-section">
     <h3 class="chart-title">Grafik Pendaftaran Bulanan</h3>
     <div class="filter-card">
-        <form method="GET" action="{{ route('dashboard.index') }}">
-            <div class="filter-grid">
-                <div class="filter-group">
-                    <label for="bulan">Bulan</label>
-                    <select name="bulan" id="bulan">
-                        <option value="">Semua</option>
-                        @for ($i = 1; $i <= 12; $i++) <option value="{{ $i }}"
-                            {{ request('bulan') == $i ? 'selected' : '' }}>
-                            {{ DateTime::createFromFormat('!m', $i)->format('F') }}
-                            </option>
-                            @endfor
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="tahun">Tahun</label>
-                    <select name="tahun" id="tahun">
-                        <option value="">Semua</option>
-                        @for ($y = now()->year; $y >= 2020; $y--)
-                        <option value="{{ $y }}" {{ request('tahun') == $y ? 'selected' : '' }}>
-                            {{ $y }}
-                        </option>
-                        @endfor
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="tanggal">Hari</label>
-                    <input type="date" name="tanggal" id="tanggal" value="{{ request('tanggal') }}">
-                </div>
-                <div class="filter-group button-group">
-                    <button type="submit">Terapkan Filter</button>
-                </div>
-            </div>
-        </form>
+       <form method="GET" action="{{ route('dashboard.index') }}">
+    <div class="filter-grid">
+        <div class="filter-group">
+            <label for="tahun">Tahun</label>
+            <select name="tahun" id="tahun" onchange="this.form.submit()">
+                @for ($y = now()->year; $y >= 2020; $y--)
+                    <option value="{{ $y }}" {{ request('tahun', now()->year) == $y ? 'selected' : '' }}>
+                        {{ $y }}
+                    </option>
+                @endfor
+            </select>
+        </div>
+    </div>
+</form>
+
     </div>
     <canvas id="chart"></canvas>
 </section>
