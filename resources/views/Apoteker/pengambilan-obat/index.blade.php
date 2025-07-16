@@ -6,7 +6,10 @@
 <section class="blank-content">
     <div class="table-header">
         <h3>Data Pengambilan Obat</h3>
-       
+        <button onclick="document.getElementById('modalTambah').style.display='flex'"
+            style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+            Tambah Data
+        </button>
     </div>
 
     <form method="GET" action="" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -44,7 +47,7 @@
                 <td>{{ $ambil->resep->user->nama_lengkap ?? '-' }}</td>
                 <td>{{ \Carbon\Carbon::parse($ambil->tanggal_pengambilan)->format('d-m-Y') }}</td>
                 <td>
-                    @if ($ambil->status_checklist === 'Lengkap')
+                    @if ($ambil->status_checklist === 'sudah')
                     <span class="badge badge-sudah">Sudah</span>
                     @else
                     <span class="badge badge-belum">Belum</span>
@@ -122,8 +125,8 @@
                 <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
                 <select name="status_checklist" required class="input-style">
                     <option value="">-- Pilih Status --</option>
-                    <option value="Lengkap">Lengkap</option>
-                    <option value="Tidak Lengkap">Tidak Lengkap</option>
+                    <option value="belum">Belum</option>
+                    <option value="sudah">Sudah</option>
                 </select>
 
                 <label style="display:block; text-align:left;"><strong>Petugas</strong></label>

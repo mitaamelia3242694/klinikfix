@@ -437,7 +437,7 @@ CREATE TABLE `pengambilan_obat` (
   `resep_id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `tanggal_pengambilan` date NOT NULL,
-  `status_checklist` enum('Lengkap','Tidak Lengkap') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status_checklist` enum('belum','sudah') COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -447,12 +447,12 @@ CREATE TABLE `pengambilan_obat` (
 --
 
 INSERT INTO `pengambilan_obat` (`id`, `resep_id`, `user_id`, `tanggal_pengambilan`, `status_checklist`, `created_at`, `updated_at`) VALUES
-(1, 1, 5, '2025-06-02', 'Lengkap', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
-(2, 2, 5, '2025-06-04', 'Tidak Lengkap', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
-(3, 3, 5, '2025-06-06', 'Lengkap', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
-(4, 4, 5, '2025-06-08', 'Lengkap', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
-(5, 5, 5, '2025-06-10', 'Lengkap', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
-(6, 6, 5, '2025-06-14', 'Tidak Lengkap', '2025-06-13 22:39:51', '2025-07-15 15:30:48');
+(1, 1, 5, '2025-06-02', 'belum', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
+(2, 2, 5, '2025-06-04', 'sudah', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
+(3, 3, 5, '2025-06-06', 'belum', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
+(4, 4, 5, '2025-06-08', 'belum', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
+(5, 5, 5, '2025-06-10', 'belum', '2025-06-10 23:15:11', '2025-06-10 23:15:11'),
+(6, 6, 5, '2025-06-14', 'sudah', '2025-06-13 22:39:51', '2025-07-15 15:30:48');
 
 -- --------------------------------------------------------
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('resep_id')->constrained('resep');
             $table->foreignId('user_id')->constrained('users');
             $table->date('tanggal_pengambilan');
-            $table->enum('status_checklist', ['Lengkap', 'Tidak Lengkap']);
+            $table->enum('status_checklist', ['belum', 'sudah']);
             $table->timestamps();
         });
     }

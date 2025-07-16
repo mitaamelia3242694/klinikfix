@@ -39,7 +39,7 @@ class PengambilanObatController extends Controller
             'resep_id' => 'required|exists:resep,id',
             'user_id' => 'required|exists:users,id',
             'tanggal_pengambilan' => 'required|date',
-            'status_checklist' => 'required|in:Lengkap,Tidak Lengkap',
+            'status_checklist' => 'required|in:belum,sudah',
         ]);
 
         PengambilanObat::create($request->all());
