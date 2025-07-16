@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class SediaanObat extends Model
 {
-     protected $table = 'sediaan_obat';
-    // protected $fillable = ['obat_id', 'jumlah', 'tanggal_kadaluarsa', 'tanggal_masuk', 'keterangan'];
+    protected $table = 'sediaan_obat';
     protected $fillable = [
-    'obat_id', 'tanggal_masuk', 'tanggal_kadaluarsa', 'keterangan', 'tanggal_keluar'
-];
+        'obat_id',
+        'tanggal_masuk',
+        'tanggal_kadaluarsa',
+        'keterangan',
+        'tanggal_keluar'
+    ];
 
     public function obat()
     {

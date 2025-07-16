@@ -42,10 +42,10 @@
             <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
             <select name="status_checklist" required class="form-input">
                 <option value="">-- Pilih Status --</option>
-                <option value="Lengkap" {{ $pengambilan->status_checklist == 'Lengkap' ? 'selected' : '' }}>Lengkap
+                <option value="sudah" {{ $pengambilan->status_checklist == 'sudah' ? 'selected' : '' }}>Sudah
                 </option>
-                <option value="Tidak Lengkap" {{ $pengambilan->status_checklist == 'Tidak Lengkap' ? 'selected' : '' }}>
-                    Tidak Lengkap</option>
+                <option value="belum" {{ $pengambilan->status_checklist == 'belum' ? 'selected' : '' }}>
+                    Belum</option>
             </select>
 
             <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
