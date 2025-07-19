@@ -46,7 +46,7 @@
             <tr>
                 <td>{{ $pengkajian->firstItem() + $index }}</td>
                 <td>{{ $item->pasien->nama ?? '-' }}</td>
-                <td>{{ $item->user->nama_lengkap ?? '-' }}</td>
+                <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                 <td>{{ $item->keluhan_utama }}</td>
                 <td>{{ $item->tekanan_darah }}</td>
@@ -128,8 +128,8 @@
                 <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                 <select name="pasien_id" required class="input-style">
                     <option value="">-- Pilih Pasien --</option>
-                    @foreach ($pasiens as $pasien)
-                    <option value="{{ $pasien->id }}">{{ $pasien->nama }}</option>
+                    @foreach ($pendaftarans as $pendaftaran)
+                    <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama}}</option>
                     @endforeach
                 </select>
 

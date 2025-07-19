@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pendaftaran extends Model
 {
+
+    public $timestamps = true;
+
     protected $table = 'pendaftaran';
     protected $fillable = [
         'pasien_id',
@@ -42,5 +46,16 @@ class Pendaftaran extends Model
     public function perawat()
     {
         return $this->belongsTo(User::class, 'perawat_id');
+    }
+
+  
+
+    public function pengkajianAwal(): HasMany
+    {
+        return $this->hasMany(PengkajianAwal::class, 'pendaftaran_id');
+    }
+    public function diagnosaAwal(): HasMany 
+    {
+        return $this->hasMany(Diagnosaawal::class, 'pendaftaran_id'); 
     }
 }
