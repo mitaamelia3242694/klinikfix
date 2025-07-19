@@ -118,8 +118,8 @@
                 <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                 <select name="pasien_id" required class="input-style">
                     <option value="">-- Pilih Pasien --</option>
-                    @foreach ($pasiens as $pasien)
-                    <option value="{{ $pasien->id }}">{{ $pasien->nama }}</option>
+                    @foreach ($pendaftarans as $pendaftaran)
+                     <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama}}</option>
                     @endforeach
                 </select>
 
@@ -159,8 +159,8 @@
                 <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                 <select name="user_id" required class="input-style">
                     <option value="">-- Pilih Perawat --</option>
-                    @foreach ($perawats as $perawat)
-                    <option value="{{ $perawat->id }}">{{ $perawat->nama_lengkap }}</option>
+                    @foreach ($pendaftarans as $ppendaftaran)
+                    <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->nama_lengkap }}</option>
                     @endforeach
                 </select>
 

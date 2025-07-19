@@ -21,10 +21,7 @@ class PengkajianAwal extends Model
         'diagnosa_awal'
     ];
 
-    public function pasien()
-    {
-        return $this->belongsTo(Pasien::class);
-    }
+ 
 
     public function perawat()
     {
@@ -40,4 +37,11 @@ class PengkajianAwal extends Model
     {
         return $this->belongsTo(Pelayanan::class);
     }
+
+    public function pendaftaran()
+    {
+        return $this->belongsTo(PengkajianAwal::class,'pendaftaran_id');
+    }
+
+    
 }

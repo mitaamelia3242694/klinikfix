@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DiagnosaAwal extends Model
 {
@@ -42,5 +43,9 @@ class DiagnosaAwal extends Model
     public function pelayanan()
     {
         return $this->belongsTo(Pelayanan::class);
+    }
+    public function pendaftaran()
+    {
+         return $this->belongsTo(Pendaftaran::class);
     }
 }

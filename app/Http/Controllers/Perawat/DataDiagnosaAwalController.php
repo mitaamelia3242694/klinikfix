@@ -4,18 +4,21 @@ namespace App\Http\Controllers\Perawat;
 
 use App\Models\User;
 use App\Models\Pasien;
-use App\Models\Pelayanan;
 use App\Models\DiagnosaAwal;
 use Illuminate\Http\Request;
 use App\Models\MasterDiagnosa;
+use App\Models\Pendaftaran;
+use App\Models\Pelayanan;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class DataDiagnosaAwalController extends Controller
 {
     public function index(Request $request)
     {
         $search = $request->input('search');
-
+        $masters = MasterDiagnosa::all();
+        $layanans = Pelayanan::all();
         $diagnosas = DiagnosaAwal::with(['pasien', 'user'])
             ->when($search, function ($query, $search) {
                 $query->whereHas('pasien', function ($q) use ($search) {
@@ -28,12 +31,9 @@ class DataDiagnosaAwalController extends Controller
             ->paginate(10)
             ->appends(['search' => $search]);
 
-        $pasiens = Pasien::all();
-        $perawats = User::where('role_id', '4')->get();
-        $masters = MasterDiagnosa::all();
-        $layanans = Pelayanan::all();
-
-        return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pasiens', 'perawats', 'search', 'masters', 'layanans'));
+         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
+        $perawats = User::where('role_id', 4)->get();
+        return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans','search', 'masters', 'layanans'));
     }
 
 
