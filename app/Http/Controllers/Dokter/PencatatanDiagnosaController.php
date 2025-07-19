@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 use App\Models\DiagnosaAkhir;
 use App\Models\MasterDiagnosa;
 use App\Http\Controllers\Controller;
+use App\Models\Obat;
+use App\Models\Pendaftaran;
+use App\Models\Tindakan;
+use Carbon\Carbon;
 
 class PencatatanDiagnosaController extends Controller
 {
@@ -28,13 +32,15 @@ class PencatatanDiagnosaController extends Controller
             ->paginate(5)
             ->appends(['keyword' => $keyword]);
 
-        $pasiens = Pasien::all(); // untuk dropdown modal
+        $pasiens = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown modal
         $dokters = User::where('role_id', '3')->get();
         $masters = MasterDiagnosa::all();
         $layanans = Pelayanan::all();
+        $obats = Obat::all();
+        $tindakans = Tindakan::all();
 
 
-        return view('Dokter.pencatatan-diagnosa.index', compact('diagnosas', 'pasiens', 'dokters', 'masters', 'layanans'));
+        return view('Dokter.pencatatan-diagnosa.index', compact('diagnosas', 'pasiens', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
     }
 
 

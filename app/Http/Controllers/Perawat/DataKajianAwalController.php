@@ -9,6 +9,7 @@ use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use App\Models\PengkajianAwal;
 use App\Http\Controllers\Controller;
+use App\Models\MasterDiagnosa;
 use Carbon\Carbon;
 class DataKajianAwalController extends Controller
 {
@@ -27,12 +28,12 @@ class DataKajianAwalController extends Controller
             ->paginate(10);
 
         
-
+        $masters = MasterDiagnosa::all();
         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
         $perawats = User::where('role_id', 4)->get();
         $layanans = Pelayanan::all();
-           
-        return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans'));
+        
+        return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans', 'masters'));
     }
 
 
@@ -50,7 +51,7 @@ class DataKajianAwalController extends Controller
         //     'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
         //     'catatan' => 'nullable|string',
         // ]);
-
+        
         PengkajianAwal::create($request->all());
 
         return redirect()->route('data-kajian-awal.index')->with('success', 'Data kajian awal berhasil ditambahkan.');

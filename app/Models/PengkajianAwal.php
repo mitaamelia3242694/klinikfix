@@ -43,5 +43,7 @@ class PengkajianAwal extends Model
         return $this->belongsTo(PengkajianAwal::class,'pendaftaran_id');
     }
 
-    
+    public function pasien(){
+        return $this->belongsTo(Pasien::class);
+    }
 }
