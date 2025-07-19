@@ -31,9 +31,9 @@ class DataDiagnosaAwalController extends Controller
             ->paginate(10)
             ->appends(['search' => $search]);
 
-         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
+        $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
         $perawats = User::where('role_id', 4)->get();
-        return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans','search', 'masters', 'layanans'));
+        return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans', 'search', 'masters', 'layanans'));
     }
 
 
