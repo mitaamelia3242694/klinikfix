@@ -29,23 +29,23 @@
                     <th>Pasien</th>
                     <th>Dokter</th>
                     <th>Tanggal</th>
-                    <th>Diagnosa</th>
-                    <th>Master Diagnosa</th>
+                    <th>Keluhan</th>
+                    <th>Pengkajian Awal</th>
                     <th>Pelayanan</th>
                     <th>Catatan</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($diagnosas as $index => $item)
+                @foreach ($pendaftarans as $index => $item)
                     <tr>
-                        <td>{{ $diagnosas->firstItem() + $index }}</td>
+                        <td>{{ $pendaftarans->firstItem() + $index }}</td>
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
                         <td>{{ $item->user->nama_lengkap ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                        <td>{{ $item->diagnosa }}</td>
-                        <td>{{ $item->masterDiagnosa->nama }}</td>
-                        <td>{{ $item->pelayanan->nama_pelayanan }}</td>
+                        <td>{{ $item->keluhan}}</td>
+                        <td>{{ $item}}</td>
+                        <td>{{ $item->pelayanan}}</td>
                         <td>{{ $item->catatan ?? '-' }}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
@@ -83,24 +83,24 @@
             </tbody>
         </table>
 
-        @if ($diagnosas->hasPages())
+        @if ($pendaftarans->hasPages())
             <ul class="pagination">
-                @if ($diagnosas->onFirstPage())
+                @if ($pendaftarans->onFirstPage())
                     <li class="disabled"><span>«</span></li>
                 @else
-                    <li><a href="{{ $diagnosas->previousPageUrl() }}" rel="prev">«</a></li>
+                    <li><a href="{{ $pendaftarans->previousPageUrl() }}" rel="prev">«</a></li>
                 @endif
 
-                @foreach ($diagnosas->links()->elements[0] as $page => $url)
-                    @if ($page == $diagnosas->currentPage())
+                @foreach ($pendaftarans->links()->elements[0] as $page => $url)
+                    @if ($page == $pendaftarans->currentPage())
                         <li class="active"><span>{{ $page }}</span></li>
                     @else
                         <li><a href="{{ $url }}">{{ $page }}</a></li>
                     @endif
                 @endforeach
 
-                @if ($diagnosas->hasMorePages())
-                    <li><a href="{{ $diagnosas->nextPageUrl() }}" rel="next">»</a></li>
+                @if ($pendaftarans->hasMorePages())
+                    <li><a href="{{ $pendaftarans->nextPageUrl() }}" rel="next">»</a></li>
                 @else
                     <li class="disabled"><span>»</span></li>
                 @endif
@@ -123,9 +123,9 @@
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                     <select name="pasien_id" required class="input-style">
                         <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pasiens as $item)
-                            <option value="{{ $item->id }}">{{ $item->pasien->nama }}</option>
-                        @endforeach
+                        <!-- @foreach ($pendaftarans as $pendaftaran)
+                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
+                        @endforeach -->
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
@@ -185,8 +185,8 @@
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                     <select name="pasien_id" required class="input-style">
                         <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pasiens as $item)
-                            <option value="{{ $item->id }}">{{ $item->pasien->nama }}</option>
+                        @foreach ($pendaftarans as $pendaftaran)
+                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
                         @endforeach
                     </select>
 
@@ -233,8 +233,8 @@
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                     <select name="pasien_id" class="input-style" required>
                         <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pasiens as $item)
-                            <option value="{{ $item->id }}">{{ $item->pasien->nama }}</option>
+                        @foreach ($pendaftarans as $pendaftaran)
+                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
                         @endforeach
                     </select>
 
@@ -306,8 +306,8 @@
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                     <select name="pasien_id" class="input-style" required>
                         <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pasiens as $item)
-                            <option value="{{ $item->id }}">{{ $item->pasien->nama }}</option>
+                        @foreach ($pendaftarans as $pendaftaran)
+                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
                         @endforeach
                     </select>
 

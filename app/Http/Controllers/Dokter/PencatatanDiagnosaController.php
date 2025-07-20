@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Dokter;
-
 use App\Models\User;
 use App\Models\Pasien;
 use App\Models\Pelayanan;
@@ -20,18 +19,19 @@ class PencatatanDiagnosaController extends Controller
     {
         $keyword = $request->keyword;
 
-        $diagnosas = DiagnosaAkhir::with(['pasien', 'user'])
+        $pendaftarans = Pendaftaran::with(['pasien', 'dokter'])
             ->when($keyword, function ($query, $keyword) {
                 $query->whereHas('pasien', function ($q) use ($keyword) {
                     $q->where('nama', 'like', "%{$keyword}%");
-                })->orWhereHas('user', function ($q) use ($keyword) {
+                })->orWhereHas('dokter', function ($q) use ($keyword) {
                     $q->where('nama_lengkap', 'like', "%{$keyword}%");
                 });
             })
-            ->orderBy('tanggal', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(5)
             ->appends(['keyword' => $keyword]);
-
+        $diagnosas = DiagnosaAkhir::with(['pasien', 'user', 'masterDiagnosa', 'pelayanan', 'pengkajianAwal'])->paginate(10);
+        
         $pasiens = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown modal
         $dokters = User::where('role_id', '3')->get();
         $masters = MasterDiagnosa::all();
@@ -39,8 +39,11 @@ class PencatatanDiagnosaController extends Controller
         $obats = Obat::all();
         $tindakans = Tindakan::all();
 
+         //$pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
+        $perawats = User::where('role_id', 4)->get();
+        //$pendaftarans = Pendaftaran::with('pasien')->get();
 
-        return view('Dokter.pencatatan-diagnosa.index', compact('diagnosas', 'pasiens', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
+         return view('Dokter.pencatatan-diagnosa.index', compact( 'pendaftarans', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
     }
 
 

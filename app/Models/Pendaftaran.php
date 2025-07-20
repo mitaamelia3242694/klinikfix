@@ -58,4 +58,9 @@ class Pendaftaran extends Model
     {
         return $this->hasMany(Diagnosaawal::class, 'pendaftaran_id'); 
     }
+
+    public function diagnosaAkhir(): HasMany 
+    {
+        return $this->hasMany(DiagnosaAkhir::class, 'pendaftaran_id'); 
+    }
 }
