@@ -32,6 +32,7 @@ class DataKajianAwalController extends Controller
         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
         $perawats = User::where('role_id', 4)->get();
         $layanans = Pelayanan::all();
+        dd($pendaftarans[0]->pasien);
         
         return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans', 'masters'));
     }

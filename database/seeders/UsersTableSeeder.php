@@ -52,7 +52,7 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('apoteker123'),
                 'role_id' => 5, // Apoteker
                 'nama_lengkap' => 'Andi Pratama',
-                'email' => 'andi@klinik.comandi@klinik.com',
+                'email' => 'andi@klinik.com',
                 'status' => 'aktif',
             ],
 

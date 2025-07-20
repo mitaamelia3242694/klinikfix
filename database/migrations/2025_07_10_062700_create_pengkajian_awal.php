@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('pengkajian_awal', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pendaftaran_id')->constrained('pendaftaran');
+            $table->unsignedBigInteger('pendaftaran_id');
+            $table->foreign('pendaftaran_id')->references('id')->on('pendaftaran');
             $table->foreignId('user_id')->constrained('users');
             $table->date('tanggal');
             $table->text('keluhan_utama');

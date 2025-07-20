@@ -47,6 +47,8 @@
                         <td>{{ $pengkajian->firstItem() + $index }}</td>
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
+                        <td>{{ optional($item->pengkajianAwal)->keluhan ?? '-' }}</td>
+
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                         <td>{{ $item->keluhan_utama }}</td>
                         <td>{{ $item->tekanan_darah }}</td>
@@ -138,13 +140,13 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" required class="input-style">
+                    <!-- <select name="pasien_id" required class="input-style">
                         <option value="">-- Pilih Pasien --</option>
                         @foreach ($pendaftarans as $pendaftaran)
                             <option value="{{ $pendaftaran->pasien->id }}">{{ $pendaftaran->pasien->nama }}</option>
                         @endforeach
-                    </select>
-
+                    </select> -->
+                    <p>{{ $pendaftarans->pasien }}</p>
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" required class="input-style">
 

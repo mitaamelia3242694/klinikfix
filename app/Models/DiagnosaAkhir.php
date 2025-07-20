@@ -18,9 +18,9 @@ class DiagnosaAkhir extends Model
         'pelayanan_id',
     ];
 
-    public function dokter()
+    public function pendaftaran()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(DiagnosaAkhir::class,'pendaftaran_id');
     }
 
     public function pasien()
@@ -43,4 +43,10 @@ class DiagnosaAkhir extends Model
     {
         return $this->belongsTo(Pelayanan::class);
     }
+
+    public function pengkajianAwal()
+{
+    return $this->belongsTo(PengkajianAwal::class, 'pengkajian_awal_id');
+}
+
 }
