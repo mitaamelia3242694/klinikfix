@@ -41,34 +41,42 @@
                     <tr>
                         <td>{{ $pendaftarans->firstItem() + $index }}</td>
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
-                        <td>{{ $item->user->nama_lengkap ?? '-' }}</td>
+                        <td>{{ $item->dokter->nama_lengkap }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                        <td>{{ $item->keluhan}}</td>
-                        <td>{{ $item->pengkajianAwal->keluhan_utama}}</td>
-                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan}}</td>
-                        <td>{{ $item->pengkajianAwal->catatan}}</td>
+                        <td>{{ $item->keluhan }}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama }}</td>
+                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan }}</td>
+                        <td>{{ $item->pengkajianAwal->catatan }}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('pencatatan-diagnosa.show', $item->id) }}"
                                     class="btn btn-info no-underline"><i class="fas fa-eye"></i></a>
                                 <a href="{{ route('pencatatan-diagnosa.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
-                                <button onclick="document.getElementById('modalTambah').style.display='flex'"
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalDiagnosa(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-stethoscope"></i>
                                 </button>
-                                <button onclick="document.getElementById('modalTambahTindakan').style.display='flex'"
+
+                                <button class="btn-tindakan" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalTindakan(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-hand-holding-heart"></i>
                                 </button>
-                                <button onclick="document.getElementById('modalTambahResep').style.display='flex'"
+
+                                <button class="btn-resep" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalResep(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-prescription-bottle-alt"></i>
                                 </button>
-                                <button onclick="document.getElementById('modalTambahRekam').style.display='flex'"
+
+                                <button class="btn-rekam" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalRekam(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-notes-medical"></i>
                                 </button>
+
                             </div>
                         </td>
                     </tr>
@@ -102,7 +110,7 @@
 
 
         <!-- Modal Tambah Diagnosa -->
-        <div id="modalTambah" onclick="if(event.target === this) this.style.display='none'"
+        <div id="modalTambahDiagnosa" onclick="if(event.target === this) this.style.display='none'"
             style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
             <div
                 style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
@@ -113,13 +121,10 @@
                 <form method="POST" action="{{ route('pencatatan-diagnosa.store') }}">
                     @csrf
 
+                    <input type="hidden" name="pasien_id" id="inputPasienId">
+
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" required class="input-style">
-                        <option value="">-- Pilih Pasien --</option>
-                        <!-- @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
-                        @endforeach -->
-                    </select>
+                    <input type="text" id="inputPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" required class="input-style">
@@ -176,12 +181,8 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" required class="input-style">
-                        <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="pasien_id" id="tindakanPasienId">
+                    <input type="text" id="tindakanPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" required class="input-style">
@@ -224,12 +225,8 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" class="input-style" required>
-                        <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="pasien_id" id="resepPasienId">
+                    <input type="text" id="resepPasienIdNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" class="input-style" required>
@@ -297,12 +294,8 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" class="input-style" required>
-                        <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="pasien_id" id="rekamPasienId">
+                    <input type="text" id="rekamPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal Kunjungan</strong></label>
                     <input type="date" name="tanggal_kunjungan" class="input-style" required>
@@ -486,4 +479,48 @@
             }
         };
     </script>
+
+    <script>
+        function openModalDiagnosa(button) {
+            const pasienId = button.dataset.pasienId;
+            const pasienNama = button.dataset.pasienNama;
+
+            document.getElementById('inputPasienId').value = pasienId;
+            document.getElementById('inputPasienNama').value = pasienNama;
+
+            document.getElementById('modalTambahDiagnosa').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openModalTindakan(button) {
+            const pasienId = button.dataset.pasienId;
+            const pasienNama = button.dataset.pasienNama;
+
+            document.getElementById('modalTambahTindakan').style.display = 'flex';
+            document.getElementById('tindakanPasienId').value = pasienId;
+            document.getElementById('tindakanPasienNama').value = pasienNama;
+        }
+
+        function openModalResep(button) {
+            const pasienId = button.dataset.pasienId;
+            const pasienNama = button.dataset.pasienNama;
+
+            document.getElementById('modalTambahResep').style.display = 'flex';
+            document.getElementById('resepPasienId').value = pasienId;
+            document.getElementById('resepPasienNama').value = pasienNama;
+        }
+
+        function openModalRekam(button) {
+            const pasienId = button.dataset.pasienId;
+            const pasienNama = button.dataset.pasienNama;
+
+            document.getElementById('modalTambahRekam').style.display = 'flex';
+            document.getElementById('rekamPasienId').value = pasienId;
+            document.getElementById('rekamPasienNama').value = pasienNama;
+        }
+    </script>
+
 @endsection

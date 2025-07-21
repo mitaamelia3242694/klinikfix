@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Dokter;
+
 use App\Models\User;
 use App\Models\Pasien;
 use App\Models\Pelayanan;
@@ -32,7 +33,7 @@ class PencatatanDiagnosaController extends Controller
             ->paginate(5)
             ->appends(['keyword' => $keyword]);
         $diagnosas = DiagnosaAkhir::with(['pasien', 'user', 'masterDiagnosa', 'pelayanan', 'pengkajianAwal'])->paginate(10);
-        
+
         $pasiens = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown modal
         $dokters = User::where('role_id', '3')->get();
         $masters = MasterDiagnosa::all();
@@ -44,7 +45,7 @@ class PencatatanDiagnosaController extends Controller
         $perawats = User::where('role_id', 4)->get();
         $pengkajian = PengkajianAwal::all();
 
-         return view('Dokter.pencatatan-diagnosa.index', compact( 'pendaftarans', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
+        return view('Dokter.pencatatan-diagnosa.index', compact('pendaftarans', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
     }
 
 

@@ -6,10 +6,6 @@
     <section class="blank-content">
         <div class="table-header">
             <h3>Data Kajian Awal</h3>
-            <button onclick="document.getElementById('modalTambah').style.display='flex'"
-                style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                Tambah Kajian
-            </button>
         </div>
 
         <form method="GET" action="{{ route('data-kajian-awal.index') }}"
@@ -47,12 +43,10 @@
                         <td>{{ $pengkajian->firstItem() + $index }}</td>
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
-                        <td>{{ optional($item->pengkajianAwal)->keluhan ?? '-' }}</td>
-
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                        <td>{{ $item->keluhan_utama }}</td>
-                        <td>{{ $item->tekanan_darah }}</td>
-                        <td>{{ $item->suhu_tubuh }}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama }}</td>
+                        <td>{{ $item->pengkajianAwal->tekanan_darah }}</td>
+                        <td>{{ $item->pengkajianAwal->suhu_tubuh }}</td>
                         <td>
                             @if ($item->status === 'sudah')
                                 <span
@@ -67,8 +61,8 @@
                             @endif
                         </td>
 
-                        <td>{{ $item->diagnosa_awal ?? '-' }}</td>
-                        <td>{{ $item->catatan ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->diagnosa_awal ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->catatan }}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('data-kajian-awal.show', $item->id) }}"
@@ -76,14 +70,16 @@
                                 <a href="{{ route('data-kajian-awal.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
 
-                                <button onclick="document.getElementById('modalTambah').style.display='flex'"
+                                <button class="btn-kajian" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalKajian(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-file-medical-alt"></i>
                                 </button>
 
-                                <button onclick="document.getElementById('modalTambahDiagnosa').style.display='flex'"
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalDiagnosa(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-notes-medical"></i>
+                                    <i class="fas fa-stethoscope"></i>
                                 </button>
 
                                 <a href="{{ route('manajemen-tindakan.index') }}"
@@ -125,10 +121,8 @@
             </ul>
         @endif
 
-
-
         <!-- Modal Tambah Kajian -->
-        <div id="modalTambah" onclick="if(event.target === this) this.style.display='none'"
+        <div id="modalTambahKajian" onclick="if(event.target === this) this.style.display='none'"
             style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
             <div
                 style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
@@ -140,13 +134,9 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <!-- <select name="pasien_id" required class="input-style">
-                        <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->pasien->id }}">{{ $pendaftaran->pasien->nama }}</option>
-                        @endforeach
-                    </select> -->
-                    <p>{{ $pendaftarans->pasien }}</p>
+                    <input type="hidden" name="pasien_id" id="kajianPasienId">
+                    <input type="text" id="kajianPasienNama" class="input-style" disabled>
+
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" required class="input-style">
 
@@ -210,13 +200,10 @@
                 <form method="POST" action="{{ route('data-diagnosa-awal.store') }}">
                     @csrf
 
+                    <input type="hidden" name="pasien_id" id="inputPasienId">
+
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" required class="input-style">
-                        <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" id="inputPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" required class="input-style">
@@ -415,5 +402,26 @@
                 }, 5000);
             }
         };
+    </script>
+
+    <script>
+        function openModalKajian(button) {
+            const pasienId = button.dataset.pasienId;
+            const pasienNama = button.dataset.pasienNama;
+
+            document.getElementById('modalTambahKajian').style.display = 'flex';
+            document.getElementById('kajianPasienId').value = pasienId;
+            document.getElementById('kajianPasienNama').value = pasienNama;
+        }
+
+        function openModalDiagnosa(button) {
+            const pasienId = button.dataset.pasienId;
+            const pasienNama = button.dataset.pasienNama;
+
+            document.getElementById('inputPasienId').value = pasienId;
+            document.getElementById('inputPasienNama').value = pasienNama;
+
+            document.getElementById('modalTambahDiagnosa').style.display = 'flex';
+        }
     </script>
 @endsection
