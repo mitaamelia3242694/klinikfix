@@ -62,7 +62,7 @@
                         </td>
 
                         <td>{{ $item->pengkajianAwal->diagnosa_awal ?? '-' }}</td>
-                        <td>{{ $item->pengkajianAwal->catatan }}</td>
+                        <td>{{ $item->pengkajianAwal->catatan ?? '-'}}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('data-kajian-awal.show', $item->id) }}"
