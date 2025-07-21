@@ -146,7 +146,10 @@
                             <option value="{{ $pendaftaran->pasien->id }}">{{ $pendaftaran->pasien->nama }}</option>
                         @endforeach
                     </select> -->
-                    <p>{{ $pendaftarans->pasien }}</p>
+                   @foreach ($pendaftarans as $pendaftaran)
+                    <p>{{ $pendaftaran->pasien->nama }}</p>
+                @endforeach   
+
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" required class="input-style">
 
