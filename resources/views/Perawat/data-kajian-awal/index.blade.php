@@ -229,7 +229,7 @@
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                    <textarea name="catatan" rows="2" class="input-style"></textarea>
+                    <textarea name="catatan" rows="2" class="input-style"></textarea
 
                     <label style="display:block; text-align:left;"><strong>Status</strong></label>
                     <select name="status" required class="input-style">
