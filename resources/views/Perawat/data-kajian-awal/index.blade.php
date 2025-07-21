@@ -44,9 +44,9 @@
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                        <td>{{ $item->pengkajianAwal->keluhan_utama }}</td>
-                        <td>{{ $item->pengkajianAwal->tekanan_darah }}</td>
-                        <td>{{ $item->pengkajianAwal->suhu_tubuh }}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-'}}</td>
+                        <td>{{ $item->pengkajianAwal->tekanan_darah ?? '-'}}</td>
+                        <td>{{ $item->pengkajianAwal->suhu_tubuh ?? '-'}}</td>
                         <td>
                             @if ($item->status === 'sudah')
                                 <span
