@@ -10,6 +10,7 @@ use App\Models\MasterDiagnosa;
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
 use App\Models\Pendaftaran;
+use App\Models\PengkajianAwal;
 use App\Models\Tindakan;
 use Carbon\Carbon;
 
@@ -39,9 +40,9 @@ class PencatatanDiagnosaController extends Controller
         $obats = Obat::all();
         $tindakans = Tindakan::all();
 
-         //$pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
+        // $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
         $perawats = User::where('role_id', 4)->get();
-        //$pendaftarans = Pendaftaran::with('pasien')->get();
+        $pengkajian = PengkajianAwal::all();
 
          return view('Dokter.pencatatan-diagnosa.index', compact( 'pendaftarans', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
     }

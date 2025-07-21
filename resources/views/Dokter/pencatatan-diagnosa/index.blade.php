@@ -44,22 +44,15 @@
                         <td>{{ $item->user->nama_lengkap ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                         <td>{{ $item->keluhan}}</td>
-                        <td>{{ $item}}</td>
-                        <td>{{ $item->pelayanan}}</td>
-                        <td>{{ $item->catatan ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama}}</td>
+                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan}}</td>
+                        <td>{{ $item->pengkajianAwal->catatan}}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('pencatatan-diagnosa.show', $item->id) }}"
                                     class="btn btn-info no-underline"><i class="fas fa-eye"></i></a>
                                 <a href="{{ route('pencatatan-diagnosa.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
-                                <form action="{{ route('pencatatan-diagnosa.destroy', $item->id) }}" method="POST"
-                                    style="display:inline-block;"
-                                    onsubmit="return confirm('Yakin ingin menghapus data ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
-                                </form>
                                 <button onclick="document.getElementById('modalTambah').style.display='flex'"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-stethoscope"></i>

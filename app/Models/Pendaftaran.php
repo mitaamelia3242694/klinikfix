@@ -50,9 +50,9 @@ class Pendaftaran extends Model
 
   
 
-    public function pengkajianAwal(): HasMany
+    public function pengkajianAwal()
     {
-        return $this->hasMany(PengkajianAwal::class, 'pendaftaran_id');
+        return $this->belongsTo(PengkajianAwal::class, 'pasien_id');
     }
     public function diagnosaAwal(): HasMany 
     {
