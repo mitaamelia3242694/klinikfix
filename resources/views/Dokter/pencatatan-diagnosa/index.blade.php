@@ -44,9 +44,9 @@
                         <td>{{ $item->dokter->nama_lengkap }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                         <td>{{ $item->keluhan }}</td>
-                        <td>{{ $item->pengkajianAwal->keluhan_utama }}</td>
-                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan }}</td>
-                        <td>{{ $item->pengkajianAwal->catatan }}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-'}}</td>
+                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan ?? '-'}}</td>
+                        <td>{{ $item->pengkajianAwal->catatan ?? '-'}}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('pencatatan-diagnosa.show', $item->id) }}"
