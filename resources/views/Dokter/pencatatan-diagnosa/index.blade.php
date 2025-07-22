@@ -142,7 +142,7 @@
 
                     <!-- Pelayanan -->
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan" class="input-style" required>
+                    <select name="pelayanan_id" class="input-style" required>
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $layanan)
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
