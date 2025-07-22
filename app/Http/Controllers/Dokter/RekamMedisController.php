@@ -7,31 +7,26 @@ use App\Models\Tindakan;
 use App\Models\RekamMedis;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\DiagnosaAkhir;
+use App\Models\Pendaftaran;
 
 class RekamMedisController extends Controller
 {
     public function index(Request $request)
-{
-    $keyword = $request->keyword;
+    {
+        $keyword = $request->keyword;
 
-    $rekams = RekamMedis::with(['pasien', 'tindakan'])
-        ->when($keyword, function ($query, $keyword) {
-            $query->whereHas('pasien', function ($q) use ($keyword) {
-                $q->where('nama', 'like', "%$keyword%");
-            })->orWhereHas('tindakan', function ($q) use ($keyword) {
-                $q->where('jenis_tindakan', 'like', "%$keyword%");
-            });
-        })
-        ->orderBy('tanggal_kunjungan', 'desc')
-        ->paginate(10); // Ubah sesuai kebutuhan
+        $pendaftarans = Pendaftaran::with(['diagnosaAkhir', 'pasien', 'tindakan'])
+            ->when($keyword, function ($query, $keyword) {
+                $query->whereHas('pasien', function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%$keyword%");
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-    $rekams->appends($request->only('keyword'));
-
-    $pasiens = Pasien::all();
-    $tindakans = Tindakan::all();
-
-    return view('Dokter.rekam-medis.index', compact('rekams', 'pasiens', 'tindakans'));
-}
+        return view('Dokter.rekam-medis.index', compact('pendaftarans'));
+    }
 
 
     public function store(Request $request)

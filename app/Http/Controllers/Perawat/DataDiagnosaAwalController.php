@@ -33,24 +33,34 @@ class DataDiagnosaAwalController extends Controller
 
         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
         $perawats = User::where('role_id', 4)->get();
-        return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans', 'search', 'masters', 'layanans'));
+        return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans', 'search', 'masters', 'layanans', 'perawats'));
     }
 
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'pasien_id' => 'required|exists:pasien,id',
             'user_id' => 'required|exists:users,id',
             'tanggal' => 'required|date',
             'diagnosa' => 'required|string',
             'master_diagnosa_id' => 'required|exists:master_diagnosa,id',
-            'pelayanan' => 'nullable|string',
+            'pelayanan_id' => 'nullable|string',
             'catatan' => 'nullable|string',
             'status' => 'required|in:belum_diperiksa,sudah_diperiksa',
         ]);
 
-        DiagnosaAwal::create($validated);
+        DiagnosaAwal::create([
+            'pasien_id' => $request->pasien_id,
+            'user_id' => $request->user_id,
+            'tanggal' => $request->tanggal,
+            'diagnosa' => $request->diagnosa,
+            'master_diagnosa_id' => $request->master_diagnosa_id,
+            'pelayanan_id' => $request->pelayanan_id,
+            'catatan' => $request->catatan,
+            'status' => $request->status,
+        ]);
 
         return redirect()->route('data-diagnosa-awal.index')->with('success', 'Data berhasil ditambahkan.');
     }
@@ -65,13 +75,14 @@ class DataDiagnosaAwalController extends Controller
     public function edit($id)
     {
         $diagnosa = DiagnosaAwal::findOrFail($id);
-        $pasiens = Pasien::all();
+        $pendaftarans = Pendaftaran::with('pasien')->get(); // ambil dari pendaftaran
         $perawats = User::where('role_id', '4')->get();
         $masters = MasterDiagnosa::all();
         $layanans = Pelayanan::all();
 
-        return view('Perawat.data-diagnosa-awal.edit', compact('diagnosa', 'pasiens', 'perawats', 'masters', 'layanans'));
+        return view('Perawat.data-diagnosa-awal.edit', compact('diagnosa', 'pendaftarans', 'perawats', 'masters', 'layanans'));
     }
+
 
     public function update(Request $request, $id)
     {
