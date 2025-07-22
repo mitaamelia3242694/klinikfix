@@ -56,7 +56,7 @@
                     @endif
                 </td>
                 <td>{{ $item->masterDiagnosa->nama ?? '-' }}</td>
-                <td>{{ $item->pendaftaran?? '-' }}</td>
+                <td>{{ $item->pelayanan->nama_pelayanan?? '-' }}</td>
                
                 <td>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
@@ -119,7 +119,7 @@
                 <select name="pasien_id" required class="input-style">
                     <option value="">-- Pilih Pasien --</option>
                     @foreach ($pendaftarans as $pendaftaran)
-                     <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->pasien->nama}}</option>
+                     <option value="{{ $pendaftaran->pasien->id }}">{{ $pendaftaran->pasien->nama}}</option>
                     @endforeach
                 </select>
 
@@ -139,7 +139,7 @@
 
                 <!-- Pelayanan -->
                 <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                <select name="pelayanan" class="input-style" required>
+                <select name="pelayanan_id" class="input-style" required>
                     <option value="">-- Pilih Pelayanan --</option>
                     @foreach ($layanans as $layanan)
                     <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
@@ -158,8 +158,8 @@
                 <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                 <select name="user_id" required class="input-style">
                     <option value="">-- Pilih Perawat --</option>
-                    @foreach ($pendaftarans as $pendaftaran)
-                    <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->nama_lengkap }}</option>
+                    @foreach ($perawats as $item)
+                    <option value="{{ $item->id }}">{{ $item->nama_lengkap }}</option>
                     @endforeach
                 </select>
 
