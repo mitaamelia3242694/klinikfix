@@ -241,7 +241,7 @@
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                     <select name="user_id" required class="input-style">
                         <option value="">-- Pilih Perawat --</option>
-                        @foreach ($pendaftarans as $ppendaftaran)
+                        @foreach ($pendaftarans as $pendaftaran)
                             <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->nama_lengkap }}</option>
                         @endforeach
                     </select>
