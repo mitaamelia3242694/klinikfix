@@ -44,7 +44,7 @@
             </div>
             <div class="detail-row">
                 <span class="detail-label">Pelayanan</span>
-                <span>{{ $diagnosa->pelayanan->nama_pelayanan }}</span>
+                <span>{{ $diagnosa->pelayanan->nama_pelayanan ?? '-'}}</span>
             </div>
             <div class="detail-row">
                 <span class="detail-label">Catatan</span>

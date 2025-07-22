@@ -9,7 +9,7 @@ class PengkajianAwal extends Model
 {
     protected $table = 'pengkajian_awal';
     protected $fillable = [
-        'pasien_id',
+        'pendaftaran_id',
         'user_id',
         'tanggal',
         'status',

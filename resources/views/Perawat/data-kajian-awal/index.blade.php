@@ -70,13 +70,13 @@
                                 <a href="{{ route('data-kajian-awal.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
 
-                                <button class="btn-kajian" data-pasien-id="{{ $item->pasien->id }}"
+                                <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalKajian(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-file-medical-alt"></i>
                                 </button>
 
-                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalDiagnosa(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-stethoscope"></i>
@@ -134,7 +134,7 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <input type="hidden" name="pasien_id" id="kajianPasienId">
+                    <input type="hidden" name="pendaftaran_id" id="kajianPasienId">
                     <input type="text" id="kajianPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
