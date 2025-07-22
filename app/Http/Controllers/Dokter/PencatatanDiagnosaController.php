@@ -61,7 +61,7 @@ class PencatatanDiagnosaController extends Controller
             'pelayanan' => 'nullable|string',
             'catatan' => 'nullable|string',
         ]);
-        dd($request);
+        
         DiagnosaAkhir::create($request->all());
 
         return redirect()->route('pencatatan-diagnosa.index')->with('success', 'Diagnosa berhasil ditambahkan.');

@@ -24,7 +24,7 @@
         <div class="detail-content">
             <div class="detail-row">
                 <span class="detail-label">Nama Pasien</span>
-                <span>{{ $kajian->pasien->nama }}</span>
+                <span>{{ $kajian->pendaftaran->pasien->nama }}</span>
             </div>
             <div class="detail-row">
                 <span class="detail-label">Perawat</span>

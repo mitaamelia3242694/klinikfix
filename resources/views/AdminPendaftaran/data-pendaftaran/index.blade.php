@@ -29,7 +29,7 @@
                 <th>Tindakan</th>
                 <th>Asal</th>
                 <th>Keluhan</th>
-                <th>Status</th>
+                
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -43,7 +43,7 @@
                 <td>{{ $daftar->tindakan->jenis_tindakan ?? '-' }}</td>
                 <td>{{ $daftar->asalPendaftaran->nama ?? '-' }}</td>
                 <td>{{ $daftar->keluhan ?? '-' }}</td>
-                <td>{{ $daftar->status ?? '-' }}</td>
+                
                 <td>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         <a href="{{ route('data-pendaftaran.show', $daftar->id) }}" class="btn btn-info no-underline"><i
@@ -158,13 +158,7 @@
                 <label style="display:block; text-align:left;">Keluhan</label>
                 <textarea name="keluhan" class="input-style" rows="3"></textarea>
 
-                <label style="display:block; text-align:left;">Status</label>
-                <select name="status" class="input-style" required>
-                    <option value="">-- Pilih Jenis --</option>
-                    <option value="menunggu">Menunggu</option>
-                    <option value="selesai">Selesai</option>
-                    <option value="batal">Batal</option>
-                </select>
+               
 
 
                 <div style="margin-top: 1rem; text-align:right;">

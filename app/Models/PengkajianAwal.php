@@ -40,7 +40,7 @@ class PengkajianAwal extends Model
 
     public function pendaftaran()
     {
-        return $this->belongsTo(PengkajianAwal::class,'pendaftaran_id');
+        return $this->belongsTo(Pendaftaran::class,'pendaftaran_id');
     }
 
     public function pasien(){

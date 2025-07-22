@@ -33,7 +33,7 @@
                     <th>Suhu Tubuh</th>
                     <th>Status</th>
                     <th>Diagnosa</th>
-                    <th>Catatan</th>
+                    
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -48,7 +48,7 @@
                         <td>{{ $item->pengkajianAwal->tekanan_darah ?? '-'}}</td>
                         <td>{{ $item->pengkajianAwal->suhu_tubuh ?? '-'}}</td>
                         <td>
-                            @if ($item->status === 'sudah')
+                            @if ($item->status === 'selesai')
                                 <span
                                     style="background-color: #28a745; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
                                     Sudah
@@ -62,7 +62,7 @@
                         </td>
 
                         <td>{{ $item->pengkajianAwal->diagnosa_awal ?? '-' }}</td>
-                        <td>{{ $item->pengkajianAwal->catatan ?? '-'}}</td>
+                       
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('data-kajian-awal.show', $item->id) }}"
@@ -168,8 +168,7 @@
                     <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
                     <input type="text" name="diagnosa_awal" required class="input-style">
 
-                    <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                    <textarea name="catatan" rows="2" class="input-style"></textarea>
+                   
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                     <select name="user_id" required class="input-style">

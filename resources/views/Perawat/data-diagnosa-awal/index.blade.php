@@ -36,7 +36,7 @@
                 <th>Status</th>
                 <th>Master Diagnosa</th>
                 <th>Pelayanan</th>
-                <th>Catatan</th>
+                
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -56,8 +56,8 @@
                     @endif
                 </td>
                 <td>{{ $item->masterDiagnosa->nama ?? '-' }}</td>
-                <td>{{ $item->pelayanan->nama_pelayanan ?? '-' }}</td>
-                <td>{{ $item->catatan ?? '-' }}</td>
+                <td>{{ $item->pendaftaran?? '-' }}</td>
+               
                 <td>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         <a href="{{ route('data-diagnosa-awal.show', $item->id) }}" class="btn btn-info no-underline"><i
@@ -146,8 +146,7 @@
                     @endforeach
                 </select>
 
-                <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                <textarea name="catatan" rows="2" class="input-style"></textarea>
+                
 
                 <label style="display:block; text-align:left;"><strong>Status</strong></label>
                 <select name="status" required class="input-style">
@@ -159,7 +158,7 @@
                 <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                 <select name="user_id" required class="input-style">
                     <option value="">-- Pilih Perawat --</option>
-                    @foreach ($pendaftarans as $ppendaftaran)
+                    @foreach ($pendaftarans as $pendaftaran)
                     <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->nama_lengkap }}</option>
                     @endforeach
                 </select>
