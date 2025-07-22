@@ -48,19 +48,19 @@ class Pendaftaran extends Model
         return $this->belongsTo(User::class, 'perawat_id');
     }
 
-  
+
 
     public function pengkajianAwal()
     {
-        return $this->belongsTo(PengkajianAwal::class, 'pasien_id');
+        return $this->hasOne(PengkajianAwal::class);
     }
-    public function diagnosaAwal(): HasMany 
+    public function diagnosaAwal(): HasMany
     {
-        return $this->hasMany(Diagnosaawal::class, 'pendaftaran_id'); 
+        return $this->hasMany(Diagnosaawal::class, 'pendaftaran_id');
     }
 
-    public function diagnosaAkhir(): HasMany 
+    public function diagnosaAkhir(): HasMany
     {
-        return $this->hasMany(DiagnosaAkhir::class, 'pendaftaran_id'); 
+        return $this->hasMany(DiagnosaAkhir::class, 'pendaftaran_id');
     }
 }
