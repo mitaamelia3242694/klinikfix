@@ -52,8 +52,7 @@
                     Awal</span></a>
         </li>
         <li class="{{ request()->routeIs('data-diagnosa-awal.index') ? 'active' : '' }}">
-            <a href="{{ route('data-diagnosa-awal.index') }}"><i class="fas fa-notes-medical"></i> <span>Data Diagnosa
-                    Awal</span></a>
+            <a href="{{ route('data-diagnosa-awal.index') }}"><i class="fas fa-notes-medical"></i> <span>Data Diagnosa Awal</span></a>
         </li>
         <li class="{{ request()->routeIs('manajemen-tindakan.index') ? 'active' : '' }}">
             <a href="{{ route('manajemen-tindakan.index') }}"><i class="fas fa-briefcase-medical"></i> <span>Manajemen

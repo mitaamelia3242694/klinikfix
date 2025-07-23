@@ -38,20 +38,7 @@ class DataKajianAwalController extends Controller
 
 
     public function store(Request $request)
-    {
-        // $request->validate([
-        //     'pasien_id' => 'required|exists:pasien,id',
-        //     'user_id' => 'required|exists:users,id',
-        //     'tanggal' => 'required|date',
-        //     'keluhan_utama' => 'required|string',
-        //     'tekanan_darah' => 'required|string',
-        //     'suhu_tubuh' => 'required|string',
-        //     'status' => 'required|in:belum,sudah',
-        //     'diagnosa_awal' => 'required|string', // ✅ tambahkan
-        //     'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
-        //     'catatan' => 'nullable|string',
-        // ]);
-        
+    {        
         PengkajianAwal::create($request->all());
 
         return redirect()->route('data-kajian-awal.index')->with('success', 'Data kajian awal berhasil ditambahkan.');
@@ -69,9 +56,10 @@ class DataKajianAwalController extends Controller
         $kajian = PengkajianAwal::findOrFail($id);
         $pasiens = Pasien::all();
         $perawats = User::where('role_id', '4')->get();
+        $pendaftarans = Pendaftaran::with('pasien')->get();
         $layanans = Pelayanan::all();
 
-        return view('Perawat.data-kajian-awal.edit', compact('kajian', 'pasiens', 'perawats', 'layanans'));
+        return view('Perawat.data-kajian-awal.edit', compact('kajian', 'pasiens', 'perawats', 'layanans', 'pendaftarans'));
     }
 
     public function update(Request $request, $id)

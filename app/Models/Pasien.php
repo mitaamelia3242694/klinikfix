@@ -38,4 +38,9 @@ class Pasien extends Model
     {
         return $this->hasOne(DiagnosaAkhir::class)->latestOfMany();
     }
+
+    public function pendaftarans()
+    {
+        return $this->hasMany(Pendaftaran::class);
+    }
 }

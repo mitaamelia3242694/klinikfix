@@ -66,9 +66,6 @@
                 </select>
 
 
-                <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                <textarea name="catatan" rows="3" class="form-input">{{ $diagnosa->catatan }}</textarea>
-
                 <label style="display:block; text-align:left;"><strong>Status</strong></label>
                 <select name="status" required class="form-input">
                     <option value="">-- Pilih Status --</option>
