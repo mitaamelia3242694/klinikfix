@@ -8,35 +8,33 @@ use App\Models\Tindakan;
 use App\Models\DiagnosaAwal;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Pendaftaran;
 
 class ManajemenTindakanController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->input('search');
+    {
+        $search = $request->input('search');
 
-    $tindakans = Tindakan::with([
-            'pasien.diagnosaAwal',
-            'pasien.diagnosaAkhir',
+        $pendaftarans = Pendaftaran::with([
             'pasien',
-            'user'
+            'diagnosaAwal',
+            'diagnosaAkhir',
+            'perawat',
         ])
-        ->when($search, function ($query, $search) {
-            $query->whereHas('pasien', function ($q) use ($search) {
-                $q->where('nama', 'like', '%' . $search . '%');
-            })->orWhereHas('user', function ($q) use ($search) {
-                $q->where('nama_lengkap', 'like', '%' . $search . '%');
-            });
-        })
-        ->orderBy('tanggal', 'desc')
-        ->paginate(10)
-        ->appends(['search' => $search]);
+            ->whereHas('diagnosaAwal')
+            ->whereHas('diagnosaAkhir')
+            ->when($search, function ($query, $search) {
+                $query->whereHas('pasien', function ($q) use ($search) {
+                    $q->where('nama', 'like', '%' . $search . '%');
+                });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends(['search' => $search]);
 
-    $pasiens = Pasien::all();
-    $perawats = User::where('role_id', '4')->get();
-
-    return view('Perawat.manajemen-tindakan.index', compact('tindakans', 'pasiens', 'perawats', 'search'));
-}
+        return view('Perawat.manajemen-tindakan.index', compact('pendaftarans', 'search'));
+    }
 
 
     public function store(Request $request)

@@ -48,10 +48,6 @@
                 <span class="detail-label">Pelayanan</span>
                 <span>{{ $diagnosa->pelayanan->nama_pelayanan }}</span>
             </div>
-            <div class="detail-row">
-                <span class="detail-label">Catatan</span>
-                <span>{{ $diagnosa->catatan ?? '-' }}</span>
-            </div>
         </div>
     </div>
 

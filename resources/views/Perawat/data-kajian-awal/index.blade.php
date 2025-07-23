@@ -33,7 +33,7 @@
                     <th>Suhu Tubuh</th>
                     <th>Status</th>
                     <th>Diagnosa</th>
-                    
+
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -44,31 +44,38 @@
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
-                        <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-'}}</td>
-                        <td>{{ $item->pengkajianAwal->tekanan_darah ?? '-'}}</td>
-                        <td>{{ $item->pengkajianAwal->suhu_tubuh ?? '-'}}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->tekanan_darah ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->suhu_tubuh ?? '-' }}</td>
                         <td>
-                            @if ($item->status === 'selesai')
-                                <span
-                                    style="background-color: #28a745; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
-                                    Sudah
-                                </span>
-                            @else
-                                <span
-                                    style="background-color: #6c757d; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
-                                    Belum
-                                </span>
+                            @if ($item->pengkajianAwal == null)
+                                -
+                            @elseif($item->pengkajianAwal != null)
+                                @if ($item->pengkajianAwal->status === 'sudah')
+                                    <span
+                                        style="background-color: #28a745; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
+                                        Sudah
+                                    </span>
+                                @elseif ($item->pengkajianAwal->status === 'belum')
+                                    <span
+                                        style="background-color: #6c757d; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
+                                        Belum
+                                    </span>
+                                @endif
                             @endif
                         </td>
 
                         <td>{{ $item->pengkajianAwal->diagnosa_awal ?? '-' }}</td>
-                       
+
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                                <a href="{{ route('data-kajian-awal.show', $item->id) }}"
-                                    class="btn btn-info no-underline"><i class="fas fa-eye"></i></a>
-                                <a href="{{ route('data-kajian-awal.edit', $item->id) }}"
-                                    class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
+
+                                @if ($item->pengkajianAwal != null)
+                                    <a href="{{ route('data-kajian-awal.show', $item->pengkajianAwal->id) }}"
+                                        class="btn btn-info no-underline"><i class="fas fa-eye"></i></a>
+                                    <a href="{{ route('data-kajian-awal.edit', $item->pengkajianAwal->id) }}"
+                                        class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
+                                @endif
 
                                 <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalKajian(this)"
@@ -76,10 +83,11 @@
                                     <i class="fas fa-file-medical-alt"></i>
                                 </button>
 
-                                <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalDiagnosa(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-stethoscope"></i>
+                                    <i class="fas fa-notes-medical"></i>
+
                                 </button>
 
                                 <a href="{{ route('manajemen-tindakan.index') }}"
@@ -158,7 +166,7 @@
 
                     <!-- Pelayanan -->
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan" class="input-style" required>
+                    <select name="pelayanan_id" class="input-style" required>
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $layanan)
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
@@ -168,7 +176,7 @@
                     <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
                     <input type="text" name="diagnosa_awal" required class="input-style">
 
-                   
+
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                     <select name="user_id" required class="input-style">
@@ -196,61 +204,60 @@
                     style="position:absolute; top:1rem; right:1rem; font-size:1.5rem; cursor:pointer; color:rgb(33, 106, 178);">&times;</span>
                 <h3 style="margin-bottom:1rem; color:rgb(33, 106, 178); text-align:left;">Tambah Diagnosa Awal</h3>
 
-                <form method="POST" action="{{ route('data-diagnosa-awal.store') }}">
-                    @csrf
+                 <form method="POST" action="{{ route('data-diagnosa-awal.store') }}">
+                @csrf
 
-                    <input type="hidden" name="pasien_id" id="inputPasienId">
+                <input type="hidden" name="pasien_id" id="inputPasienId">
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                     <input type="text" id="inputPasienNama" class="input-style" disabled>
 
-                    <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
+                <input type="date" name="tanggal" required class="input-style">
 
-                    <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
-                    <textarea name="diagnosa" rows="2" required class="input-style"></textarea>
+                <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+                <textarea name="diagnosa" rows="2" required class="input-style"></textarea>
 
-                    <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
-                    <select name="master_diagnosa_id" required class="input-style">
-                        <option value="">-- Pilih Diagnosa --</option>
-                        @foreach ($masters as $master)
-                            <option value="{{ $master->id }}">{{ $master->nama }}</option>
-                        @endforeach
-                    </select>
+                <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
+                <select name="master_diagnosa_id" required class="input-style">
+                    <option value="">-- Pilih Diagnosa --</option>
+                    @foreach ($masters as $master)
+                    <option value="{{ $master->id }}">{{ $master->nama }}</option>
+                    @endforeach
+                </select>
 
-                    <!-- Pelayanan -->
-                    <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan" class="input-style" required>
-                        <option value="">-- Pilih Pelayanan --</option>
-                        @foreach ($layanans as $layanan)
-                            <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
-                        @endforeach
-                    </select>
+                <!-- Pelayanan -->
+                <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
+                <select name="pelayanan_id" class="input-style" required>
+                    <option value="">-- Pilih Pelayanan --</option>
+                    @foreach ($layanans as $layanan)
+                    <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
+                    @endforeach
+                </select>
 
-                    <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                    <textarea name="catatan" rows="2" class="input-style"></textarea
+                
 
-                    <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                    <select name="status" required class="input-style">
-                        <option value="">-- Pilih Status --</option>
-                        <option value="belum_diperiksa">Belum Diperiksa</option>
-                        <option value="sudah_diperiksa">Sudah Diperiksa</option>
-                    </select>
+                <label style="display:block; text-align:left;"><strong>Status</strong></label>
+                <select name="status" required class="input-style">
+                    <option value="">-- Pilih Status --</option>
+                    <option value="belum_diperiksa">Belum Diperiksa</option>
+                    <option value="sudah_diperiksa">Sudah Diperiksa</option>
+                </select>
 
-                    <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                    <select name="user_id" required class="input-style">
-                        <option value="">-- Pilih Perawat --</option>
-                        @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->id }}">{{ $pendaftaran->nama_lengkap }}</option>
-                        @endforeach
-                    </select>
+                <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
+                <select name="user_id" required class="input-style">
+                    <option value="">-- Pilih Perawat --</option>
+                    @foreach ($perawats as $item)
+                    <option value="{{ $item->id }}">{{ $item->nama_lengkap }}</option>
+                    @endforeach
+                </select>
 
-                    <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
-                        <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
-                            class="btn btn-warning">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
+                <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+                    <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
+                        class="btn btn-warning">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
             </div>
         </div>
     </section>

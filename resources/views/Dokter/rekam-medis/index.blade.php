@@ -41,7 +41,7 @@
                         <td>{{ $item->pasien->nama }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</td>
                         <td>{{ $item->keluhan }}</td>
-                        <td>{{ $item->diagnosaAkhir->diagnosa }}</td>
+                        <td>{{ $item->diagnosaAkhir->diagnosa ?? '-'}}</td>
                         <td>{{ $item->tindakan->jenis_tindakan ?? '-' }}</td>
                         <td>{{ $item->diagnosaAkhir->catatan ?? '-' }}</td>
                     </tr>
