@@ -58,10 +58,10 @@ class Pendaftaran extends Model
 
     public function diagnosaAwal()
     {
-        return $this->hasOne(Diagnosaawal::class, 'pendaftaran_id', 'pendaftaran_id');
+        return $this->hasOne(Diagnosaawal::class, 'pasien_id', 'pasien_id');
     }
     public function diagnosaAkhir()
     {
-        return $this->hasOne(DiagnosaAkhir::class, 'pendaftaran_id', 'pendaftaran_id');
+        return $this->hasOne(DiagnosaAkhir::class, 'pasien_id', 'pasien_id');
     }
 }
