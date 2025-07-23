@@ -11,6 +11,9 @@ use App\Models\ResepDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Pendaftaran;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PenerbitanResepController extends Controller
 {
@@ -30,8 +33,9 @@ class PenerbitanResepController extends Controller
             ->paginate(10)
             ->withQueryString(); // penting agar pencarian tetap terjaga di halaman berikutnya
 
-        $pasiens = Pasien::all();
-        $dokters = User::where('role_id', 3)->get();
+        $pasiens = Pendaftaran::whereDate('created_at', Carbon::today())->get();
+        $user = Auth::user()->id;
+        $dokters = User::where('id', $user)->first();
         $obats = Obat::all();
         $pelayanans = Pelayanan::all();
 
@@ -95,7 +99,8 @@ class PenerbitanResepController extends Controller
     {
         $resep = Resep::with(['detail'])->findOrFail($id);
         $pasiens = Pasien::all();
-        $dokters = User::where('role_id', 3)->get();
+        $user = Auth::user()->id;
+        $dokters = User::where('id', $user)->first();
         $obats = Obat::all();
 
         return view('Dokter.penerbitan-resep.edit', compact('resep', 'pasiens', 'dokters', 'obats'));

@@ -9,6 +9,7 @@ use App\Models\PengambilanObat;
 use App\Http\Controllers\Controller;
 use App\Models\Obat;
 use App\Models\SediaanObat;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PengambilanObatController extends Controller
@@ -29,8 +30,8 @@ class PengambilanObatController extends Controller
 
         // Data dropdown untuk modal tambah
         $reseps = Resep::with('pasien')->get();
-        $users = User::where('role_id', 5)->get(); // Role 5 = petugas apotek?
-
+        $user = Auth::user()->id;
+        $users = User::where('id', $user)->first();
         return view('Apoteker.pengambilan-obat.index', compact('pengambilanObats', 'reseps', 'users'));
     }
 

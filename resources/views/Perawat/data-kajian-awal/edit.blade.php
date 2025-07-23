@@ -17,14 +17,9 @@
                 <input type="text" class="form-input" value="{{$kajian->pendaftaran->pasien->nama}}">
 
                 <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                <select name="user_id" required class="form-input">
-                    <option value="">-- Pilih Perawat --</option>
-                    @foreach ($perawats as $perawat)
-                        <option value="{{ $perawat->id }}" {{ $kajian->user_id == $perawat->id ? 'selected' : '' }}>
-                            {{ $perawat->nama_lengkap }}
-                        </option>
-                    @endforeach
-                </select>
+                <input type="hidden" name="user_id" class="form-input" required value="{{ $perawats->id }}"
+                        readonly>
+                    <input type="text" class="form-input" value="{{ $perawats->nama_lengkap }}" readonly>
 
                 <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                 <input type="date" name="tanggal" value="{{ $kajian->tanggal }}" required class="form-input">
@@ -62,10 +57,6 @@
                         </option>
                     @endforeach
                 </select>
-
-
-                <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                <textarea name="catatan" rows="3" class="form-input">{{ $kajian->catatan }}</textarea>
 
                 <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                     <a href="{{ route('data-kajian-awal.index') }}" class="btn-cancel">Batal</a>

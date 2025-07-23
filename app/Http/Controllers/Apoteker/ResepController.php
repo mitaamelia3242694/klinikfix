@@ -26,7 +26,7 @@ class ResepController extends Controller
             ->latest()
             ->paginate(10)
             ->appends(['keyword' => $keyword]); // agar keyword tetap tersimpan di URL saat berpindah halaman
-
+        // dd($reseps);
         $pasiens = Pasien::all();
         $users = User::where('role_id', 3)->get();
         $pelayanans = Pelayanan::all();

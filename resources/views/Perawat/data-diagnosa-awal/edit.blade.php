@@ -24,14 +24,8 @@
                 </select>
 
                 <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                <select name="user_id" required class="form-input">
-                    <option value="">-- Pilih Perawat --</option>
-                    @foreach ($perawats as $perawat)
-                        <option value="{{ $perawat->id }}" {{ $diagnosa->user_id == $perawat->id ? 'selected' : '' }}>
-                            {{ $perawat->nama_lengkap }}
-                        </option>
-                    @endforeach
-                </select>
+                <input type="hidden" name="user_id" class="form-input" required value="{{ $perawats->id }}" readonly>
+                <input type="text" class="form-input" value="{{ $perawats->nama_lengkap }}" readonly>
 
                 <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                 <input type="date" name="tanggal" value="{{ $diagnosa->tanggal }}" required class="form-input">
