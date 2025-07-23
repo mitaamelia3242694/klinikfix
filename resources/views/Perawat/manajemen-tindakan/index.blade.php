@@ -25,7 +25,7 @@
                     <th>Tanggal</th>
                     <th>Dokter</th>
                     <th>Catatan</th>
-                    <th>Aksi</th>
+                    {{-- <th>Aksi</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -39,10 +39,10 @@
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</td>
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
                         <td>{{ $item->keluhan ?? '-' }}</td>
-                        <td>
+                        {{-- <td>
                             <a href="{{ route('manajemen-tindakan.show', $item->id) }}" class="btn btn-info"><i
                                     class="fas fa-eye"></i></a>
-                        </td>
+                        </td> --}}
                     </tr>
                 @endforeach
 
