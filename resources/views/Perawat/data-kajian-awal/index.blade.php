@@ -174,17 +174,14 @@
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
-                    <input type="text" name="diagnosa_awal" required class="input-style">
+                    <textarea name="diagnosa_awal" id="diagnosa_awal" cols="10" rows="4" class="input-style"></textarea>
 
 
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                    <select name="user_id" required class="input-style">
-                        <option value="">-- Pilih Perawat --</option>
-                        @foreach ($perawats as $perawat)
-                            <option value="{{ $perawat->id }}">{{ $perawat->nama_lengkap }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}"
+                        readonly>
+                    <input type="text" class="input-style" value="{{ $perawats->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                         <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
@@ -204,60 +201,57 @@
                     style="position:absolute; top:1rem; right:1rem; font-size:1.5rem; cursor:pointer; color:rgb(33, 106, 178);">&times;</span>
                 <h3 style="margin-bottom:1rem; color:rgb(33, 106, 178); text-align:left;">Tambah Diagnosa Awal</h3>
 
-                 <form method="POST" action="{{ route('data-diagnosa-awal.store') }}">
-                @csrf
+                <form method="POST" action="{{ route('data-diagnosa-awal.store') }}">
+                    @csrf
 
-                <input type="hidden" name="pasien_id" id="inputPasienId">
+                    <input type="hidden" name="pasien_id" id="inputPasienId">
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                     <input type="text" id="inputPasienNama" class="input-style" disabled>
 
-                <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                <input type="date" name="tanggal" required class="input-style">
+                    <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
+                    <input type="date" name="tanggal" required class="input-style">
 
-                <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
-                <textarea name="diagnosa" rows="2" required class="input-style"></textarea>
+                    <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+                    <textarea name="diagnosa" rows="2" required class="input-style"></textarea>
 
-                <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
-                <select name="master_diagnosa_id" required class="input-style">
-                    <option value="">-- Pilih Diagnosa --</option>
-                    @foreach ($masters as $master)
-                    <option value="{{ $master->id }}">{{ $master->nama }}</option>
-                    @endforeach
-                </select>
+                    <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
+                    <select name="master_diagnosa_id" required class="input-style">
+                        <option value="">-- Pilih Diagnosa --</option>
+                        @foreach ($masters as $master)
+                            <option value="{{ $master->id }}">{{ $master->nama }}</option>
+                        @endforeach
+                    </select>
 
-                <!-- Pelayanan -->
-                <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                <select name="pelayanan_id" class="input-style" required>
-                    <option value="">-- Pilih Pelayanan --</option>
-                    @foreach ($layanans as $layanan)
-                    <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
-                    @endforeach
-                </select>
+                    <!-- Pelayanan -->
+                    <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
+                    <select name="pelayanan_id" class="input-style" required>
+                        <option value="">-- Pilih Pelayanan --</option>
+                        @foreach ($layanans as $layanan)
+                            <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
+                        @endforeach
+                    </select>
 
-                
 
-                <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                <select name="status" required class="input-style">
-                    <option value="">-- Pilih Status --</option>
-                    <option value="belum_diperiksa">Belum Diperiksa</option>
-                    <option value="sudah_diperiksa">Sudah Diperiksa</option>
-                </select>
 
-                <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                <select name="user_id" required class="input-style">
-                    <option value="">-- Pilih Perawat --</option>
-                    @foreach ($perawats as $item)
-                    <option value="{{ $item->id }}">{{ $item->nama_lengkap }}</option>
-                    @endforeach
-                </select>
+                    <label style="display:block; text-align:left;"><strong>Status</strong></label>
+                    <select name="status" required class="input-style">
+                        <option value="">-- Pilih Status --</option>
+                        <option value="belum_diperiksa">Belum Diperiksa</option>
+                        <option value="sudah_diperiksa">Sudah Diperiksa</option>
+                    </select>
 
-                <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
-                    <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
-                        class="btn btn-warning">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
+                    <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}"
+                        readonly>
+                    <input type="text" class="input-style" value="{{ $perawats->nama_lengkap }}" readonly>
+
+                    <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+                        <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
+                            class="btn btn-warning">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </section>

@@ -44,9 +44,9 @@
                         <td>{{ $item->dokter->nama_lengkap }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                         <td>{{ $item->keluhan }}</td>
-                        <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-'}}</td>
-                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan ?? '-'}}</td>
-                        <td>{{ $item->pengkajianAwal->catatan ?? '-'}}</td>
+                        <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan ?? '-' }}</td>
+                        <td>{{ $item->pengkajianAwal->catatan ?? '-' }}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('pencatatan-diagnosa.show', $item->id) }}"
@@ -153,12 +153,8 @@
                     <textarea name="catatan" rows="2" class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
-                    <select name="user_id" required class="input-style">
-                        <option value="">-- Pilih Dokter --</option>
-                        @foreach ($dokters as $dokter)
-                            <option value="{{ $dokter->id }}">{{ $dokter->nama_lengkap }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}" readonly>
+                    <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                         <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
@@ -197,12 +193,9 @@
                     <textarea name="catatan" rows="2" class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
-                    <select name="user_id" required class="input-style">
-                        <option value="">-- Pilih Dokter --</option>
-                        @foreach ($dokters as $dokter)
-                            <option value="{{ $dokter->id }}">{{ $dokter->nama_lengkap }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}"
+                        readonly>
+                    <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                         <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
@@ -232,12 +225,9 @@
                     <input type="date" name="tanggal" class="input-style" required>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
-                    <select name="user_id" class="input-style" required>
-                        <option value="">-- Pilih Dokter --</option>
-                        @foreach ($dokters as $dokter)
-                            <option value="{{ $dokter->id }}">{{ $dokter->nama_lengkap }}</option>
-                        @endforeach
-                    </select>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}"
+                        readonly>
+                    <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
                     <select name="pelayanan_id" required class="input-style">

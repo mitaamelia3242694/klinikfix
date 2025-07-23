@@ -14,6 +14,7 @@ use App\Models\Pendaftaran;
 use App\Models\PengkajianAwal;
 use App\Models\Tindakan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PencatatanDiagnosaController extends Controller
 {
@@ -42,7 +43,8 @@ class PencatatanDiagnosaController extends Controller
         $tindakans = Tindakan::all();
 
         // $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
-        $perawats = User::where('role_id', 4)->get();
+        $user = Auth::user()->id;
+        $dokters = User::where('id', $user)->first();
         $pengkajian = PengkajianAwal::all();
 
         return view('Dokter.pencatatan-diagnosa.index', compact('pendaftarans', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
@@ -61,7 +63,7 @@ class PencatatanDiagnosaController extends Controller
             'pelayanan' => 'nullable|string',
             'catatan' => 'nullable|string',
         ]);
-        
+
         DiagnosaAkhir::create($request->all());
 
         return redirect()->route('pencatatan-diagnosa.index')->with('success', 'Diagnosa berhasil ditambahkan.');

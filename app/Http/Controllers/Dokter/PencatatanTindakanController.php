@@ -7,30 +7,34 @@ use App\Models\Pasien;
 use App\Models\Tindakan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Pelayanan;
+use Illuminate\Support\Facades\Auth;
 
 class PencatatanTindakanController extends Controller
 {
     public function index(Request $request)
-{
-    $keyword = $request->keyword;
+    {
+        $keyword = $request->keyword;
 
-    $tindakans = Tindakan::with(['pasien', 'user'])
-        ->when($keyword, function ($query, $keyword) {
-            $query->whereHas('pasien', function ($q) use ($keyword) {
-                $q->where('nama', 'like', "%{$keyword}%");
-            })->orWhereHas('user', function ($q) use ($keyword) {
-                $q->where('nama_lengkap', 'like', "%{$keyword}%");
-            });
-        })
-        ->orderBy('tanggal', 'desc')
-        ->paginate(10)
-        ->appends(['keyword' => $keyword]);
+        $tindakans = Tindakan::with(['pasien', 'user'])
+            ->when($keyword, function ($query, $keyword) {
+                $query->whereHas('pasien', function ($q) use ($keyword) {
+                    $q->where('nama', 'like', "%{$keyword}%");
+                })->orWhereHas('user', function ($q) use ($keyword) {
+                    $q->where('nama_lengkap', 'like', "%{$keyword}%");
+                });
+            })
+            ->orderBy('tanggal', 'desc')
+            ->paginate(10)
+            ->appends(['keyword' => $keyword]);
 
-    $pasiens = Pasien::all();
-    $dokters = User::where('role_id', 3)->get();
+        $pasiens = Pasien::all();
+        $user = Auth::user()->id;
+        $dokters = User::where('id', $user)->first();
+        $layanan = Pelayanan::all();
 
-    return view('Dokter.pencatatan-tindakan.index', compact('tindakans', 'pasiens', 'dokters'));
-}
+        return view('Dokter.pencatatan-tindakan.index', compact('tindakans', 'pasiens', 'dokters', 'layanan'));
+    }
 
 
     public function store(Request $request)
@@ -59,7 +63,8 @@ class PencatatanTindakanController extends Controller
     {
         $tindakan = Tindakan::findOrFail($id);
         $pasiens = Pasien::all();
-        $dokters = User::where('role_id', 3)->get();
+        $user = Auth::user()->id;
+        $dokters = User::where('id', $user)->first();
 
         return view('Dokter.pencatatan-tindakan.edit', compact('tindakan', 'pasiens', 'dokters'));
     }

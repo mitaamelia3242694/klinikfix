@@ -11,6 +11,7 @@ use App\Models\Pendaftaran;
 use App\Models\Pelayanan;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DataDiagnosaAwalController extends Controller
 {
@@ -32,7 +33,8 @@ class DataDiagnosaAwalController extends Controller
             ->appends(['search' => $search]);
 
         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
-        $perawats = User::where('role_id', 4)->get();
+        $user = Auth::user()->id;
+        $perawats = User::where('id', $user)->first();
         return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans', 'search', 'masters', 'layanans', 'perawats'));
     }
 
@@ -76,7 +78,8 @@ class DataDiagnosaAwalController extends Controller
     {
         $diagnosa = DiagnosaAwal::findOrFail($id);
         $pendaftarans = Pendaftaran::with('pasien')->get(); // ambil dari pendaftaran
-        $perawats = User::where('role_id', '4')->get();
+        $user = Auth::user()->id;
+        $perawats = User::where('id', $user)->first();
         $masters = MasterDiagnosa::all();
         $layanans = Pelayanan::all();
 

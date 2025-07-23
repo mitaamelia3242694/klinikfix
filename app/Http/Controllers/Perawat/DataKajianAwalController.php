@@ -11,6 +11,8 @@ use App\Models\PengkajianAwal;
 use App\Http\Controllers\Controller;
 use App\Models\MasterDiagnosa;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 class DataKajianAwalController extends Controller
 {
     
@@ -30,7 +32,8 @@ class DataKajianAwalController extends Controller
         
         $masters = MasterDiagnosa::all();
         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
-        $perawats = User::where('role_id', 4)->get();
+        $user = Auth::user()->id;
+        $perawats = User::where('id', $user)->first();
         $layanans = Pelayanan::all();
         
         return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans', 'masters'));
@@ -55,7 +58,8 @@ class DataKajianAwalController extends Controller
     {
         $kajian = PengkajianAwal::findOrFail($id);
         $pasiens = Pasien::all();
-        $perawats = User::where('role_id', '4')->get();
+        $user = Auth::user()->id;
+        $perawats = User::where('id', $user)->first();
         $pendaftarans = Pendaftaran::with('pasien')->get();
         $layanans = Pelayanan::all();
 
