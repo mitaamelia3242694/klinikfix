@@ -47,6 +47,7 @@ class UsersTableSeeder extends Seeder
                 'email' => 'ina@klinik.com',
                 'status' => 'aktif',
             ],
+            
             [
                 'username' => 'apoteker_andi',
                 'password' => Hash::make('apoteker123'),

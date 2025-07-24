@@ -50,13 +50,11 @@
                 <td>{{ $obats->firstItem() + $index }}</td>
                 <td>{{ $obat->nama_obat }}</td>
                 <td>{{ $obat->satuan->nama_satuan ?? '-' }}</td>
-                <td>{{ $obat->stok_tersisa }}</td>
+                <td>{{ $obat->stok_total }}</td>
                 <td>
-                    {{ optional($obat->sediaan->first())->tanggal_masuk
-        ? \Carbon\Carbon::parse($obat->sediaan->first()->tanggal_masuk)->format('d-m-Y')
-        : '-'
-    }}
-                </td>
+    {{ $obat->created_at ? $obat->created_at->format('d-m-Y ') : '-' }}
+</td>
+
                 <td>
                     {{
         $obat->pengeluaran && $obat->pengeluaran->count() > 0
@@ -95,7 +93,6 @@
         {{-- Page Numbers --}}
         @foreach ($obats->links()->elements[0] as $page => $url)
         @if ($page == $obats->currentPage())
-        <li class="active"><span>{{ $page }}</span></li>
         @else
         <li><a href="{{ $url }}">{{ $page }}</a></li>
         @endif

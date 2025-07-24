@@ -31,47 +31,86 @@
             <tr>
                 <th>No</th>
                 <th>Nama Obat</th>
+                <th>Stok Awal</th>
+                   <th>Tanggal Masuk</th>
+                            <th>Jumlah</th>
                 <th>Satuan</th>
-                <th>Jumlah</th>
-                <th>Tanggal Masuk</th>
-                <th>Tanggal Keluar</th>
+                                 <th>Total Stok</th>
+                                   <th>Masuk/Keluar</th>
+                                                  <th>Tanggal Keluar</th>
+                 <th>Stok Akhir</th>
                 <th>Kadaluarsa</th>
-                <th>Keterangan</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @php $filteredCount = 0; @endphp
-            @foreach ($sediaans as $index => $sediaan)
-            @php
-            $kadaluarsa = \Carbon\Carbon::parse($sediaan->tanggal_kadaluarsa);
-            $selisihHari = now()->diffInDays($kadaluarsa, false);
-            $tampilkan = true;
+           @php
+$filteredCount = 0;
+@endphp
+@foreach ($sediaans as $index => $sediaan)
+    @php
+        $kadaluarsa = \Carbon\Carbon::parse($sediaan->tanggal_kadaluarsa);
+        $selisihHari = now()->diffInDays($kadaluarsa, false);
+        $tampilkan = !request('expiring_soon') || $selisihHari <= 7;
 
-            if (request('expiring_soon') && $selisihHari > 7) {
-            $tampilkan = false;
+        if ($tampilkan) {
+            $filteredCount++;
+            $stokAwal = $sediaan->jumlah ?? 0;
+            $jumlahKeluar = $sediaan->obat->resepDetails->sum('jumlah') ?? 0;
+            $stokAkhir = max($stokAwal - $jumlahKeluar, 0);
+
+            // Tentukan status
+            if ($jumlahKeluar == 0) {
+                $status = 'Tetap';
+            } elseif ($jumlahKeluar > 0) {
+                $status = 'Berkurang';
+            } else {
+                $status = '-';
             }
 
-            if ($tampilkan) {
-            $filteredCount++;
-            @endphp
+            // Highlight warna baris
+            $rowColor = '';
+            if ($selisihHari < 0) {
+                $rowColor = 'background-color: #ffe6e6;';
+            } elseif ($selisihHari <= 7) {
+                $rowColor = 'background-color: #fff5e6;';
+            }
+    @endphp
             <tr>
                 <td>{{ $filteredCount }}</td>
                 <td>{{ $sediaan->obat->nama_obat ?? '-' }}</td>
-                <td>{{ $sediaan->obat->satuan->nama_satuan ?? '-' }}</td>
-                @php
+                 @php
                 $terpakai = $sediaan->obat->resepDetails->sum('jumlah') ?? 0;
                 $stokTersisa = $sediaan->obat->stok_total - $terpakai;
                 $rowColor = '';
 
                 if ($selisihHari < 0) $rowColor='background-color: #ffe6e6;' ; elseif ($selisihHari <=7)
-                    $rowColor='background-color: #fff5e6;' ; @endphp <td>{{ $stokTersisa }}</td>
-                    <td>{{ \Carbon\Carbon::parse($sediaan->tanggal_masuk)->format('d-m-Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($sediaan->tanggal_keluar)->format('d-m-Y') }}</td>
-                    <td style="{{ $rowColor }}">{{ $kadaluarsa->format('d-m-Y') }}</td>
+                    $rowColor='background-color: #fff5e6;' ; @endphp 
+                    <td>{{ $sediaan->obat->stok_total ?? 0 }}</td> 
+                     <td>{{ \Carbon\Carbon::parse($sediaan->tanggal_masuk)->format('d-m-Y') }}</td>
+                <td>{{ $sediaan->obat->stok_total ?? 0 }}</td> 
+                <td>{{ $sediaan->obat->satuan->nama_satuan ?? '-' }}</td>
+         <td>{{ $sediaan->obat->stok_total ?? '-' }}</td> <!-- Total Stok -->    
+           <td>
+    @if ($sediaan->jumlah_keluar_hari_ini > 0)
+        <span style="color:red; font-weight:bold;">
+            Berkurang (-{{ $sediaan->jumlah_keluar_hari_ini }}) hari ini
+        </span>
+    @else
+        <span style="color:gray;">Tidak ada perubahan hari ini</span>
+    @endif
+</td>  
+ <td>{{ \Carbon\Carbon::parse($sediaan->tanggal_keluar)->format('d-m-Y') }}</td>
+<td>{{ max(($sediaan->obat->stok_total ?? 0) - $jumlahKeluar, 0) }}</td>
 
-                    <td>{{ $sediaan->keterangan ?? '-' }}</td>
+                    <td style="{{ $rowColor }}">{{ $kadaluarsa->format('d-m-Y') }}</td>
+                  
                     <td>
+                    <!-- Tombol Riwayat -->
+<button class="btn btn-primary no-underline" onclick="showModal({{ $sediaan->obat_id }})">
+    <i class="fas fa-history"></i>
+</button>
+
                         <a href="{{ route('kesediaan-obat.show', $sediaan->id) }}" class="btn btn-info no-underline"><i
                                 class="fas fa-eye"></i></a>
                         <a href="{{ route('kesediaan-obat.edit', $sediaan->id) }}"
@@ -101,6 +140,15 @@
         </tbody>
     </table>
 
+
+    <div id="modalRiwayat" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+    <div style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:600px; max-height:80vh; overflow:auto; position:relative;">
+        <span onclick="document.getElementById('modalRiwayat').style.display='none'" style="position:absolute; top:1rem; right:1rem; font-size:1.5rem; cursor:pointer;">&times;</span>
+        <h3 style="margin-bottom:1rem; color:#216ab2;">Riwayat Pengeluaran Obat (Bulan Ini)</h3>
+        <div id="riwayatContent"></div>
+    </div>
+</div>
+
     <!-- Modal Tambah -->
     <div id="modalTambah" onclick="if(event.target === this) this.style.display='none'"
         style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
@@ -113,19 +161,39 @@
             <form method="POST" action="{{ route('kesediaan-obat.store') }}">
                 @csrf
                 <label style="display:block; text-align:left;"><strong>Nama Obat</strong></label>
-                <select name="obat_id" required class="input-style">
-                    <option value="">-- Pilih Obat --</option>
-                    @foreach ($obats as $obat)
-                    <option value="{{ $obat->id }}">{{ $obat->nama_obat }} ({{ $obat->satuan->nama_satuan ?? '' }})
-                    </option>
-                    @endforeach
-                </select>
+<select name="obat_id" required class="input-style" id="obatSelect" onchange="hitungStok(this)">
+    <option value="">-- Pilih Obat --</option>
+    @foreach ($obats as $obat)
+        <option 
+            value="{{ $obat->id }}"
+            data-total="{{ $obat->stok_total }}"
+        >
+            {{ $obat->nama_obat }}
+        </option>
+    @endforeach
+</select>
+
+
+<label style="display:block; text-align:left;"><strong>Jumlah (Masuk)</strong></label>
+<input type="number" id="jumlahInput" class="input-style" name="jumlah" readonly>
+
+<label style="display:block; text-align:left;"><strong>Stok Awal</strong></label>
+<input type="number" id="stokAwal" class="input-style" name="stok_awal" readonly>
+
+<label style="display:block; text-align:left;"><strong>Stok Akhir</strong></label>
+<input type="number" id="stokAkhir" class="input-style" name="stok_akhir" readonly>
+
+<label style="display:block; text-align:left;"><strong>Total Stok</strong></label>
+<input type="number" id="totalStok" class="input-style" name="total_stok" readonly>
+
 
                 <label style="display:block; text-align:left;"><strong>Tanggal Masuk</strong></label>
                 <input type="date" name="tanggal_masuk" required class="input-style">
 
-                <label style="display:block; text-align:left;"><strong>Tanggal Keluar</strong></label>
-                <input type="date" name="tanggal_keluar" required class="input-style">
+<label><strong>Tanggal Keluar</strong></label>
+<input type="date" name="tanggal_keluar" class="input-style"> {{-- tanpa required --}}
+
+
 
                 <label style="display:block; text-align:left;"><strong>Tanggal Kadaluarsa</strong></label>
                 <input type="date" name="tanggal_kadaluarsa" required class="input-style">
@@ -297,5 +365,60 @@
             }, 5000);
         }
     };
+</script>
+
+<script>
+    const semuaRiwayat = @json($riwayatObat);
+
+    function showModal(obatId) {
+        const data = semuaRiwayat[obatId] || [];
+        const modal = document.getElementById('modalRiwayat');
+        const content = document.getElementById('riwayatContent');
+
+        if (data.length === 0) {
+            content.innerHTML = '<p style="color:gray;">Tidak ada pengeluaran bulan ini.</p>';
+        } else {
+            let html = `<table style="width:100%; border-collapse:collapse;">
+                    <tr style="background:#f0f0f0;"><th style="padding:8px; border:1px solid #ccc;">Tanggal</th><th style="padding:8px; border:1px solid #ccc;">Jumlah</th></tr>`;
+            data.forEach(item => {
+                html += `<tr>
+                    <td style="padding:6px 8px; border:1px solid #ccc;">${item.tanggal}</td>
+                    <td style="padding:6px 8px; border:1px solid #ccc;">${item.jumlah}</td>
+                </tr>`;
+            });
+            html += `</table>`;
+            content.innerHTML = html;
+        }
+
+        modal.style.display = 'flex';
+    }
+
+function tampilkanInfoStok(select) {
+        const opt = select.options[select.selectedIndex];
+
+        const jumlah = opt.dataset.jumlah || 0;
+        const awal = opt.dataset.awal || 0;
+        const akhir = opt.dataset.akhir || 0;
+        const total = opt.dataset.total || 0;
+
+        document.getElementById('infoJumlah').textContent = jumlah;
+        document.getElementById('infoAwal').textContent = awal;
+        document.getElementById('infoAkhir').textContent = akhir;
+        document.getElementById('infoTotal').textContent = total;
+
+        document.getElementById('infoStok').style.display = 'block';
+    }
+
+   function hitungStok(select) {
+    const selectedOption = document.getElementById("obatSelect").selectedOptions[0];
+    const total = parseInt(selectedOption.dataset.total || 0);
+
+    // Jumlah = stok awal = stok akhir = total stok
+    document.getElementById("jumlahInput").value = total;
+    document.getElementById("stokAwal").value = total;
+    document.getElementById("stokAkhir").value = total;
+    document.getElementById("totalStok").value = total;
+}
+
 </script>
 @endsection

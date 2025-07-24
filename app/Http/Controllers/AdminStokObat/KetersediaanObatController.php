@@ -5,47 +5,89 @@ namespace App\Http\Controllers\AdminStokObat;
 use Carbon\Carbon;
 use App\Models\Obat;
 use App\Models\SediaanObat;
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class KetersediaanObatController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = SediaanObat::with('obat.satuan')->latest();
+   public function index(Request $request)
+{
+    $query = SediaanObat::with('obat.satuan', 'obat.resepDetails')->latest();
 
-        // Jika checkbox filter aktif
-        if ($request->has('expiring_soon')) {
-            $query->whereDate('tanggal_kadaluarsa', '<=', Carbon::now()->addDays(7));
-        }
+    // Filter untuk obat hampir kadaluarsa
+    if ($request->has('expiring_soon')) {
+        $query->whereDate('tanggal_kadaluarsa', '<=', Carbon::now()->addDays(7));
+    }
 
-        $sediaans = $query->get();
+    $sediaans = $query->get();
+    $obats = Obat::with('satuan', 'resepDetails')->get();
 
-        $obats = Obat::with('satuan')->get();
+    foreach ($sediaans as $sediaan) {
+        $obat = $sediaan->obat;
 
-        // Hitung stok tersisa
+        // Total resep keluar keseluruhan
+        $sediaan->jumlah_keluar_total = $obat->resepDetails->sum('jumlah');
+
+        // Jumlah keluar hari ini
+        $sediaan->jumlah_keluar_hari_ini = $obat->resepDetails
+            ->where('sediaan_id', $sediaan->id) // optional: jika ada relasi langsung ke sediaan
+            ->where('created_at', '>=', Carbon::today())
+            ->sum('jumlah');
+    }
+
+    // Hitung stok tersisa per obat (tidak wajib jika tidak digunakan)
+    foreach ($obats as $obat) {
+        $jumlahTerpakai = $obat->resepDetails()->sum('jumlah');
+        $obat->stok_tersisa = $obat->stok_total - $jumlahTerpakai;
+    }
+
+
+    $start = Carbon::now()->startOfMonth()->toDateString();
+    $end = Carbon::now()->endOfMonth()->toDateString();
+     $riwayatObat = DB::table('resep_detail')
+        ->selectRaw('obat_id, DATE(created_at) as tanggal, SUM(jumlah) as jumlah')
+        ->whereBetween('created_at', [$start, $end])
+        ->groupBy('obat_id', 'tanggal')
+        ->get()
+        ->groupBy('obat_id'); // hasilnya: $riwayatObat[obat_id] => list harian
+       
         foreach ($obats as $obat) {
-            $jumlahTerpakai = $obat->resepDetails()->sum('jumlah');
-            $obat->stok_tersisa = $obat->stok_total - $jumlahTerpakai;
-        }
+    $obat->jumlah = $obat->sediaan->sum('jumlah') ?? 0;
+    $obat->stok_awal = 0;
+    $obat->stok_akhir = 0;
+    $obat->stok_total = $obat->stok_total ?? 0;
+}
 
-        return view('AdminStokObat.kesediaan-obat.index', compact('sediaans', 'obats'));
-    }
+    return view('AdminStokObat.kesediaan-obat.index', compact('sediaans', 'obats', 'riwayatObat'));
+}
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'obat_id' => 'required|exists:obat,id',
-            'tanggal_masuk' => 'required|date',
-            'tanggal_keluar' => 'required|date|after_or_equal:tanggal_masuk',
-            'tanggal_kadaluarsa' => 'required|date|after_or_equal:tanggal_keluar',
-            'keterangan' => 'nullable|string',
-        ]);
+  public function store(Request $request)
+{
 
-        SediaanObat::create($request->all());
 
-        return redirect()->route('kesediaan-obat.index')->with('success', 'Data berhasil ditambahkan.');
-    }
+    // Validasi input
+    $request->validate([
+        'obat_id' => 'required|exists:obat,id',
+        'tanggal_kadaluarsa' => 'required|date',
+        'tanggal_keluar' => 'nullable|date',
+        'keterangan' => 'nullable|string|max:255',
+    ]);
+
+    // Simpan ke tabel sediaan_obat
+    SediaanObat::create([
+        'obat_id' => $request->obat_id,
+        'tanggal_masuk' => Carbon::now(),
+        'tanggal_keluar' => $request->tanggal_keluar ?: null,
+        'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+        'keterangan' => $request->keterangan,
+    ]);
+
+    return redirect()->back()->with('success', 'Data ketersediaan obat berhasil ditambahkan.');
+}
+
+
+
 
     public function show($id)
     {

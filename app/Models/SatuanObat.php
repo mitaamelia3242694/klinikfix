@@ -14,4 +14,10 @@ class SatuanObat extends Model
     {
         return $this->hasMany(Obat::class);
     }
+
+    public function resepDetails()
+{
+    return $this->hasMany(ResepDetail::class, 'sediaan_id');
+}
+
 }
