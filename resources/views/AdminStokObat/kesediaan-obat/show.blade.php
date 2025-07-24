@@ -49,7 +49,6 @@
 
     <div style="margin-top:2rem;">
         <a href="{{ route('kesediaan-obat.index') }}" class="btn-back">Kembali</a>
-        <a href="{{ route('kesediaan-obat.edit', $sediaan->id) }}" class="btn-edit">Edit</a>
     </div>
 </section>
 
