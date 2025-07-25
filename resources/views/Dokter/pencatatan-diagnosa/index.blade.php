@@ -184,10 +184,18 @@
                     <input type="date" name="tanggal" required class="input-style">
 
                     <label style="display:block; text-align:left;"><strong>Jenis Tindakan</strong></label>
-                    <input type="text" name="jenis_tindakan" required class="input-style">
+                    <select name="jenis_tindakan" id="jenis_tindakan" required class="input-style">
+                        <option value="">-- Pilih Tindakan --</option>
+                        @foreach ($layanans as $item)
+                            <option value="{{ $item->nama_pelayanan }}" data-biaya="{{ $item->biaya }}">
+                                {{ $item->nama_pelayanan }} - Rp. {{ number_format($item->biaya, 0, ',', '.') }}
+                            </option>
+                        @endforeach
+                    </select>
 
                     <label style="display:block; text-align:left;"><strong>Tarif</strong></label>
-                    <input type="number" step="0.01" name="tarif" required class="input-style">
+                    <input type="number" step="0.01" name="tarif" id="tarif" required class="input-style"
+                        readonly>
 
                     <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
                     <textarea name="catatan" rows="2" class="input-style"></textarea>
@@ -511,6 +519,19 @@
             document.getElementById('rekamPasienId').value = pasienId;
             document.getElementById('rekamPasienNama').value = pasienNama;
         }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('jenis_tindakan');
+            const tarifInput = document.getElementById('tarif');
+
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const biaya = selectedOption.getAttribute('data-biaya');
+                tarifInput.value = biaya ? parseFloat(biaya) : '';
+            });
+        });
     </script>
 
 @endsection

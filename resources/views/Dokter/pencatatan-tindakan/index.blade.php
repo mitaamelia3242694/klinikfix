@@ -127,7 +127,7 @@
                     <select name="jenis_tindakan" id="jenis_tindakan" required class="input-style">
                         <option value="">-- Pilih Tindakan --</option>
                         @foreach ($layanan as $item)
-                            <option value="{{ $item->id }}" data-biaya="{{ $item->biaya }}">
+                            <option value="{{ $item->nama_pelayanan }}" data-biaya="{{ $item->biaya }}">
                                 {{ $item->nama_pelayanan }} - Rp. {{ number_format($item->biaya, 0, ',', '.') }}
                             </option>
                         @endforeach
