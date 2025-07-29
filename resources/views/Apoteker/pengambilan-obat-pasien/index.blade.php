@@ -5,7 +5,7 @@
 @section('content')
     <section class="blank-content">
         <div class="table-header">
-            <h3>Data Pengambilan Obat</h3>
+            <h3>Data Pengambilan Obat Pasien</h3>
             <button onclick="document.getElementById('modalTambah').style.display='flex'"
                 style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                 Tambah Data
@@ -31,11 +31,11 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Pasien</th>
-                    <th>Dokter</th>
-                    <th>Tanggal Pengambilan</th>
-                    <th>Status Pengambilan</th>
-                    <th>Petugas</th>
+                    <th>Tanggal Penyerahan</th>
+                    <th>Nama Pengambil</th>
+                    <th>Obat (Jumlah – Dosis / Aturan)</th>
+                    <th>Status</th>
+                    <th>Bukti Foto</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -43,24 +43,33 @@
                 @foreach ($pengambilanObats as $index => $ambil)
                     <tr>
                         <td>{{ $pengambilanObats->firstItem() + $index }}</td>
-                        <td>{{ $ambil->resep->pasien->nama ?? '-' }}</td>
-                        <td>{{ $ambil->resep->user->nama_lengkap ?? '-' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($ambil->tanggal_pengambilan)->format('d-m-Y') }}</td>
+                          <td>{{ \Carbon\Carbon::parse($ambil->tanggal_penyerahan)->format('d-m-Y') }}</td>
+                        <td>{{ $ambil->nama_pengambil ?? '-' }}</td>
+                       <td>
+                        @foreach ($ambil->resep->detail as $d)
+                    • {{ $d->obat->nama_obat }} ({{ $d->jumlah }}, {{ $d->dosis }}, {{ $d->aturan_pakai }})<br>
+                    @endforeach
+                </td>
                         <td>
-                            @if ($ambil->status_checklist === 'sudah diambil')
-                                <span class="badge badge-sudah">Sudah Diambil</span>
+                            @if ($ambil->status_checklist === 'sudah diserahkan')
+                                <span class="badge badge-sudah">Sudah Diserahkan</span>
                             @else
                                 <span class="badge badge-belum">Belum</span>
                             @endif
                         </td>
-
-                        <td>{{ $ambil->user->nama_lengkap ?? '-' }}</td>
                         <td>
-                            <a href="{{ route('pengambilan-obat.show', $ambil->id) }}" class="btn btn-info no-underline"><i
+                         @if( $ambil->bukti_foto ?? '-')
+                                      <a href="{{ asset('storage/' . $ambil->bukti_foto) }}" target="_blank">Lihat Foto</a>
+                @else
+                    <span>Tidak Ada</span>
+                @endif
+                 </td>
+                        <td>
+                            <a href="{{ route('pengambilan-obat-pasien.show', $ambil->id) }}" class="btn btn-info no-underline"><i
                                     class="fas fa-eye"></i></a>
-                            <a href="{{ route('pengambilan-obat.edit', $ambil->id) }}"
+                            <a href="{{ route('pengambilan-obat-pasien.edit', $ambil->id) }}"
                                 class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
-                            <form action="{{ route('pengambilan-obat.destroy', $ambil->id) }}" method="POST"
+                            <form action="{{ route('pengambilan-obat-pasien.destroy', $ambil->id) }}" method="POST"
                                 style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus data ini?');">
                                 @csrf
                                 @method('DELETE')

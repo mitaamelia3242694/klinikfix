@@ -221,7 +221,17 @@ Route::middleware(['auth', 'role:Apoteker'])->group(function () {
     Route::get('/pengambilan-obat/{id}/edit', [PengambilanObatController::class, 'edit'])->name('pengambilan-obat.edit');
     Route::put('/pengambilan-obat/{id}', [PengambilanObatController::class, 'update'])->name('pengambilan-obat.update');
     Route::delete('/pengambilan-obat/{id}', [PengambilanObatController::class, 'destroy'])->name('pengambilan-obat.destroy');
+
+      // Data Pengambilan Obat
+    Route::get('/pengambilan-obat-pasien', [PengambilanObatController::class, 'index_obat_pasien'])->name('pengambilan-obat-pasien.index');
+    Route::get('/pengambilan-obat-pasien/create', [PengambilanObatController::class, 'create'])->name('pengambilan-obat-pasien.create');
+    Route::post('/pengambilan-obat-pasien', [PengambilanObatController::class, 'store'])->name('pengambilan-obat-pasien.store');
+    Route::get('/pengambilan-obat-pasien/{id}', [PengambilanObatController::class, 'show'])->name('pengambilan-obat-pasien.show');
+    Route::get('/pengambilan-obat-pasien/{id}/edit', [PengambilanObatController::class, 'edit_obat_pasien'])->name('pengambilan-obat-pasien.edit');
+    Route::put('/pengambilan-obat-pasien/{id}', [PengambilanObatController::class, 'update_obat_pasien'])->name('pengambilan-obat-pasien.update');
+    Route::delete('/pengambilan-obat-pasien/{id}', [PengambilanObatController::class, 'destroy'])->name('pengambilan-obat-pasien.destroy');
 });
+
 
 
 Route::middleware(['auth', 'role:Admin Stok Obat'])->group(function () {

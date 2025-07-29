@@ -100,6 +100,11 @@
                 <span>Pengambilan
                     Obat</span></a>
         </li>
+           <li class="{{ request()->routeIs('pengambilan-obat-pasien.index') ? 'active' : '' }}">
+            <a href="{{ route('pengambilan-obat-pasien.index') }}"><i class="fas fa-hand-holding-medical"></i>
+                <span>Pengambilan
+                    Obat Pasien</span></a>
+        </li>
         @endif
 
         @if ($role === 'Admin Stok Obat')

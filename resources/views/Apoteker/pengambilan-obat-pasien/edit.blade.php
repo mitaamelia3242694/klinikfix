@@ -4,10 +4,10 @@
 
 @section('content')
 <section class="blank-content">
-    <h3 style="margin-bottom: 1rem; color: rgb(33, 106, 178); text-align:left;">Edit Pengambilan Obat</h3>
+    <h3 style="margin-bottom: 1rem; color: rgb(33, 106, 178); text-align:left;">Edit Pengambilan Obat Pasien</h3>
 
-    <form method="POST" action="{{ route('pengambilan-obat.update', $pengambilan->id) }}"
-        style="max-width: 1000px; display: flex; gap: 2rem; flex-wrap: wrap;">
+    <form method="POST" action="{{ route('pengambilan-obat-pasien.update', $pengambilan->id) }}"
+        style="max-width: 1000px; display: flex; gap: 2rem; flex-wrap: wrap;" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -32,7 +32,8 @@
                 </option>
                 @endforeach
             </select>
-
+  <label style="display:block; text-align:left;"><strong>Bukti Foto</strong></label>
+        <input type="file" name="bukti_foto" id="bukti_foto" class="form-input"><br><br>
         </div>
 
         <div style="flex: 1; min-width: 300px;">
@@ -43,14 +44,14 @@
             <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
             <select name="status_checklist" required class="form-input">
                 <option value="">-- Pilih Status --</option>
-                <option value="sudah diambil" {{ $pengambilan->status_checklist == 'sudah diambil' ? 'selected' : '' }}>Sudah Diambil
+                <option value="sudah diserahkan" {{ $pengambilan->status_checklist == 'sudah diserahkan' ? 'selected' : '' }}>Sudah Diserahkan
                 </option>
-                <option value="diambil setengah" {{ $pengambilan->status_checklist == 'diambil setengah' ? 'selected' : '' }}>
-                   Diambil Setengah</option>
+                <option value="diserahkan setengah" {{ $pengambilan->status_checklist == 'diserahkan setengah' ? 'selected' : '' }}>
+                   Diserahkan Setengah</option>
                 <option value="belum" {{ $pengambilan->status_checklist == 'belum' ? 'selected' : '' }}>
                     Belum</option>
             </select>
-            
+             
         </div>
 
           <table class="table table-bordered">
