@@ -79,6 +79,7 @@ class PengambilanObatController extends Controller
             return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
+            // dd($e->getMessage());
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
@@ -100,14 +101,14 @@ class PengambilanObatController extends Controller
             'tanggal_pengambilan' => 'required|date',
             'status_checklist' => 'required|in:belum,sudah diambil,diambil setengah',
         ]);
-    
+
         $checklistIds = $request->input('checklist_ids', []);
           $checkedReseps = ResepDetail::with('obat')
         ->whereIn('id', $checklistIds)
         ->get();
 
           $pengambilan = PengambilanObat::findOrFail($id);
-           
+
     foreach ($checkedReseps as $resepDetail) {
 
                 // Tandai resep detail sudah dicheck
@@ -117,12 +118,12 @@ class PengambilanObatController extends Controller
                   $pengambilan->status_checklist = $request->status_checklist;
                 $pengambilan->save();
             }
-     
+
          return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
         }
 
- 
-  
+
+
 
         // $request->validate([
         //     'resep_id' => 'required|exists:resep,id',
@@ -134,19 +135,19 @@ class PengambilanObatController extends Controller
         // $pengambilan = PengambilanObat::findOrFail($id);
         // $statusSebelumnya = $pengambilan->status_checklist;
         // $checklistIds = $request->input('checklist_ids', []);
-      
+
 
 
         // DB::beginTransaction();
 
-      
+
         //     $pengambilan->update($request->all());
 
         //     // Jalankan pengurangan stok hanya jika status berubah jadi "sudah"
         //     if ( $request->status_checklist === 'sudah') {
         //         $resep = Resep::with('detail')->findOrFail($request->resep_id);
         //          $obat= Obat::whereIn('id', $checklistIds)->update(['is_checked' => true]);
-               
+
         //             $jumlah = $detail->jumlah;
 
         //             if ($obat->stok_total < $jumlah) {
@@ -165,8 +166,8 @@ class PengambilanObatController extends Controller
         //     }
 
         //     return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
-     
-    
+
+
 
 
     public function show($id)
@@ -237,13 +238,13 @@ class PengambilanObatController extends Controller
                 $pengambilan->save();
             }
         }
-    } 
+    }
       return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
     } else{
         return redirect()->back();
     }
-    
-  
+
+
     }
 
      public function edit_obat_pasien($id)

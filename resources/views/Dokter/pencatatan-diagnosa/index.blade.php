@@ -218,7 +218,7 @@
             style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
             <div
                 style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
-                <span onclick="document.getElementById('modalTambah').style.display='none'"
+                <span onclick="document.getElementById('modalTambahResep').style.display='none'"
                     style="position:absolute; top:1rem; right:1rem; font-size:1.5rem; cursor:pointer; color:rgb(33, 106, 178);">&times;</span>
                 <h3 style="margin-bottom:1rem; color:rgb(33, 106, 178); text-align:left;">Tambah Resep</h3>
 
@@ -226,8 +226,10 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <input type="hidden" name="pasien_id" id="resepPasienId">
-                    <input type="text" id="resepPasienIdNama" class="input-style" disabled>
+                    <input type="hidden" id="resepPasienId" name="pasien_id">
+                    <input type="text" id="resepPasienNama" name="pasien_nama" class="input-style">
+                    {{-- <input type="hidden" name="pasien_id" id="resepPasienId">
+                    <input type="text" id="resepPasienIdNama" class="input-style" disabled> --}}
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
                     <input type="date" name="tanggal" class="input-style" required>
@@ -259,8 +261,11 @@
                                     <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
                                 @endforeach
                             </select>
-                            <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah"
-                                min="1">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+                                <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah"
+                                    min="1">
+                                <span style="white-space: nowrap;">tablet</span>
+                            </div>
                             <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
                             <input type="text" name="aturan_pakai[]" required class="input-style"
                                 placeholder="Aturan Pakai">
@@ -273,7 +278,7 @@
 
                     <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
                         <button type="button" class="btn btn-warning"
-                            onclick="document.getElementById('modalTambah').style.display='none'">Batal</button>
+                            onclick="document.getElementById('modalTambahResep').style.display='none'">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
@@ -502,13 +507,70 @@
             document.getElementById('tindakanPasienNama').value = pasienNama;
         }
 
+        // function openModalResep(button) {
+        //     const pasienId = button.dataset.pasienId;
+        //     const pasienNama = button.dataset.pasienNama;
+
+        //     document.getElementById('modalTambahResep').style.display = 'flex';
+        //     document.getElementById('resepPasienId').value = pasienId;
+        //     document.getElementById('resepPasienNama').value = pasienNama;
+        // }
         function openModalResep(button) {
             const pasienId = button.dataset.pasienId;
             const pasienNama = button.dataset.pasienNama;
 
-            document.getElementById('modalTambahResep').style.display = 'flex';
-            document.getElementById('resepPasienId').value = pasienId;
-            document.getElementById('resepPasienNama').value = pasienNama;
+            const modal = document.getElementById('modalTambahResep');
+            const inputPasienId = document.getElementById('resepPasienId');
+            const inputPasienNama = document.getElementById('resepPasienNama');
+
+            if (modal && inputPasienId && inputPasienNama) {
+                modal.style.display = 'flex';
+                inputPasienId.value = pasienId;
+                inputPasienNama.value = pasienNama;
+            } else {
+                console.error('Modal atau input tidak ditemukan!');
+                // Debugging: Tampilkan elemen yang tidak ditemukan
+                if (!modal) console.error('Modal dengan ID modalTambahResep tidak ditemukan');
+                if (!inputPasienId) console.error('Input dengan ID resepPasienId tidak ditemukan');
+                if (!inputPasienNama) console.error('Input dengan ID resepPasienNama tidak ditemukan');
+            }
+        }
+
+        function tambahDetail() {
+            const container = document.getElementById('detailContainer');
+            const newGroup = document.createElement('div');
+            newGroup.classList.add('detail-row-group');
+            newGroup.style.marginBottom = '1rem';
+            newGroup.style.paddingBottom = '1rem';
+            newGroup.style.borderBottom = '1px dashed #ddd';
+
+            newGroup.innerHTML = `
+        <div style="margin-bottom: 0.5rem;">
+            <select name="obat_id[]" required class="input-style" style="flex: 2;">
+                <option value="">-- Pilih Obat --</option>
+                @foreach ($obats as $obat)
+                <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
+                @endforeach
+            </select>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+                <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah" min="1">
+                <span style="white-space: nowrap;">tablet</span>
+            </div>
+            <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis" style="flex: 1;">
+            <input type="text" name="aturan_pakai[]" required class="input-style" placeholder="Aturan Pakai" style="flex: 1;">
+            <button type="button" onclick="hapusDetail(this)" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 0.5rem; cursor: pointer; height: fit-content;">
+                Hapus
+            </button>
+        </div>
+    `;
+            container.appendChild(newGroup);
+        }
+
+        function hapusDetail(button) {
+            const detailGroup = button.closest('.detail-row-group');
+            if (detailGroup) {
+                detailGroup.remove();
+            }
         }
 
         function openModalRekam(button) {

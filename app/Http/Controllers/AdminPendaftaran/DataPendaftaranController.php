@@ -12,9 +12,17 @@ use App\Http\Controllers\Controller;
 
 class DataPendaftaranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $keyword = $request->keyword;
+
         $pendaftarans = Pendaftaran::with(['pasien', 'dokter', 'tindakan', 'asalPendaftaran', 'perawat'])
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->whereHas('pasien', function ($q) use ($keyword) {
+                    $q->where('nama', 'like', '%' . $keyword . '%')
+                        ->orWhere('NIK', 'like', '%' . $keyword . '%');
+                });
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         $pasiens = Pasien::all();

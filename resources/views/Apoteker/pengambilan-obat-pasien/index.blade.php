@@ -15,8 +15,8 @@
         <form method="GET" action="" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <select name="status" onchange="this.form.submit()" class="input-style" style="max-width: 250px;">
                 <option value="Semua" {{ request('status') == 'Semua' ? 'selected' : '' }}>Semua</option>
-                <option value="Lengkap" {{ request('status') == 'Lengkap' ? 'selected' : '' }}>Sudah</option>
-                <option value="Tidak Lengkap" {{ request('status') == 'Tidak Lengkap' ? 'selected' : '' }}>Belum</option>
+                <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah</option>
+                <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum</option>
             </select>
         </form>
 
@@ -44,7 +44,7 @@
                     <tr>
                         <td>{{ $pengambilanObats->firstItem() + $index }}</td>
                           <td>{{ \Carbon\Carbon::parse($ambil->tanggal_penyerahan)->format('d-m-Y') }}</td>
-                        <td>{{ $ambil->nama_pengambil ?? '-' }}</td>
+                        <td>{{ $ambil->resep->pasien->nama }}</td>
                        <td>
                         @foreach ($ambil->resep->detail as $d)
                     • {{ $d->obat->nama_obat }} ({{ $d->jumlah }}, {{ $d->dosis }}, {{ $d->aturan_pakai }})<br>

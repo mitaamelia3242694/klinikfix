@@ -15,8 +15,8 @@
         <form method="GET" action="" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <select name="status" onchange="this.form.submit()" class="input-style" style="max-width: 250px;">
                 <option value="Semua" {{ request('status') == 'Semua' ? 'selected' : '' }}>Semua</option>
-                <option value="Lengkap" {{ request('status') == 'Lengkap' ? 'selected' : '' }}>Sudah</option>
-                <option value="Tidak Lengkap" {{ request('status') == 'Tidak Lengkap' ? 'selected' : '' }}>Belum</option>
+                <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum</option>
+                <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah</option>
             </select>
         </form>
 

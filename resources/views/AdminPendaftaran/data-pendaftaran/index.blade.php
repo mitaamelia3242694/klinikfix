@@ -13,6 +13,13 @@
         </button>
     </div>
 
+    <form id="searchForm" action="{{ route('data-pendaftaran.index') }}" method="GET" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <input type="text" name="keyword" placeholder="Cari Nama / NIK" value="{{ request('keyword') }}"
+            class="input-style" style="max-width: 250px;" oninput="document.getElementById('searchForm').submit();">
+
+        {{-- <button type="submit" class="btn btn-primary">Terapkan</button> --}}
+    </form>
+
     {{-- Success Alert --}}
     @if (session('success'))
     <div class="alert-success" id="successAlert">{{ session('success') }}</div>
@@ -29,7 +36,7 @@
                 <th>Tindakan</th>
                 <th>Asal</th>
                 <th>Keluhan</th>
-                
+
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -43,7 +50,7 @@
                 <td>{{ $daftar->tindakan->jenis_tindakan ?? '-' }}</td>
                 <td>{{ $daftar->asalPendaftaran->nama ?? '-' }}</td>
                 <td>{{ $daftar->keluhan ?? '-' }}</td>
-                
+
                 <td>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         <a href="{{ route('data-pendaftaran.show', $daftar->id) }}" class="btn btn-info no-underline"><i
@@ -158,7 +165,7 @@
                 <label style="display:block; text-align:left;">Keluhan</label>
                 <textarea name="keluhan" class="input-style" rows="3"></textarea>
 
-               
+
 
 
                 <div style="margin-top: 1rem; text-align:right;">

@@ -12,7 +12,7 @@ class DataPasienController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pasien::query();
+        $query = Pasien::query()->orderBy('created_at', 'desc');
 
         // Filter berdasarkan bulan dan tahun
         if ($request->has('filter_bulan') && $request->filter_bulan) {
@@ -52,8 +52,6 @@ class DataPasienController extends Controller
 
         return view('AdminPendaftaran.data-pasien.index', compact('pasiens', 'asuransis'));
     }
-
-
 
     public function create()
     {
