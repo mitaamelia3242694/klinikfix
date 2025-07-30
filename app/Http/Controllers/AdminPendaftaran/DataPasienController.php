@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AdminPendaftaran;
 
+use App\Models\Pendaftaran;
 use Carbon\Carbon;
 use App\Models\Pasien;
 use App\Models\Asuransi;
@@ -115,5 +116,52 @@ class DataPasienController extends Controller
         $pasien->delete();
 
         return redirect()->route('data-pasien.index')->with('success', 'Data pasien berhasil dihapus.');
+    }
+
+    public function riwayatAjax($id)
+    {
+        $pasien = Pasien::findOrFail($id);
+
+        $riwayat = Pendaftaran::with([
+            'pasien',
+            'dokter',
+            'tindakan',
+            'diagnosaAwal',
+            'diagnosaAkhir',
+            'resep.detail.obat'
+        ])
+            ->where('pasien_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'nama_pasien' => $item->pasien->nama,
+                    'tanggal' => $item->created_at->format('d F Y'),
+                    'keluhan' => $item->keluhan ?? '-',
+                    'tindakan' => $item->tindakan->jenis_tindakan ?? '-',
+                    'diagnosa_awal' => $item->diagnosaAwal->diagnosa ?? '-',
+                    'diagnosa_akhir' => $item->diagnosaAkhir->diagnosa ?? '-',
+                    'resep' => $item->resep->isEmpty() ? null : $item->resep->map(function ($resep) {
+                        return $resep->detail->map(function ($detail) {
+                            return [
+                                'nama_obat' => $detail->obat->nama_obat ?? '-',
+                                'dosis' => $detail->dosis,
+                                'aturan_pakai' => $detail->aturan_pakai
+                            ];
+                        });
+                    })
+                ];
+            });
+
+        return response()->json([
+            'pasien' => [
+                'nama' => $pasien->nama,
+                'NIK' => $pasien->NIK,
+                'tanggal_lahir_formatted' => \Carbon\Carbon::parse($pasien->tanggal_lahir)->format('d-m-Y'),
+                'jenis_kelamin' => $pasien->jenis_kelamin,
+                'no_hp' => $pasien->no_hp
+            ],
+            'riwayat' => $riwayat
+        ]);
     }
 }

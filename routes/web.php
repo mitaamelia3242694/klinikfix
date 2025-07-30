@@ -80,6 +80,7 @@ Route::middleware(['auth', 'role:Admin Pendaftaran'])->group(function () {
     Route::get('/data-pasien/{id}/edit', [DataPasienController::class, 'edit'])->name('data-pasien.edit');
     Route::put('/data-pasien/{id}', [DataPasienController::class, 'update'])->name('data-pasien.update');
     Route::delete('/data-pasien/{id}', [DataPasienController::class, 'destroy'])->name('data-pasien.destroy');
+    Route::get('/pasien/{id}/riwayat-ajax', [DataPasienController::class, 'riwayatAjax'])->name('data-pasien.riwayat-ajax');
 
     // Data Pendaftaran
     Route::get('/data-pendaftaran', [DataPendaftaranController::class, 'index'])->name('data-pendaftaran.index');
