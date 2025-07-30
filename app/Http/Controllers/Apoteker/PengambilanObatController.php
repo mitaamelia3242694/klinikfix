@@ -95,14 +95,7 @@ class PengambilanObatController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'resep_id' => 'required|exists:resep,id',
-            'user_id' => 'required|exists:users,id',
-            'nama_pengambil' => 'required|string|max:255',
-            'tanggal_pengambilan' => 'required|date',
-            'status_checklist' => 'required|in:belum,sudah diambil,diambil setengah',
-        ]);
-
+        
         $checklistIds = $request->input('checklist_ids', []);
         $checkedReseps = ResepDetail::with('obat')
             ->whereIn('id', $checklistIds)

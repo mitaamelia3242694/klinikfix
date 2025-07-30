@@ -123,13 +123,6 @@
                     @endforeach
                 </select>
 
-                <label style="display:block; text-align:left;">Jenis Kunjungan</label>
-                <select name="jenis_kunjungan" class="input-style" required>
-                    <option value="">-- Pilih Jenis --</option>
-                    <option value="baru">Baru</option>
-                    <option value="lama">Lama</option>
-                </select>
-
                 <label style="display:block; text-align:left;">Dokter</label>
                 <select name="dokter_id" class="input-style" required>
                     <option value="">-- Pilih Dokter --</option>

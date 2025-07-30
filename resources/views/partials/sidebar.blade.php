@@ -21,16 +21,8 @@
                 <a href="{{ route('data-pendaftaran.index') }}"><i class="fas fa-user-plus"></i>
                     <span>Pendaftaran</span></a>
             </li>
-            <li class="has-dropdown">
-                <a href="#"><i class="fas fa-history"></i> <span>Riwayat Kunjungan</span></a>
-                <ul class="submenu">
-                    <li class="">
-                        <a href="{{ route('data-riwayat-kunjungan.index') }}">Kunjungan Pertama</a>
-                    </li>
-                    <li class="">
-                        <a href="">Kunjungan Kedua</a>
-                    </li>
-                </ul>
+            
+               
             </li>
             <li class="{{ request()->routeIs('data-asal-pendaftaran.index') ? 'active' : '' }}">
                 <a href="{{ route('data-asal-pendaftaran.index') }}"><i class="fas fa-map-marker-alt"></i>
