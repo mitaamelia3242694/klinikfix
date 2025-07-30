@@ -85,26 +85,26 @@ $filteredCount = 0;
                 $rowColor = '';
 
                 if ($selisihHari < 0) $rowColor='background-color: #ffe6e6;' ; elseif ($selisihHari <=7)
-                    $rowColor='background-color: #fff5e6;' ; @endphp 
-                    <td>{{ $sediaan->obat->stok_total ?? 0 }}</td> 
+                    $rowColor='background-color: #fff5e6;' ; @endphp
+                    <td>{{ $sediaan->obat->stok_total ?? 0 }}</td>
                      <td>{{ \Carbon\Carbon::parse($sediaan->tanggal_masuk)->format('d-m-Y') }}</td>
-                <td>{{ $sediaan->obat->stok_total ?? 0 }}</td> 
+                <td>{{ $sediaan->obat->stok_total ?? 0 }}</td>
                 <td>{{ $sediaan->obat->satuan->nama_satuan ?? '-' }}</td>
-         <td>{{ $sediaan->obat->stok_total ?? '-' }}</td> <!-- Total Stok -->    
+         <td>{{ $sediaan->obat->stok_total ?? '-' }}</td> <!-- Total Stok -->
            <td>
     @if ($sediaan->jumlah_keluar_hari_ini > 0)
         <span style="color:red; font-weight:bold;">
-            Berkurang (-{{ $sediaan->jumlah_keluar_hari_ini }}) hari ini
+            Berkurang ({{ $sediaan->jumlah_keluar_hari_ini }}) hari ini
         </span>
     @else
         <span style="color:gray;">Tidak ada perubahan hari ini</span>
     @endif
-</td>  
+</td>
  <td>{{ \Carbon\Carbon::parse($sediaan->tanggal_keluar)->format('d-m-Y') }}</td>
 <td>{{ max(($sediaan->obat->stok_total ?? 0) - $jumlahKeluar, 0) }}</td>
 
                     <td style="{{ $rowColor }}">{{ $kadaluarsa->format('d-m-Y') }}</td>
-                  
+
                     <td>
                     <!-- Tombol Riwayat -->
 <button class="btn btn-primary no-underline" onclick="showModal({{ $sediaan->obat_id }})">
@@ -164,7 +164,7 @@ $filteredCount = 0;
 <select name="obat_id" required class="input-style" id="obatSelect" onchange="hitungStok(this)">
     <option value="">-- Pilih Obat --</option>
     @foreach ($obats as $obat)
-        <option 
+        <option
             value="{{ $obat->id }}"
             data-total="{{ $obat->stok_total }}"
         >

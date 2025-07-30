@@ -48,8 +48,8 @@
     </div>
 
     <div style="margin-top:2rem;">
-        <a href="{{ route('pengambilan-obat.index') }}" class="btn-back">Kembali</a>
-        <a href="{{ route('pengambilan-obat.edit', $pengambilan->id) }}" class="btn-edit">Edit</a>
+        <a href="{{ route('pengambilan-obat-pasien.index') }}" class="btn-back">Kembali</a>
+        <a href="{{ route('pengambilan-obat-pasien.edit', $pengambilan->id) }}" class="btn-edit">Edit</a>
     </div>
 </section>
 

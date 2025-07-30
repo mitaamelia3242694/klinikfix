@@ -44,7 +44,7 @@
                     <tr>
                         <td>{{ $pengambilanObats->firstItem() + $index }}</td>
                           <td>{{ \Carbon\Carbon::parse($ambil->tanggal_penyerahan)->format('d-m-Y') }}</td>
-                        <td>{{ $ambil->resep->pasien->nama }}</td>
+                        <td>{{ $ambil->resep->nama_pengambil ?? '-' }}</td>
                        <td>
                         @foreach ($ambil->resep->detail as $d)
                     • {{ $d->obat->nama_obat }} ({{ $d->jumlah }}, {{ $d->dosis }}, {{ $d->aturan_pakai }})<br>

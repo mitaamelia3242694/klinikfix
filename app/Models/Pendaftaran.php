@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pendaftaran extends Model
@@ -48,13 +49,14 @@ class Pendaftaran extends Model
         return $this->belongsTo(User::class, 'perawat_id');
     }
 
-
+    public function riwayat() {
+        return $this->belongsTo(PendaftaranSebelumnya::class, 'pendaftaran_sebelumnya_id');
+    }
 
     public function pengkajianAwal()
     {
         return $this->hasOne(PengkajianAwal::class);
     }
-
 
     public function diagnosaAwal()
     {
@@ -63,5 +65,9 @@ class Pendaftaran extends Model
     public function diagnosaAkhir()
     {
         return $this->hasOne(DiagnosaAkhir::class, 'pasien_id', 'pasien_id');
+    }
+
+    public function resep() {
+        return $this->hasMany(Resep::class, 'pasien_id', 'pasien_id');
     }
 }

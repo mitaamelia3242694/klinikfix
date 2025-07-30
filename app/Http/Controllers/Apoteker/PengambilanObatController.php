@@ -87,7 +87,7 @@ class PengambilanObatController extends Controller
     public function edit($id)
     {
         $pengambilan = PengambilanObat::findOrFail($id);
-        $reseps = ResepDetail::with(['resep.pasien','obat'])->get();
+        $reseps = ResepDetail::with(['resep.pasien', 'obat'])->get();
         $users = User::where('role_id', 5)->get();
 
         return view('Apoteker.pengambilan-obat.edit', compact('pengambilan', 'reseps', 'users'));
@@ -95,77 +95,78 @@ class PengambilanObatController extends Controller
 
     public function update(Request $request, $id)
     {
-         $request->validate([
+        $request->validate([
             'resep_id' => 'required|exists:resep,id',
             'user_id' => 'required|exists:users,id',
+            'nama_pengambil' => 'required|string|max:255',
             'tanggal_pengambilan' => 'required|date',
             'status_checklist' => 'required|in:belum,sudah diambil,diambil setengah',
         ]);
 
         $checklistIds = $request->input('checklist_ids', []);
-          $checkedReseps = ResepDetail::with('obat')
-        ->whereIn('id', $checklistIds)
-        ->get();
+        $checkedReseps = ResepDetail::with('obat')
+            ->whereIn('id', $checklistIds)
+            ->get();
 
-          $pengambilan = PengambilanObat::findOrFail($id);
+        $pengambilan = PengambilanObat::findOrFail($id);
 
-    foreach ($checkedReseps as $resepDetail) {
+        foreach ($checkedReseps as $resepDetail) {
 
-                // Tandai resep detail sudah dicheck
-                $resepDetail->tanggal_pengambilan = Carbon::now();
-                $resepDetail->save();
+            // Tandai resep detail sudah dicheck
+            $resepDetail->tanggal_pengambilan = Carbon::now();
+            $resepDetail->save();
 
-                  $pengambilan->status_checklist = $request->status_checklist;
-                $pengambilan->save();
-            }
-
-         return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+            $pengambilan->status_checklist = $request->status_checklist;
+            $pengambilan->save();
         }
 
+        return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+    }
 
 
 
-        // $request->validate([
-        //     'resep_id' => 'required|exists:resep,id',
-        //     'user_id' => 'required|exists:users,id',
-        //     'tanggal_pengambilan' => 'required|date',
-        //     'status_checklist' => 'required|in:belum,sudah',
-        // ]);
 
-        // $pengambilan = PengambilanObat::findOrFail($id);
-        // $statusSebelumnya = $pengambilan->status_checklist;
-        // $checklistIds = $request->input('checklist_ids', []);
+    // $request->validate([
+    //     'resep_id' => 'required|exists:resep,id',
+    //     'user_id' => 'required|exists:users,id',
+    //     'tanggal_pengambilan' => 'required|date',
+    //     'status_checklist' => 'required|in:belum,sudah',
+    // ]);
 
-
-
-        // DB::beginTransaction();
+    // $pengambilan = PengambilanObat::findOrFail($id);
+    // $statusSebelumnya = $pengambilan->status_checklist;
+    // $checklistIds = $request->input('checklist_ids', []);
 
 
-        //     $pengambilan->update($request->all());
 
-        //     // Jalankan pengurangan stok hanya jika status berubah jadi "sudah"
-        //     if ( $request->status_checklist === 'sudah') {
-        //         $resep = Resep::with('detail')->findOrFail($request->resep_id);
-        //          $obat= Obat::whereIn('id', $checklistIds)->update(['is_checked' => true]);
+    // DB::beginTransaction();
 
-        //             $jumlah = $detail->jumlah;
 
-        //             if ($obat->stok_total < $jumlah) {
-        //                 throw new \Exception("Stok obat '{$obat->nama_obat}' tidak mencukupi. Dibutuhkan: {$jumlah}, tersedia: {$obat->stok_total}");
-        //             }
+    //     $pengambilan->update($request->all());
 
-        //             $obat->stok_total -= $jumlah;
-        //             $obat->save();
+    //     // Jalankan pengurangan stok hanya jika status berubah jadi "sudah"
+    //     if ( $request->status_checklist === 'sudah') {
+    //         $resep = Resep::with('detail')->findOrFail($request->resep_id);
+    //          $obat= Obat::whereIn('id', $checklistIds)->update(['is_checked' => true]);
 
-        //             // Tandai tanggal_keluar di entri SediaanObat (jika belum diisi)
-        //             SediaanObat::where('obat_id', $obat->id)
-        //                 ->orderBy('tanggal_masuk', 'asc')
-        //                 ->limit(1)
-        //                 ->update(['tanggal_keluar' => $request->tanggal_pengambilan]);
-        //         }
-        //     }
+    //             $jumlah = $detail->jumlah;
 
-        //     return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+    //             if ($obat->stok_total < $jumlah) {
+    //                 throw new \Exception("Stok obat '{$obat->nama_obat}' tidak mencukupi. Dibutuhkan: {$jumlah}, tersedia: {$obat->stok_total}");
+    //             }
+
+    //             $obat->stok_total -= $jumlah;
+    //             $obat->save();
+
+    //             // Tandai tanggal_keluar di entri SediaanObat (jika belum diisi)
+    //             SediaanObat::where('obat_id', $obat->id)
+    //                 ->orderBy('tanggal_masuk', 'asc')
+    //                 ->limit(1)
+    //                 ->update(['tanggal_keluar' => $request->tanggal_pengambilan]);
+    //         }
+    //     }
+
+    //     return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
 
 
 
@@ -206,51 +207,50 @@ class PengambilanObatController extends Controller
     }
 
 
-    public function update_obat_pasien(Request $request, $id){
+    public function update_obat_pasien(Request $request, $id)
+    {
         $checklistIds = $request->input('checklist_ids', []);
 
-    // Ambil semua ResepDetail yang dichecklist
-       if ( $request->status_checklist === 'sudah diserahkan' ||$request->status_checklist === 'diserahkan setengah' ) {
-    $checkedReseps = ResepDetail::with('obat')
-        ->whereIn('id', $checklistIds)
-        ->get();
-        $pengambilan = PengambilanObat::findOrFail($id);
+        // Ambil semua ResepDetail yang dichecklist
+        if ($request->status_checklist === 'sudah diserahkan' || $request->status_checklist === 'diserahkan setengah') {
+            $checkedReseps = ResepDetail::with('obat')
+                ->whereIn('id', $checklistIds)
+                ->get();
+            $pengambilan = PengambilanObat::findOrFail($id);
 
-    foreach ($checkedReseps as $resepDetail) {
-        // Pastikan hanya update yang belum dicheck sebelumnya
-        if (!$resepDetail->is_checked) {
-            $jumlah = $resepDetail->jumlah;
-            $obat = $resepDetail->obat;
+            foreach ($checkedReseps as $resepDetail) {
+                // Pastikan hanya update yang belum dicheck sebelumnya
+                if (!$resepDetail->is_checked) {
+                    $jumlah = $resepDetail->jumlah;
+                    $obat = $resepDetail->obat;
 
-            if ($obat && $obat->stok_total >= $jumlah) {
-                // Kurangi stok obat
-                $obat->stok_total -= $jumlah;
-                $obat->save();
+                    if ($obat && $obat->stok_total >= $jumlah) {
+                        // Kurangi stok obat
+                        $obat->stok_total -= $jumlah;
+                        $obat->save();
 
-                // Tandai resep detail sudah dicheck
+                        // Tandai resep detail sudah dicheck
 
-                $resepDetail->status = "diambil";
-                 $resepDetail->tanggal_penyerahan = Carbon::now();
-                $resepDetail->save();
+                        $resepDetail->status = "diambil";
+                        $resepDetail->tanggal_penyerahan = Carbon::now();
+                        $resepDetail->save();
 
-                $pengambilan->bukti_foto = $request->file('bukti_foto')->store('bukti_foto', 'public');
-                $pengambilan->status_checklist = $request->status_checklist;
-                $pengambilan->save();
+                        $pengambilan->bukti_foto = $request->file('bukti_foto')->store('bukti_foto', 'public');
+                        $pengambilan->status_checklist = $request->status_checklist;
+                        $pengambilan->save();
+                    }
+                }
             }
+            return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+        } else {
+            return redirect()->back();
         }
     }
-      return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
-    } else{
-        return redirect()->back();
-    }
 
-
-    }
-
-     public function edit_obat_pasien($id)
+    public function edit_obat_pasien($id)
     {
         $pengambilan = PengambilanObat::findOrFail($id);
-        $reseps = ResepDetail::with(['resep.pasien','obat'])->get();
+        $reseps = ResepDetail::with(['resep.pasien', 'obat'])->get();
         $users = User::where('role_id', 5)->get();
 
         return view('Apoteker.pengambilan-obat-pasien.edit', compact('pengambilan', 'reseps', 'users'));

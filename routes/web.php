@@ -28,6 +28,7 @@ use App\Http\Controllers\AdminStokObat\KetersediaanObatController;
 use App\Http\Controllers\AdminPendaftaran\MasterDiagnosaController;
 use App\Http\Controllers\AdminStokObat\DashboardStokObatController;
 use App\Http\Controllers\AdminPendaftaran\DataPendaftaranController;
+use App\Http\Controllers\AdminPendaftaran\RiwayatKunjunganController;
 use App\Http\Controllers\AdminPendaftaran\DataAsalPendaftaranController;
 
 
@@ -88,6 +89,9 @@ Route::middleware(['auth', 'role:Admin Pendaftaran'])->group(function () {
     Route::get('/data-pendaftaran/{id}/edit', [DataPendaftaranController::class, 'edit'])->name('data-pendaftaran.edit');
     Route::put('/data-pendaftaran/{id}', [DataPendaftaranController::class, 'update'])->name('data-pendaftaran.update');
     Route::delete('/data-pendaftaran/{id}', [DataPendaftaranController::class, 'destroy'])->name('data-pendaftaran.destroy');
+
+    // Data Riwayat Kunjungan
+    Route::get('/riwayat-kunjungan', [RiwayatKunjunganController::class, 'index'])->name('data-riwayat-kunjungan.index');
 
     // Data Asal Pendaftaran
     Route::get('/data-asal-pendaftaran', [DataAsalPendaftaranController::class, 'index'])->name('data-asal-pendaftaran.index');
