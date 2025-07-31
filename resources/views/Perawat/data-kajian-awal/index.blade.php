@@ -42,8 +42,7 @@
                     <th>Tekanan Darah</th>
                     <th>Suhu Tubuh</th>
                     <th>Status</th>
-                    <th>Diagnosa</th>
-
+                    <th>Diagnosa Awal</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -88,9 +87,19 @@
                                 @endif
 
                                 <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalKajian(this)"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    onclick="openModalKajian(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-file-medical-alt"></i>
+                                </button>
+
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    onclick="openModalDiagnosa(this)"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-notes-medical"></i>
                                 </button>
 
                                 <a href="{{ route('manajemen-tindakan.index') }}"
@@ -149,7 +158,7 @@
                     <input type="text" id="kajianPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                    <input type="date" name="tanggal" required class="input-style" id="kajianTanggal">
 
                     <label style="display:block; text-align:left;"><strong>Keluhan Utama</strong></label>
                     <textarea name="keluhan_utama" rows="2" required class="input-style"></textarea>
@@ -178,10 +187,8 @@
                         @endforeach
                     </select>
 
-                    <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+                    <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
                     <textarea name="diagnosa_awal" id="diagnosa_awal" cols="10" rows="4" class="input-style"></textarea>
-
-
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                     <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}"
@@ -215,9 +222,9 @@
                     <input type="text" id="inputPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                    <input type="date" name="tanggal" required class="input-style" id="inputTanggal">
 
-                    <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+                    <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
                     <textarea name="diagnosa" rows="2" required class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
@@ -236,8 +243,6 @@
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
                         @endforeach
                     </select>
-
-
 
                     <label style="display:block; text-align:left;"><strong>Status</strong></label>
                     <select name="status" required class="input-style">
@@ -424,18 +429,22 @@
         function openModalKajian(button) {
             const pasienId = button.dataset.pasienId;
             const pasienNama = button.dataset.pasienNama;
+            const createdAt = button.dataset.createdAt;
 
             document.getElementById('modalTambahKajian').style.display = 'flex';
             document.getElementById('kajianPasienId').value = pasienId;
             document.getElementById('kajianPasienNama').value = pasienNama;
+            document.getElementById('kajianTanggal').value = createdAt;
         }
 
         function openModalDiagnosa(button) {
             const pasienId = button.dataset.pasienId;
             const pasienNama = button.dataset.pasienNama;
+            const createdAt = button.dataset.createdAt;
 
             document.getElementById('inputPasienId').value = pasienId;
             document.getElementById('inputPasienNama').value = pasienNama;
+            document.getElementById('inputTanggal').value = createdAt;
 
             document.getElementById('modalTambahDiagnosa').style.display = 'flex';
         }
@@ -463,19 +472,4 @@
             }
         };
     </script>
-
-    <script>
-        window.onload = function() {
-            // Atur tanggal hari ini ke input date
-            const tanggalInput = document.querySelector('input[name="tanggal"]');
-            if (tanggalInput && !tanggalInput.value) {
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                tanggalInput.value = `${yyyy}-${mm}-${dd}`;
-            }
-        };
-    </script>
-
 @endsection

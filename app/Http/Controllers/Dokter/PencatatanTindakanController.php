@@ -8,6 +8,8 @@ use App\Models\Tindakan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Pelayanan;
+use App\Models\Pendaftaran;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class PencatatanTindakanController extends Controller
@@ -28,7 +30,7 @@ class PencatatanTindakanController extends Controller
             ->paginate(10)
             ->appends(['keyword' => $keyword]);
 
-        $pasiens = Pasien::all();
+        $pasiens = Pendaftaran::whereDate('created_at', Carbon::today())->get();
         $user = Auth::user()->id;
         $dokters = User::where('id', $user)->first();
         $layanan = Pelayanan::all();

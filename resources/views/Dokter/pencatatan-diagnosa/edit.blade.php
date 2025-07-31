@@ -35,7 +35,7 @@
             <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
             <input type="date" name="tanggal" value="{{ $diagnosa->tanggal }}" required class="form-input">
 
-            <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+            <label style="display:block; text-align:left;"><strong>Diagnosa Akhir</strong></label>
             <textarea name="diagnosa" rows="4" required class="form-input">{{ $diagnosa->diagnosa }}</textarea>
 
         </div>
