@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\Auth;
 
 class DataKajianAwalController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         $search = $request->search;
 
-        $pengkajian = Pendaftaran::where('perawat_id',auth()->user()->id)->with(['perawat'])
+        $pengkajian = Pendaftaran::where('perawat_id', auth()->user()->id)->with(['perawat'])
             ->when($search, function ($query, $search) {
                 $query->whereHas('perawat', function ($q) use ($search) {
                     $q->where('perawat_id', 'like', "%$search%");
@@ -29,22 +29,42 @@ class DataKajianAwalController extends Controller
             ->latest()
             ->paginate(10);
 
-        
+
         $masters = MasterDiagnosa::all();
         $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
         $user = Auth::user()->id;
         $perawats = User::where('id', $user)->first();
         $layanans = Pelayanan::all();
-        
+
         return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans', 'masters'));
     }
 
 
     public function store(Request $request)
-    {        
+    {
+        $request->validate([
+            'tekanan_darah' => [
+                'required',
+                'regex:/^\d{2,3}\/\d{2,3}$/',
+                function ($attribute, $value, $fail) {
+                    list($sistolik, $diastolik) = explode('/', $value);
+
+                    if ($sistolik < 80 || $sistolik > 200 || $diastolik < 50 || $diastolik > 130) {
+                        $fail('Tekanan darah tidak masuk rentang normal (80–200 / 50–130).');
+                    }
+
+                    if ($sistolik <= $diastolik) {
+                        $fail('Sistolik harus lebih tinggi dari diastolik.');
+                    }
+                },
+            ],
+            'suhu_tubuh' => 'required|numeric|between:34,42',
+        ]);
+
         PengkajianAwal::create($request->all());
 
-        return redirect()->route('data-kajian-awal.index')->with('success', 'Data kajian awal berhasil ditambahkan.');
+        return redirect()->route('data-kajian-awal.index')
+            ->with('success', 'Data kajian awal berhasil ditambahkan.');
     }
 
     public function show($id)

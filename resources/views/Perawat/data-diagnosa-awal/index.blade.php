@@ -334,4 +334,18 @@
             }
         };
     </script>
+
+    <script>
+        window.onload = function() {
+            // Atur tanggal hari ini ke input date
+            const tanggalInput = document.querySelector('input[name="tanggal"]');
+            if (tanggalInput && !tanggalInput.value) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                tanggalInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+        };
+    </script>
 @endsection

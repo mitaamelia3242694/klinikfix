@@ -137,22 +137,35 @@
                     <h4 style="color:#216ab2; text-align:left; margin-bottom:12px;">Detail Obat</h4>
 
                     <div id="detailContainer">
-                        <div class="detail-row-group">
-                            <select name="obat_id[]" required class="input-style">
+                        <div class="detail-row-group" style="margin-bottom: 1rem;">
+                            <!-- Pilih Obat -->
+                            <select name="obat_id[]" required class="input-style" onchange="updateSatuan(this)">
                                 <option value="">-- Pilih Obat --</option>
                                 @foreach ($obats as $obat)
-                                    <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
+                                    <option value="{{ $obat->id }}" data-satuan="{{ $obat->satuan->nama_satuan }}">
+                                        {{ $obat->nama_obat }}
+                                    </option>
                                 @endforeach
                             </select>
-                            <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah"
-                                min="1">
+
+                            <!-- Jumlah + Satuan Input (bersebelahan) -->
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah"
+                                    min="1" style="flex: 2;">
+                                <input type="text" class="input-style satuan-field" placeholder="Satuan" disabled
+                                    style="flex: 1; background-color: #f5f5f5;">
+                            </div>
+
+                            <!-- Lainnya -->
                             <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
                             <input type="text" name="aturan_pakai[]" required class="input-style"
                                 placeholder="Aturan Pakai">
                         </div>
+
                     </div>
 
-                    <button type="button" onclick="tambahDetail()" class="btn btn-info" style="margin:0.5rem 0;">+ Tambah
+                    <button type="button" onclick="tambahDetail()" class="btn btn-info" style="margin:0.5rem 0;">+
+                        Tambah
                         Obat</button>
 
                     <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
@@ -305,24 +318,56 @@
     </style>
 
     <script>
+        const obatData = @json($obats);
+    </script>
+
+    <script>
         function tambahDetail() {
             const container = document.getElementById('detailContainer');
             const newGroup = document.createElement('div');
             newGroup.classList.add('detail-row-group');
+            newGroup.style.marginBottom = '1rem';
+
+            // Bangun opsi obat
+            let options = '<option value="">-- Pilih Obat --</option>';
+            obatData.forEach(obat => {
+                const satuan = obat.satuan?.nama_satuan || '';
+                options += `<option value="${obat.id}" data-satuan="${satuan}">${obat.nama_obat}</option>`;
+            });
+
             newGroup.innerHTML = `
-        <select name="obat_id[]" required class="input-style">
-            <option value="">-- Pilih Obat --</option>
-            @foreach ($obats as $obat)
-            <option value="{{ $obat->id }}">{{ $obat->nama }}</option>
-            @endforeach
-        </select>
-        <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah" min="1">
-        <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
-        <input type="text" name="aturan_pakai[]" required class="input-style" placeholder="Aturan Pakai">
-    `;
+            <select name="obat_id[]" required class="input-style" onchange="updateSatuan(this)">
+                ${options}
+            </select>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah" min="1" style="flex: 2;">
+                <input type="text" class="input-style satuan-field" placeholder="Satuan" disabled style="flex: 1; background-color: #f5f5f5;">
+            </div>
+
+            <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
+            <input type="text" name="aturan_pakai[]" required class="input-style" placeholder="Aturan Pakai">
+        `;
+
             container.appendChild(newGroup);
         }
 
+        function updateSatuan(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const satuan = selectedOption.getAttribute('data-satuan');
+
+            const container = selectElement.closest('.detail-row-group');
+            const satuanInput = container.querySelector('.satuan-field');
+
+            if (satuanInput) {
+                satuanInput.value = satuan || '';
+            }
+        }
+    </script>
+
+
+
+    <script>
         // Sembunyikan alert setelah 5 detik
         window.onload = function() {
             const successAlert = document.getElementById('successAlert');
@@ -335,4 +380,19 @@
             }
         };
     </script>
+
+    <script>
+        function updateSatuan(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const satuan = selectedOption.getAttribute('data-satuan');
+
+            const container = selectElement.closest('.detail-row-group');
+            const satuanInput = container.querySelector('.satuan-field');
+
+            if (satuanInput) {
+                satuanInput.value = satuan ? satuan : '';
+            }
+        }
+    </script>
+
 @endsection
