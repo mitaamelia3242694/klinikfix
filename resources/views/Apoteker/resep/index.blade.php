@@ -50,11 +50,8 @@
                         <td>
                             <a href="{{ route('data-resep.show', $resep->id) }}" class="btn btn-info no-underline"><i
                                     class="fas fa-eye"></i></a>
-                            <a href="{{ route('pengambilan-obat.index') }}" class="btn btn-warning"><i class="fas fa-pills"></i></a>
-                            {{-- <button onclick="document.getElementById('modalTambahResep').style.display='flex'"
-                                style="padding: 0.5rem 1rem; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;">
-                                <i class="fas fa-pills"></i>
-                            </button> --}}
+                            <a href="{{ route('pengambilan-obat.index') }}" style="padding: 0.5rem 1rem; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;"><i class="fas fa-pills"></i></a>
+                            <a href="{{ route('pengambilan-obat-pasien.index') }}" style="padding: 0.5rem 1rem; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;"><i class="fas fa-pills"></i></a>
                         </td>
                     </tr>
                 @endforeach

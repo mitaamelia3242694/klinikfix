@@ -20,6 +20,16 @@
             </div>
         @endif
 
+        @if ($errors->any())
+            <div class="alert-danger" id="errorAlert">
+                <strong>Oops! Ada kesalahan saat pengisian:</strong>
+                <ul style="margin: 0; padding-left: 1.25rem;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <table class="data-table">
             <thead>
@@ -81,13 +91,6 @@
                                     data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalKajian(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-file-medical-alt"></i>
-                                </button>
-
-                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalDiagnosa(this)"
-                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-notes-medical"></i>
-
                                 </button>
 
                                 <a href="{{ route('manajemen-tindakan.index') }}"
@@ -152,10 +155,12 @@
                     <textarea name="keluhan_utama" rows="2" required class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Tekanan Darah</strong></label>
-                    <input type="text" name="tekanan_darah" required class="input-style">
+                    <input type="text" name="tekanan_darah" required class="input-style" placeholder="Contoh: 120/80"
+                        pattern="^\d{2,3}/\d{2,3}$" title="Format harus seperti 120/80">
 
                     <label style="display:block; text-align:left;"><strong>Suhu Tubuh</strong></label>
-                    <input type="text" name="suhu_tubuh" required class="input-style">
+                    <input type="text" name="suhu_tubuh" min="34" max="42" step="0.1" required
+                        class="input-style">
 
                     <label style="display:block; text-align:left;"><strong>Status</strong></label>
                     <select name="status" required class="input-style">
@@ -261,6 +266,17 @@
             background-color: #d4edda;
             color: #155724;
             border-left: 5px solid #28a745;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+            animation: fadeSlide 0.5s ease-out;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 1rem;
@@ -424,4 +440,42 @@
             document.getElementById('modalTambahDiagnosa').style.display = 'flex';
         }
     </script>
+
+    <script>
+        window.onload = function() {
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+
+            if (successAlert) {
+                setTimeout(() => {
+                    successAlert.style.transition = 'opacity 0.5s ease';
+                    successAlert.style.opacity = '0';
+                    setTimeout(() => successAlert.style.display = 'none', 500);
+                }, 5000);
+            }
+
+            if (errorAlert) {
+                setTimeout(() => {
+                    errorAlert.style.transition = 'opacity 0.5s ease';
+                    errorAlert.style.opacity = '0';
+                    setTimeout(() => errorAlert.style.display = 'none', 500);
+                }, 7000); // Biarkan lebih lama untuk dibaca
+            }
+        };
+    </script>
+
+    <script>
+        window.onload = function() {
+            // Atur tanggal hari ini ke input date
+            const tanggalInput = document.querySelector('input[name="tanggal"]');
+            if (tanggalInput && !tanggalInput.value) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                tanggalInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+        };
+    </script>
+
 @endsection
