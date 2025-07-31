@@ -31,7 +31,11 @@
                             {{ $user->nama_lengkap }}
                         </option>
                     @endforeach
-                </select>
+                </select><label style="display:block; text-align:left;"><strong>Nama Pengambil Obat</strong></label>
+                <input type="text" name="nama_pengambil" value="{{ $pengambilan->nama_pengambil ?? '' }}"
+                    class="form-input" required><br><br>
+
+
                 <label style="display:block; text-align:left;"><strong>Bukti Foto</strong></label>
                 <input type="file" name="bukti_foto" id="bukti_foto" class="form-input"><br><br>
             </div>

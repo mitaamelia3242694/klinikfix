@@ -227,6 +227,7 @@ class PengambilanObatController extends Controller
                 ->whereIn('id', $checklistIds)
                 ->get();
             $pengambilan = PengambilanObat::findOrFail($id);
+            $pengambilan->nama_pengambil = $request->nama_pengambil;
 
             foreach ($checkedReseps as $resepDetail) {
                 // Pastikan hanya update yang belum dicheck sebelumnya
