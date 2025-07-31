@@ -40,9 +40,9 @@
             <div style="flex: 1; min-width: 300px;">
                 <label style="display:block; text-align:left;"><strong>Tanggal Pengambilan</strong></label>
                 <input type="date" name="tanggal_pengambilan" value="{{ $pengambilan->tanggal_pengambilan }}" required
-                    class="form-input">
+                    class="form-input" readonly>
                 <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
-                <select name="status_checklist" required class="form-input">
+                <select name="status_checklist" id="status_checklist" required class="form-input">
                     <option value="">-- Pilih Status --</option>
                     <option value="sudah diambil" {{ $pengambilan->status_checklist == 'sudah diambil' ? 'selected' : '' }}>
                         Sudah Diambil
@@ -72,8 +72,8 @@
                                 <td>{{ $resep->obat->nama_obat ?? 'Tidak Ada Obat' }}</td>
                                 <td style="text-align: center;">{{ $resep->jumlah ?? 'Tidak Ada Obat' }}</td>
                                 <td>
-                                    <input type="checkbox" name="checklist_ids[]" value="{{ $resep->id }}"
-                                        {{ $resep->tanggal_pengambilan ? 'checked' : '' }}>
+                                    <input type="checkbox" class="obat-checkbox" name="checklist_ids[]"
+                                        value="{{ $resep->id }}" {{ $resep->status_checklist ? 'checked' : '' }}>
                                 </td>
                             </tr>
                         @endforeach
@@ -145,4 +145,34 @@
             text-decoration: none;
         }
     </style>
+    <script>
+        // Fungsi untuk update status berdasarkan checklist
+        function updateStatusChecklist() {
+            const checkboxes = document.querySelectorAll('.obat-checkbox');
+            const total = checkboxes.length;
+            let checked = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) checked++;
+            });
+
+            const statusSelect = document.getElementById('status_checklist');
+
+            if (checked === total) {
+                statusSelect.value = 'sudah diambil';
+            } else if (checked > 0 && checked < total) {
+                statusSelect.value = 'diambil setengah';
+            } else {
+                statusSelect.value = 'belum';
+            }
+        }
+
+        // Pasang event listener
+        document.querySelectorAll('.obat-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateStatusChecklist);
+        });
+
+        // Jalankan saat pertama kali load (optional)
+        document.addEventListener('DOMContentLoaded', updateStatusChecklist);
+    </script>
 @endsection

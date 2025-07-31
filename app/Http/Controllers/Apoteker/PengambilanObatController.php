@@ -191,7 +191,7 @@ class PengambilanObatController extends Controller
         // Ambil data pengambilan obat dengan relasi resep → pasien, dokter dan petugas
         $query = PengambilanObat::with(['resep.pasien', 'resep.user', 'user']);
 
-        $allowedStatuses = ['belum', 'sudah diserahkan', 'diserahkan setengah'];
+        $allowedStatuses = ['belum', 'sudah diambil', 'diambil setengah'];
         // Validasi status yang diterima
         if ($request->filled('status') && $request->status !== 'Semua' && in_array($request->status, $allowedStatuses)) {
             $query->where('status_checklist', $request->status);
@@ -222,42 +222,37 @@ class PengambilanObatController extends Controller
     public function update_obat_pasien(Request $request, $id)
     {
         $checklistIds = $request->input('checklist_ids', []);
+        $pengambilan = PengambilanObat::findOrFail($id);
+        $pengambilan->nama_pengambil = $request->nama_pengambil;
+        $pengambilan->status_checklist = $request->status_checklist;
 
-        // Ambil semua ResepDetail yang dichecklist
-        if ($request->status_checklist === 'sudah diserahkan' || $request->status_checklist === 'diserahkan setengah') {
-            $checkedReseps = ResepDetail::with('obat')
-                ->whereIn('id', $checklistIds)
-                ->get();
-            $pengambilan = PengambilanObat::findOrFail($id);
-            $pengambilan->nama_pengambil = $request->nama_pengambil;
+        if ($request->hasFile('bukti_foto')) {
+            $pengambilan->bukti_foto = $request->file('bukti_foto')->store('bukti_foto', 'public');
+        }
+
+        $pengambilan->save();
+
+        // Hanya proses checklist jika status sudah diambil / diambil setengah
+        if (in_array($request->status_checklist, ['sudah diambil', 'diambil setengah'])) {
+            $checkedReseps = ResepDetail::with('obat')->whereIn('id', $checklistIds)->get();
 
             foreach ($checkedReseps as $resepDetail) {
-                // Pastikan hanya update yang belum dicheck sebelumnya
-                if (!$resepDetail->is_checked) {
+                if ($resepDetail->status !== 'diambil') {
                     $jumlah = $resepDetail->jumlah;
                     $obat = $resepDetail->obat;
 
                     if ($obat && $obat->stok_total >= $jumlah) {
-                        // Kurangi stok obat
                         $obat->stok_total -= $jumlah;
                         $obat->save();
-
-                        // Tandai resep detail sudah dicheck
 
                         $resepDetail->status = "diambil";
                         $resepDetail->tanggal_penyerahan = Carbon::now();
                         $resepDetail->save();
-
-                        $pengambilan->bukti_foto = $request->file('bukti_foto')->store('bukti_foto', 'public');
-                        $pengambilan->status_checklist = $request->status_checklist;
-                        $pengambilan->save();
                     }
                 }
             }
-            return redirect()->route('pengambilan-obat-pasien.index')->with('success', 'Data berhasil diperbarui.');
-        } else {
-            return redirect()->back();
         }
+        return redirect()->route('pengambilan-obat-pasien.index')->with('success', 'Data berhasil diperbarui.');
     }
 
     public function edit_obat_pasien($id)

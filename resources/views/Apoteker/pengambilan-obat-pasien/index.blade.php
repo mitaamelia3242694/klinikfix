@@ -15,7 +15,7 @@
         <form method="GET" action="" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <select name="status" onchange="this.form.submit()" class="input-style" style="max-width: 250px;">
                 <option value="Semua" {{ request('status') == 'Semua' ? 'selected' : '' }}>Semua</option>
-                <option value="sudah diserahkan" {{ request('status') == 'sudah diserahkan' ? 'selected' : '' }}>Sudah
+                <option value="sudah diambil" {{ request('status') == 'sudah diambil' ? 'selected' : '' }}>Sudah
                 </option>
                 <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum</option>
             </select>
@@ -52,8 +52,8 @@
                             @endforeach
                         </td>
                         <td>
-                            @if ($ambil->status_checklist === 'sudah diserahkan')
-                                <span class="badge badge-sudah">Sudah Diserahkan</span>
+                            @if ($ambil->status_checklist === 'sudah diambil')
+                                <span class="badge badge-sudah">Sudah Diambil</span>
                             @else
                                 <span class="badge badge-belum">Belum</span>
                             @endif
