@@ -13,15 +13,18 @@
 
             <div style="flex: 1; min-width: 300px;">
                 <label style="display:block; text-align:left;"><strong>Resep</strong></label>
-                <select name="resep_id" required class="form-input">
-                    <option value="">-- Pilih Resep --</option>
-                    @foreach ($reseps as $resep)
+                <select name="resep_id" required class="form-input" readonly>
+                    <option value="{{ $pengambilan->resep_id }}">
+                        {{ $pengambilan->resep->pasien->nama ?? 'Tidak Ada Pasien' }} -
+                        {{ \Carbon\Carbon::parse($pengambilan->resep->tanggal)->format('d-m-Y') }}</option>
+                    {{-- @foreach ($reseps as $resep)
                         <option value="{{ $resep->id }}" {{ $pengambilan->resep_id == $resep->id ? 'selected' : '' }}>
                             {{ $resep->resep->pasien->nama ?? 'Tidak Ada Pasien' }} -
                             {{ \Carbon\Carbon::parse($resep->tanggal)->format('d-m-Y') }}
                         </option>
-                    @endforeach
+                    @endforeach --}}
                 </select>
+                <input type="hidden" name="resep_id" value="{{ $pengambilan->resep_id }}">
 
                 <label style="display:block; text-align:left;"><strong>Petugas Apotek</strong></label>
                 <select name="user_id" required class="form-input">
@@ -32,7 +35,6 @@
                         </option>
                     @endforeach
                 </select>
-
             </div>
 
             <div style="flex: 1; min-width: 300px;">
@@ -71,7 +73,7 @@
                                 <td style="text-align: center;">{{ $resep->jumlah ?? 'Tidak Ada Obat' }}</td>
                                 <td>
                                     <input type="checkbox" name="checklist_ids[]" value="{{ $resep->id }}"
-                                        {{ $resep->is_checked ? 'checked' : '' }}>
+                                        {{ $resep->tanggal_pengambilan ? 'checked' : '' }}>
                                 </td>
                             </tr>
                         @endforeach

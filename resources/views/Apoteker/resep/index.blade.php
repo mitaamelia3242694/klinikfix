@@ -50,10 +50,11 @@
                         <td>
                             <a href="{{ route('data-resep.show', $resep->id) }}" class="btn btn-info no-underline"><i
                                     class="fas fa-eye"></i></a>
-                            <button onclick="document.getElementById('modalTambahResep').style.display='flex'"
+                            <a href="{{ route('pengambilan-obat.index') }}" class="btn btn-warning"><i class="fas fa-pills"></i></a>
+                            {{-- <button onclick="document.getElementById('modalTambahResep').style.display='flex'"
                                 style="padding: 0.5rem 1rem; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;">
                                 <i class="fas fa-pills"></i>
-                            </button>
+                            </button> --}}
                         </td>
                     </tr>
                 @endforeach
@@ -140,7 +141,7 @@
             </div>
         </div>
 
-        <div id="modalTambahResep" onclick="if(event.target === this) this.style.display='none'"
+        {{-- <div id="modalTambahResep" onclick="if(event.target === this) this.style.display='none'"
             style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
             <div
                 style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
@@ -180,7 +181,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
     </section>
 
     <style>

@@ -264,7 +264,14 @@
                             <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
                                 <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah"
                                     min="1">
-                                <span style="white-space: nowrap;">tablet</span>
+                                <select name="satuan[]" required class="input-style">
+                                    <option value="">-- Satuan --</option>
+                                    <option value="tablet">Tablet</option>
+                                    <option value="kapsul">Kapsul</option>
+                                    <option value="botol">Botol</option>
+                                    <option value="ampul">Ampul</option>
+                                    <option value="salep">Salep</option>
+                                </select>
                             </div>
                             <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
                             <input type="text" name="aturan_pakai[]" required class="input-style"
@@ -554,7 +561,14 @@
             </select>
             <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
                 <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah" min="1">
-                <span style="white-space: nowrap;">tablet</span>
+                <select name="satuan[]" required class="input-style">
+                    <option value="">-- Satuan --</option>
+                    <option value="tablet">Tablet</option>
+                    <option value="kapsul">Kapsul</option>
+                    <option value="botol">Botol</option>
+                    <option value="ampul">Ampul</option>
+                    <option value="salep">Salep</option>
+                </select>
             </div>
             <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis" style="flex: 1;">
             <input type="text" name="aturan_pakai[]" required class="input-style" placeholder="Aturan Pakai" style="flex: 1;">

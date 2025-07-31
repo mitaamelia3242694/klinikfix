@@ -227,6 +227,9 @@ Route::middleware(['auth', 'role:Apoteker'])->group(function () {
     Route::put('/pengambilan-obat/{id}', [PengambilanObatController::class, 'update'])->name('pengambilan-obat.update');
     Route::delete('/pengambilan-obat/{id}', [PengambilanObatController::class, 'destroy'])->name('pengambilan-obat.destroy');
 
+    Route::get('/resep-obat/{id}', [PengambilanObatController::class, 'getResepDetail']);
+
+
       // Data Pengambilan Obat
     Route::get('/pengambilan-obat-pasien', [PengambilanObatController::class, 'index_obat_pasien'])->name('pengambilan-obat-pasien.index');
     Route::get('/pengambilan-obat-pasien/create', [PengambilanObatController::class, 'create'])->name('pengambilan-obat-pasien.create');

@@ -20,7 +20,6 @@
             </select>
         </form>
 
-
         @if (session('success'))
             <div class="alert-success" id="successAlert">
                 {{ session('success') }}
@@ -120,8 +119,11 @@
                         @endforeach
                     </select>
 
+                    <div id="daftar-obat" style="margin-top: 0.5rem; margin-bottom: 1rem;"></div>
+
                     <label style="display:block; text-align:left;"><strong>Tanggal Pengambilan</strong></label>
-                    <input type="date" name="tanggal_pengambilan" required class="input-style">
+                    <input type="date" name="tanggal_pengambilan" required class="input-style"
+                        value="{{ date('Y-m-d') }}" readonly>
 
                     <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
                     <select name="status_checklist" required class="input-style">
@@ -295,6 +297,35 @@
         }
     </style>
     <script>
+        const resepSelect = document.querySelector('select[name="resep_id"]');
+        const daftarObatDiv = document.getElementById('daftar-obat');
+
+        resepSelect.addEventListener('change', function() {
+            const resepId = this.value;
+            daftarObatDiv.innerHTML = '';
+
+            if (resepId) {
+                fetch(`/resep-obat/${resepId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let html =
+                                '<label style="display:block; text-align:left;"><strong>Obat dalam Resep</strong></label><ul style="list-style-type: disc; padding-left: 1.5rem;">';
+                            data.forEach(item => {
+                                html += `<li>${item.nama_obat} (${item.jumlah}, ${item.dosis})</li>`;
+                            });
+                            html += '</ul>';
+                            daftarObatDiv.innerHTML = html;
+                        } else {
+                            daftarObatDiv.innerHTML = '<p>Tidak ada obat dalam resep ini.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        daftarObatDiv.innerHTML = '<p style="color:red;">Gagal mengambil data obat.</p>';
+                        console.error(error);
+                    });
+            }
+        });
         // Sembunyikan alert setelah 5 detik
         window.onload = function() {
             const successAlert = document.getElementById('successAlert');
