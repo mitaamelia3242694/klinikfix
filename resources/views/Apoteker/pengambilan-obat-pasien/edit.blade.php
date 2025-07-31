@@ -14,13 +14,15 @@
             <div style="flex: 1; min-width: 300px;">
                 <label style="display:block; text-align:left;"><strong>Resep</strong></label>
                 <select name="resep_id" required class="form-input">
-                    <option value="">-- Pilih Resep --</option>
-                    @foreach ($reseps as $resep)
+                    <option value="{{ $pengambilan->resep_id }}">
+                        {{ $pengambilan->resep->pasien->nama ?? 'Tidak Ada Pasien' }} -
+                        {{ \Carbon\Carbon::parse($pengambilan->resep->tanggal)->format('d-m-Y') }}</option>
+                    {{-- @foreach ($reseps as $resep)
                         <option value="{{ $resep->id }}" {{ $pengambilan->resep_id == $resep->id ? 'selected' : '' }}>
                             {{ $resep->resep->pasien->nama ?? 'Tidak Ada Pasien' }} -
                             {{ \Carbon\Carbon::parse($resep->tanggal)->format('d-m-Y') }}
                         </option>
-                    @endforeach
+                    @endforeach --}}
                 </select>
 
                 <label style="display:block; text-align:left;"><strong>Petugas Apotek</strong></label>
@@ -35,7 +37,6 @@
                 <input type="text" name="nama_pengambil" value="{{ $pengambilan->nama_pengambil ?? '' }}"
                     class="form-input" required><br><br>
 
-
                 <label style="display:block; text-align:left;"><strong>Bukti Foto</strong></label>
                 <input type="file" name="bukti_foto" id="bukti_foto" class="form-input"><br><br>
             </div>
@@ -47,7 +48,7 @@
                     class="form-input">
                 <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
                 <select name="status_checklist" required class="form-input">
-                    <option value="">-- Pilih Status --</option>
+                    <option value="{{ $pengambilan->status_checklist }}">-- Pilih Status --</option>
                     <option value="sudah diserahkan"
                         {{ $pengambilan->status_checklist == 'sudah diserahkan' ? 'selected' : '' }}>Sudah Diserahkan
                     </option>
@@ -57,7 +58,6 @@
                     <option value="belum" {{ $pengambilan->status_checklist == 'belum' ? 'selected' : '' }}>
                         Belum</option>
                 </select>
-
             </div>
 
             <div class="obat-checklist-container">
@@ -78,7 +78,7 @@
                                 <td style="text-align: center;">{{ $resep->jumlah ?? 'Tidak Ada Obat' }}</td>
                                 <td>
                                     <input type="checkbox" name="checklist_ids[]" value="{{ $resep->id }}"
-                                        {{ $resep->is_checked ? 'checked' : '' }}>
+                                        {{ $resep->tanggal_pengambilan ? 'checked' : '' }}>
                                 </td>
                             </tr>
                         @endforeach

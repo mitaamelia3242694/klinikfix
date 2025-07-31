@@ -6,10 +6,10 @@
     <section class="blank-content">
         <div class="table-header">
             <h3>Data Pengambilan Obat Pasien</h3>
-            <button onclick="document.getElementById('modalTambah').style.display='flex'"
+            {{-- <button onclick="document.getElementById('modalTambah').style.display='flex'"
                 style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                 Tambah Data
-            </button>
+            </button> --}}
         </div>
 
         <form method="GET" action="" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -111,7 +111,7 @@
 
 
         <!-- Modal Tambah -->
-        <div id="modalTambah" onclick="if(event.target === this) this.style.display='none'"
+        {{-- <div id="modalTambah" onclick="if(event.target === this) this.style.display='none'"
             style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
             <div
                 style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
@@ -151,7 +151,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
     </section>
 
     <style>

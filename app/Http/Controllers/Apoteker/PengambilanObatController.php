@@ -93,7 +93,8 @@ class PengambilanObatController extends Controller
     public function edit($id)
     {
         $pengambilan = PengambilanObat::findOrFail($id);
-        $reseps = ResepDetail::with(['resep.pasien', 'obat'])->get();
+        $reseps = ResepDetail::with(['resep.pasien', 'obat'])
+            ->where('resep_id', $pengambilan->resep_id)->get();
         $users = User::where('role_id', 5)->get();
 
         return view('Apoteker.pengambilan-obat.edit', compact('pengambilan', 'reseps', 'users'));
@@ -211,7 +212,8 @@ class PengambilanObatController extends Controller
         return view('Apoteker.pengambilan-obat-pasien.index', compact('pengambilanObats', 'reseps', 'users'));
     }
 
-    public function show_obat_pasien($id) {
+    public function show_obat_pasien($id)
+    {
         $pengambilan = PengambilanObat::with(['resep.pasien', 'resep.user', 'user'])->findOrFail($id);
         return view('Apoteker.pengambilan-obat-pasien.detail', compact('pengambilan'));
     }
@@ -261,7 +263,8 @@ class PengambilanObatController extends Controller
     public function edit_obat_pasien($id)
     {
         $pengambilan = PengambilanObat::findOrFail($id);
-        $reseps = ResepDetail::with(['resep.pasien', 'obat'])->get();
+        $reseps = ResepDetail::with(['resep.pasien', 'obat'])->where('resep_id', $pengambilan->resep_id)
+            ->get();
         $users = User::where('role_id', 5)->get();
 
         return view('Apoteker.pengambilan-obat-pasien.edit', compact('pengambilan', 'reseps', 'users'));
@@ -273,5 +276,20 @@ class PengambilanObatController extends Controller
         $pengambilan->delete();
 
         return redirect()->route('pengambilan-obat-pasien.index')->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function getResepDetail($id)
+    {
+        $resep = Resep::with('detail.obat')->findOrFail($id);
+
+        $data = $resep->detail->map(function ($detail) {
+            return [
+                'nama_obat' => $detail->obat->nama_obat,
+                'jumlah' => $detail->jumlah,
+                'dosis' => $detail->dosis,
+            ];
+        });
+
+        return response()->json($data);
     }
 }

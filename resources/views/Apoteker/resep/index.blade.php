@@ -138,7 +138,7 @@
             </div>
         </div>
 
-        <div id="modalTambahResep" onclick="if(event.target === this) this.style.display='none'"
+        {{-- <div id="modalTambahResep" onclick="if(event.target === this) this.style.display='none'"
             style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
             <div
                 style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
@@ -178,7 +178,7 @@
                     </div>
                 </form>
             </div>
-        </div>
+        </div> --}}
     </section>
 
     <style>
