@@ -71,11 +71,10 @@
                                     <i class="fas fa-prescription-bottle-alt"></i>
                                 </button>
 
-                                <button class="btn-rekam" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalRekam(this)"
+                                <a href="{{ route('rekam-medis.index') }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-notes-medical"></i>
-                                </button>
+                                </a>
 
                             </div>
                         </td>
