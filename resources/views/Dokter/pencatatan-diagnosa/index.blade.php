@@ -53,20 +53,23 @@
                                     class="btn btn-info no-underline"><i class="fas fa-eye"></i></a>
                                 <a href="{{ route('pencatatan-diagnosa.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
+
                                 <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalDiagnosa(this)"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    onclick="openModalDiagnosa(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-stethoscope"></i>
                                 </button>
 
                                 <button class="btn-tindakan" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalTindakan(this)"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" data-created-at="{{ $item->created_at->format('Y-m-d') }}" onclick="openModalTindakan(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-hand-holding-heart"></i>
                                 </button>
 
                                 <button class="btn-resep" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}" onclick="openModalResep(this)"
+                                    data-pasien-nama="{{ $item->pasien->nama }}" data-created-at="{{ $item->created_at->format('Y-m-d') }}" onclick="openModalResep(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-prescription-bottle-alt"></i>
                                 </button>
@@ -126,9 +129,9 @@
                     <input type="text" id="inputPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                    <input type="date" name="tanggal" required class="input-style" id="inputTanggalDiagnosa">
 
-                    <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+                    <label style="display:block; text-align:left;"><strong>Diagnosa Akhir</strong></label>
                     <textarea name="diagnosa" rows="3" required class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
@@ -180,7 +183,7 @@
                     <input type="text" id="tindakanPasienNama" class="input-style" disabled>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                    <input type="date" name="tanggal" required class="input-style" id="inputTanggalTindakan">
 
                     <label style="display:block; text-align:left;"><strong>Jenis Tindakan</strong></label>
                     <select name="jenis_tindakan" id="jenis_tindakan" required class="input-style">
@@ -231,7 +234,7 @@
                     <input type="text" id="resepPasienIdNama" class="input-style" disabled> --}}
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" class="input-style" required>
+                    <input type="date" name="tanggal" class="input-style" id="inputTanggalResep" required>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
                     <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}"
@@ -253,22 +256,31 @@
                     <h4 style="color:#216ab2; text-align:left; margin-bottom:12px;">Detail Obat</h4>
 
                     <div id="detailContainer">
-                        <div class="detail-row-group">
-                            <select name="obat_id[]" required class="input-style">
+                        <div class="detail-row-group" style="margin-bottom: 1rem;">
+                            <!-- Pilih Obat -->
+                            <select name="obat_id[]" required class="input-style" onchange="updateSatuan(this)">
                                 <option value="">-- Pilih Obat --</option>
                                 @foreach ($obats as $obat)
-                                    <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
+                                    <option value="{{ $obat->id }}" data-satuan="{{ $obat->satuan->nama_satuan }}">
+                                        {{ $obat->nama_obat }}
+                                    </option>
                                 @endforeach
                             </select>
-                            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+
+                            <!-- Jumlah + Satuan Input (bersebelahan) -->
+                            <div style="display: flex; gap: 0.5rem;">
                                 <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah"
-                                    min="1">
-                                <span style="white-space: nowrap;">tablet</span>
+                                    min="1" style="flex: 2;">
+                                <input type="text" class="input-style satuan-field" placeholder="Satuan" disabled
+                                    style="flex: 1; background-color: #f5f5f5;">
                             </div>
+
+                            <!-- Lainnya -->
                             <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
                             <input type="text" name="aturan_pakai[]" required class="input-style"
                                 placeholder="Aturan Pakai">
                         </div>
+
                     </div>
 
                     <button type="button" onclick="tambahDetail()" class="btn btn-info" style="margin:0.5rem 0;">+
@@ -486,9 +498,11 @@
         function openModalDiagnosa(button) {
             const pasienId = button.dataset.pasienId;
             const pasienNama = button.dataset.pasienNama;
+            const createdAt = button.dataset.createdAt;
 
             document.getElementById('inputPasienId').value = pasienId;
             document.getElementById('inputPasienNama').value = pasienNama;
+            document.getElementById('inputTanggalDiagnosa').value = createdAt;
 
             document.getElementById('modalTambahDiagnosa').style.display = 'flex';
         }
@@ -500,69 +514,87 @@
         function openModalTindakan(button) {
             const pasienId = button.dataset.pasienId;
             const pasienNama = button.dataset.pasienNama;
+            const createdAt = button.dataset.createdAt;
 
-            document.getElementById('modalTambahTindakan').style.display = 'flex';
             document.getElementById('tindakanPasienId').value = pasienId;
             document.getElementById('tindakanPasienNama').value = pasienNama;
+            document.getElementById('inputTanggalTindakan').value = createdAt;
+            document.getElementById('modalTambahTindakan').style.display = 'flex';
         }
-
+        
         // function openModalResep(button) {
-        //     const pasienId = button.dataset.pasienId;
-        //     const pasienNama = button.dataset.pasienNama;
-
-        //     document.getElementById('modalTambahResep').style.display = 'flex';
-        //     document.getElementById('resepPasienId').value = pasienId;
-        //     document.getElementById('resepPasienNama').value = pasienNama;
-        // }
-        function openModalResep(button) {
-            const pasienId = button.dataset.pasienId;
-            const pasienNama = button.dataset.pasienNama;
-
-            const modal = document.getElementById('modalTambahResep');
-            const inputPasienId = document.getElementById('resepPasienId');
-            const inputPasienNama = document.getElementById('resepPasienNama');
-
-            if (modal && inputPasienId && inputPasienNama) {
-                modal.style.display = 'flex';
-                inputPasienId.value = pasienId;
-                inputPasienNama.value = pasienNama;
-            } else {
-                console.error('Modal atau input tidak ditemukan!');
-                // Debugging: Tampilkan elemen yang tidak ditemukan
-                if (!modal) console.error('Modal dengan ID modalTambahResep tidak ditemukan');
-                if (!inputPasienId) console.error('Input dengan ID resepPasienId tidak ditemukan');
-                if (!inputPasienNama) console.error('Input dengan ID resepPasienNama tidak ditemukan');
+            //     const pasienId = button.dataset.pasienId;
+            //     const pasienNama = button.dataset.pasienNama;
+            
+            //     document.getElementById('modalTambahResep').style.display = 'flex';
+            //     document.getElementById('resepPasienId').value = pasienId;
+            //     document.getElementById('resepPasienNama').value = pasienNama;
+            // }
+            function openModalResep(button) {
+                const pasienId = button.dataset.pasienId;
+                const pasienNama = button.dataset.pasienNama;
+                const createdAt = button.dataset.createdAt;
+                
+                const modal = document.getElementById('modalTambahResep');
+                const inputPasienId = document.getElementById('resepPasienId');
+                const inputPasienNama = document.getElementById('resepPasienNama');
+            document.getElementById('inputTanggalResep').value = createdAt;
+                
+                if (modal && inputPasienId && inputPasienNama) {
+                    modal.style.display = 'flex';
+                    inputPasienId.value = pasienId;
+                    inputPasienNama.value = pasienNama;
+                } else {
+                    console.error('Modal atau input tidak ditemukan!');
+                    // Debugging: Tampilkan elemen yang tidak ditemukan
+                    if (!modal) console.error('Modal dengan ID modalTambahResep tidak ditemukan');
+                    if (!inputPasienId) console.error('Input dengan ID resepPasienId tidak ditemukan');
+                    if (!inputPasienNama) console.error('Input dengan ID resepPasienNama tidak ditemukan');
+                }
             }
+            
+            const obatData = @json($obats);
+            
+            function tambahDetail() {
+                const container = document.getElementById('detailContainer');
+                const newGroup = document.createElement('div');
+                newGroup.classList.add('detail-row-group');
+                newGroup.style.marginBottom = '1rem';
+                
+                // Bangun opsi obat
+                let options = '<option value="">-- Pilih Obat --</option>';
+                obatData.forEach(obat => {
+                    const satuan = obat.satuan?.nama_satuan || '';
+                    options += `<option value="${obat.id}" data-satuan="${satuan}">${obat.nama_obat}</option>`;
+                });
+                
+                newGroup.innerHTML = `
+                <select name="obat_id[]" required class="input-style" onchange="updateSatuan(this)">
+                ${options}
+            </select>
+
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah" min="1" style="flex: 2;">
+                <input type="text" class="input-style satuan-field" placeholder="Satuan" disabled style="flex: 1; background-color: #f5f5f5;">
+            </div>
+
+            <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis">
+            <input type="text" name="aturan_pakai[]" required class="input-style" placeholder="Aturan Pakai">
+        `;
+
+            container.appendChild(newGroup);
         }
 
-        function tambahDetail() {
-            const container = document.getElementById('detailContainer');
-            const newGroup = document.createElement('div');
-            newGroup.classList.add('detail-row-group');
-            newGroup.style.marginBottom = '1rem';
-            newGroup.style.paddingBottom = '1rem';
-            newGroup.style.borderBottom = '1px dashed #ddd';
+        function updateSatuan(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const satuan = selectedOption.getAttribute('data-satuan');
 
-            newGroup.innerHTML = `
-        <div style="margin-bottom: 0.5rem;">
-            <select name="obat_id[]" required class="input-style" style="flex: 2;">
-                <option value="">-- Pilih Obat --</option>
-                @foreach ($obats as $obat)
-                <option value="{{ $obat->id }}">{{ $obat->nama_obat }}</option>
-                @endforeach
-            </select>
-            <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
-                <input type="number" name="jumlah[]" required class="input-style" placeholder="Jumlah" min="1">
-                <span style="white-space: nowrap;">tablet</span>
-            </div>
-            <input type="text" name="dosis[]" required class="input-style" placeholder="Dosis" style="flex: 1;">
-            <input type="text" name="aturan_pakai[]" required class="input-style" placeholder="Aturan Pakai" style="flex: 1;">
-            <button type="button" onclick="hapusDetail(this)" style="background: #dc3545; color: white; border: none; border-radius: 4px; padding: 0.5rem; cursor: pointer; height: fit-content;">
-                Hapus
-            </button>
-        </div>
-    `;
-            container.appendChild(newGroup);
+            const container = selectElement.closest('.detail-row-group');
+            const satuanInput = container.querySelector('.satuan-field');
+
+            if (satuanInput) {
+                satuanInput.value = satuan || '';
+            }
         }
 
         function hapusDetail(button) {

@@ -35,7 +35,7 @@
                 <span>{{ $diagnosa->tanggal }}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Diagnosa</span>
+                <span class="detail-label">Diagnosa Akhir</span>
                 <span>{{ $diagnosa->diagnosa }}</span>
             </div>
             <div class="detail-row">

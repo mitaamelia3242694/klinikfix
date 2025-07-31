@@ -108,15 +108,17 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" class="input-style" required>
+                    <select name="pasien_id" class="input-style" id="selectPasien" onchange="isiTanggalOtomatis()" required>
                         <option value="">-- Pilih Pasien --</option>
                         @foreach ($pasiens as $item)
-                            <option value="{{ $item->pasien->id }}">{{ $item->pasien->nama }}</option>
+                            <option value="{{ $item->pasien->id }}"
+                                data-created-at="{{ $item->created_at->format('Y-m-d') }}">{{ $item->pasien->nama }}
+                            </option>
                         @endforeach
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" class="input-style" required>
+                    <input type="date" name="tanggal" class="input-style" id="inputTanggalPasien" required>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
                     <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}" readonly>
@@ -392,6 +394,16 @@
             if (satuanInput) {
                 satuanInput.value = satuan ? satuan : '';
             }
+        }
+    </script>
+
+    <script>
+        function isiTanggalOtomatis() {
+            const select = document.getElementById('selectPasien');
+            const selected = select.options[select.selectedIndex];
+            const createdAt = selected.getAttribute('data-created-at');
+
+            document.getElementById('inputTanggalPasien').value = createdAt || '';
         }
     </script>
 

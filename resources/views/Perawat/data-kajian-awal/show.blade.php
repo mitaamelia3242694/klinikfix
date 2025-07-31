@@ -47,7 +47,7 @@
                 <span>{{ $kajian->suhu_tubuh }}</span>
             </div>
             <div class="detail-row">
-                <span class="detail-label">Diagnosa</span>
+                <span class="detail-label">Diagnosa Awal</span>
                 <span>{{ $kajian->diagnosa_awal ?? '-' }}</span>
             </div>
             <div class="detail-row">

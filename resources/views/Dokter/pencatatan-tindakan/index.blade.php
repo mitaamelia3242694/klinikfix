@@ -113,15 +113,18 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" required class="input-style">
+                    <select name="pasien_id" required class="input-style" id="selectPasien" onchange="isiTanggalOtomatis()">
                         <option value="">-- Pilih Pasien --</option>
-                        @foreach ($pasiens as $pasien)
-                            <option value="{{ $pasien->id }}">{{ $pasien->nama }}</option>
+                        @foreach ($pasiens as $item)
+                            <option value="{{ $item->id }}"
+                                data-created-at="{{ $item->created_at->format('Y-m-d') }}">
+                                {{ $item->pasien->nama }}
+                            </option>
                         @endforeach
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                    <input type="date" name="tanggal" required class="input-style" id="inputTanggalPasien">
 
                     <label style="display:block; text-align:left;"><strong>Jenis Tindakan</strong></label>
                     <select name="jenis_tindakan" id="jenis_tindakan" required class="input-style">
@@ -134,7 +137,8 @@
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Tarif</strong></label>
-                    <input type="number" step="0.01" name="tarif" id="tarif" required class="input-style" readonly>
+                    <input type="number" step="0.01" name="tarif" id="tarif" required class="input-style"
+                        readonly>
 
                     <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
                     <textarea name="catatan" rows="2" class="input-style"></textarea>
@@ -317,4 +321,13 @@
         });
     </script>
 
+    <script>
+        function isiTanggalOtomatis() {
+            const select = document.getElementById('selectPasien');
+            const selected = select.options[select.selectedIndex];
+            const createdAt = selected.getAttribute('data-created-at');
+
+            document.getElementById('inputTanggalPasien').value = createdAt || '';
+        }
+    </script>
 @endsection

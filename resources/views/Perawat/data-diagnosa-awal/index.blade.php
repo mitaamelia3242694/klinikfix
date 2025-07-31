@@ -32,7 +32,7 @@
                     <th>Pasien</th>
                     <th>Perawat</th>
                     <th>Tanggal</th>
-                    <th>Diagnosa</th>
+                    <th>Diagnosa Awal</th>
                     <th>Status</th>
                     <th>Master Diagnosa</th>
                     <th>Pelayanan</th>
@@ -117,17 +117,21 @@
                     @csrf
 
                     <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                    <select name="pasien_id" required class="input-style">
+                    <select name="pasien_id" required class="input-style" id="selectPasien"
+                        onchange="updateTanggalPendaftaran()">
                         <option value="">-- Pilih Pasien --</option>
                         @foreach ($pendaftarans as $pendaftaran)
-                            <option value="{{ $pendaftaran->pasien->id }}">{{ $pendaftaran->pasien->nama }}</option>
+                            <option value="{{ $pendaftaran->pasien->id }}"
+                                data-created-at="{{ $pendaftaran->created_at->format('Y-m-d') }}">
+                                {{ $pendaftaran->pasien->nama }}
+                            </option>
                         @endforeach
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                    <input type="date" name="tanggal" required class="input-style">
+                    <input type="date" name="tanggal" required class="input-style" id="tanggalPendaftaran">
 
-                    <label style="display:block; text-align:left;"><strong>Diagnosa</strong></label>
+                    <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
                     <textarea name="diagnosa" rows="2" required class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
@@ -336,16 +340,16 @@
     </script>
 
     <script>
-        window.onload = function() {
-            // Atur tanggal hari ini ke input date
-            const tanggalInput = document.querySelector('input[name="tanggal"]');
-            if (tanggalInput && !tanggalInput.value) {
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                tanggalInput.value = `${yyyy}-${mm}-${dd}`;
+        function updateTanggalPendaftaran() {
+            const select = document.getElementById('selectPasien');
+            const selectedOption = select.options[select.selectedIndex];
+            const createdAt = selectedOption.getAttribute('data-created-at');
+
+            if (createdAt) {
+                document.getElementById('tanggalPendaftaran').value = createdAt;
+            } else {
+                document.getElementById('tanggalPendaftaran').value = '';
             }
-        };
+        }
     </script>
 @endsection
