@@ -50,14 +50,10 @@
                         <td>
                             <a href="{{ route('data-resep.show', $resep->id) }}" class="btn btn-info no-underline"><i
                                     class="fas fa-eye"></i></a>
-                            <button onclick="document.getElementById('modalTambah').style.display='flex'"
+                            <button onclick="document.getElementById('modalTambahResep').style.display='flex'"
                                 style="padding: 0.5rem 1rem; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;">
                                 <i class="fas fa-pills"></i>
                             </button>
-                            <button onclick="document.getElementById('modalTambah').style.display='flex'"
-    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-    <i class="fas fa-user"></i>
-</button>
                         </td>
                     </tr>
                 @endforeach
@@ -138,6 +134,48 @@
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                         <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
                             class="btn btn-warning">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="modalTambahResep" onclick="if(event.target === this) this.style.display='none'"
+            style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999;">
+            <div
+                style="background:#fff; padding:2rem; border-radius:12px; width:90%; max-width:500px; max-height:90vh; overflow:auto; box-shadow:0 5px 20px rgba(0,0,0,0.2); position:relative;">
+                <span onclick="document.getElementById('modalTambahResep').style.display='none'"
+                    style="position:absolute; top:1rem; right:1rem; font-size:1.5rem; cursor:pointer; color:rgb(33, 106, 178);">&times;</span>
+                <h3 style="margin-bottom:1rem; color:rgb(33, 106, 178); text-align:left;">Tambah Pengambilan</h3>
+
+                <form method="POST" action="{{ route('pengambilan-obat.store') }}">
+                    @csrf
+                    <label style="display:block; text-align:left;"><strong>Resep</strong></label>
+                    <select name="resep_id" required class="input-style">
+                        <option value="">-- Pilih Resep --</option>
+                        @foreach ($reseps as $resep)
+                            <option value="{{ $resep->id }}">{{ $resep->pasien->nama }} - {{ $resep->tanggal }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <label style="display:block; text-align:left;"><strong>Tanggal Pengambilan</strong></label>
+                    <input type="date" name="tanggal_pengambilan" required class="input-style">
+
+                    <label style="display:block; text-align:left;"><strong>Status Pengambilan</strong></label>
+                    <select name="status_checklist" required class="input-style">
+                        <option value="">-- Pilih Status --</option>
+                        <option value="belum">Belum</option>
+                        <option value="sudah">Sudah</option>
+                    </select>
+
+                    <label style="display:block; text-align:left;"><strong>Petugas</strong></label>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $user->id }}" readonly>
+                    <input type="text" class="input-style" value="{{ $user->nama_lengkap }}" readonly>
+
+                    <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+                        <button type="button" onclick="document.getElementById('modalTambahResep').style.display='none'"
+                            class="btn btn-warning" style="color: white;">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>

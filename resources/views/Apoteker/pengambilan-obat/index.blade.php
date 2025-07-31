@@ -16,7 +16,7 @@
             <select name="status" onchange="this.form.submit()" class="input-style" style="max-width: 250px;">
                 <option value="Semua" {{ request('status') == 'Semua' ? 'selected' : '' }}>Semua</option>
                 <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum</option>
-                <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah</option>
+                <option value="sudah diambil" {{ request('status') == 'sudah diambil' ? 'selected' : '' }}>Sudah</option>
             </select>
         </form>
 

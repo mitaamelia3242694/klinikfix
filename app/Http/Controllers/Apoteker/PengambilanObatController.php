@@ -21,10 +21,16 @@ class PengambilanObatController extends Controller
         // Ambil data pengambilan obat dengan relasi resep → pasien, dokter dan petugas
         $query = PengambilanObat::with(['resep.pasien', 'resep.user', 'user']);
 
-        // Filter berdasarkan status checklist jika ada
-        if ($request->filled('status') && $request->status !== 'Semua') {
+        $allowedStatuses = ['belum', 'sudah diambil', 'diambil setengah'];
+
+        if ($request->filled('status') && $request->status !== 'Semua' && in_array($request->status, $allowedStatuses)) {
             $query->where('status_checklist', $request->status);
         }
+
+        // Filter berdasarkan status checklist jika ada
+        // if ($request->filled('status') && $request->status !== 'Semua') {
+        //     $query->where('status_checklist', $request->status);
+        // }
 
 
         // Paginate data utama yang ditampilkan di tabel
@@ -95,7 +101,7 @@ class PengambilanObatController extends Controller
 
     public function update(Request $request, $id)
     {
-        
+
         $checklistIds = $request->input('checklist_ids', []);
         $checkedReseps = ResepDetail::with('obat')
             ->whereIn('id', $checklistIds)
@@ -184,10 +190,16 @@ class PengambilanObatController extends Controller
         // Ambil data pengambilan obat dengan relasi resep → pasien, dokter dan petugas
         $query = PengambilanObat::with(['resep.pasien', 'resep.user', 'user']);
 
-        // Filter berdasarkan status checklist jika ada
-        if ($request->filled('status') && $request->status !== 'Semua') {
+        $allowedStatuses = ['belum', 'sudah diserahkan', 'diserahkan setengah'];
+        // Validasi status yang diterima
+        if ($request->filled('status') && $request->status !== 'Semua' && in_array($request->status, $allowedStatuses)) {
             $query->where('status_checklist', $request->status);
         }
+
+        // Filter berdasarkan status checklist jika ada
+        // if ($request->filled('status') && $request->status !== 'Semua') {
+        //     $query->where('status_checklist', $request->status);
+        // }
 
         // Paginate data utama yang ditampilkan di tabel
         $pengambilanObats = $query->orderBy('tanggal_pengambilan', 'desc')->paginate(10)->withQueryString();
@@ -197,6 +209,11 @@ class PengambilanObatController extends Controller
         $user = Auth::user()->id;
         $users = User::where('id', $user)->first();
         return view('Apoteker.pengambilan-obat-pasien.index', compact('pengambilanObats', 'reseps', 'users'));
+    }
+
+    public function show_obat_pasien($id) {
+        $pengambilan = PengambilanObat::with(['resep.pasien', 'resep.user', 'user'])->findOrFail($id);
+        return view('Apoteker.pengambilan-obat-pasien.detail', compact('pengambilan'));
     }
 
 
@@ -234,7 +251,7 @@ class PengambilanObatController extends Controller
                     }
                 }
             }
-            return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+            return redirect()->route('pengambilan-obat-pasien.index')->with('success', 'Data berhasil diperbarui.');
         } else {
             return redirect()->back();
         }
@@ -247,5 +264,13 @@ class PengambilanObatController extends Controller
         $users = User::where('role_id', 5)->get();
 
         return view('Apoteker.pengambilan-obat-pasien.edit', compact('pengambilan', 'reseps', 'users'));
+    }
+
+    public function destroy_obat_pasien($id)
+    {
+        $pengambilan = PengambilanObat::findOrFail($id);
+        $pengambilan->delete();
+
+        return redirect()->route('pengambilan-obat-pasien.index')->with('success', 'Data berhasil dihapus.');
     }
 }

@@ -37,7 +37,7 @@
             </div>
             <div class="detail-row">
                 <span class="detail-label">Status Pengambilan</span>
-                <span>{{ $ambil->status_checklist === 'Lengkap' ? 'Sudah' : 'Belum' }}
+                <span>{{ $pengambilan->status_checklist === 'Lengkap' ? 'Sudah' : 'Belum' }}
                 </span>
             </div>
             <div class="detail-row">

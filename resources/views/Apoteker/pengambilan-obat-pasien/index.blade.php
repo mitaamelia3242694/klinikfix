@@ -15,11 +15,11 @@
         <form method="GET" action="" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <select name="status" onchange="this.form.submit()" class="input-style" style="max-width: 250px;">
                 <option value="Semua" {{ request('status') == 'Semua' ? 'selected' : '' }}>Semua</option>
-                <option value="sudah" {{ request('status') == 'sudah' ? 'selected' : '' }}>Sudah</option>
+                <option value="sudah diserahkan" {{ request('status') == 'sudah diserahkan' ? 'selected' : '' }}>Sudah
+                </option>
                 <option value="belum" {{ request('status') == 'belum' ? 'selected' : '' }}>Belum</option>
             </select>
         </form>
-
 
         @if (session('success'))
             <div class="alert-success" id="successAlert">
@@ -43,13 +43,14 @@
                 @foreach ($pengambilanObats as $index => $ambil)
                     <tr>
                         <td>{{ $pengambilanObats->firstItem() + $index }}</td>
-                          <td>{{ \Carbon\Carbon::parse($ambil->tanggal_penyerahan)->format('d-m-Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($ambil->tanggal_penyerahan)->format('d-m-Y') }}</td>
                         <td>{{ $ambil->resep->nama_pengambil ?? '-' }}</td>
-                       <td>
-                        @foreach ($ambil->resep->detail as $d)
-                    • {{ $d->obat->nama_obat }} ({{ $d->jumlah }}, {{ $d->dosis }}, {{ $d->aturan_pakai }})<br>
-                    @endforeach
-                </td>
+                        <td>
+                            @foreach ($ambil->resep->detail as $d)
+                                • {{ $d->obat->nama_obat }} ({{ $d->jumlah }}, {{ $d->dosis }},
+                                {{ $d->aturan_pakai }})<br>
+                            @endforeach
+                        </td>
                         <td>
                             @if ($ambil->status_checklist === 'sudah diserahkan')
                                 <span class="badge badge-sudah">Sudah Diserahkan</span>
@@ -58,15 +59,15 @@
                             @endif
                         </td>
                         <td>
-                         @if( $ambil->bukti_foto ?? '-')
-                                      <a href="{{ asset('storage/' . $ambil->bukti_foto) }}" target="_blank">Lihat Foto</a>
-                @else
-                    <span>Tidak Ada</span>
-                @endif
-                 </td>
+                            @if ($ambil->bukti_foto ?? '-')
+                                <a href="{{ asset('storage/' . $ambil->bukti_foto) }}" target="_blank">Lihat Foto</a>
+                            @else
+                                <span>Tidak Ada</span>
+                            @endif
+                        </td>
                         <td>
-                            <a href="{{ route('pengambilan-obat-pasien.show', $ambil->id) }}" class="btn btn-info no-underline"><i
-                                    class="fas fa-eye"></i></a>
+                            <a href="{{ route('pengambilan-obat-pasien.show', $ambil->id) }}"
+                                class="btn btn-info no-underline"><i class="fas fa-eye"></i></a>
                             <a href="{{ route('pengambilan-obat-pasien.edit', $ambil->id) }}"
                                 class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
                             <form action="{{ route('pengambilan-obat-pasien.destroy', $ambil->id) }}" method="POST"
