@@ -28,6 +28,7 @@
     <div class="filter-card">
        <form method="GET" action="{{ route('dashboard.index') }}">
     <div class="filter-grid">
+        <!-- Filter Tahun -->
         <div class="filter-group">
             <label for="tahun">Tahun</label>
             <select name="tahun" id="tahun" onchange="this.form.submit()">
@@ -38,8 +39,26 @@
                 @endfor
             </select>
         </div>
+
+        <!-- Filter Bulan -->
+        <div class="filter-group">
+            <label for="bulan">Bulan</label>
+            <select name="bulan" id="bulan" onchange="this.form.submit()">
+                <option value="">Semua Bulan</option>
+                @foreach ([
+                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                    5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                    9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                ] as $key => $month)
+                    <option value="{{ $key }}" {{ request('bulan') == $key ? 'selected' : '' }}>
+                        {{ $month }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
     </div>
 </form>
+
 
     </div>
     <canvas id="chart"></canvas>

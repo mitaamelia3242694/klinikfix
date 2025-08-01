@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('resep_detail', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('resep_id')->constrained('resep')->onDelete('cascade');
+            $table->foreignId('resep_id')->constrained('resep')->onDelete('restrict');
             $table->foreignId('obat_id')->constrained('obat');
             $table->integer('jumlah');
             $table->string('dosis');

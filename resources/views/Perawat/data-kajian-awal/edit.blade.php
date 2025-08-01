@@ -36,12 +36,6 @@
             </div>
 
             <div style="flex: 1; min-width: 300px;">
-                <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                <select name="status" required class="form-input">
-                    <option value="">-- Pilih Status --</option>
-                    <option value="belum" {{ $kajian->status == 'belum' ? 'selected' : '' }}>Belum</option>
-                    <option value="sudah" {{ $kajian->status == 'sudah' ? 'selected' : '' }}>Sudah</option>
-                </select>
 
                 <!-- Diagnosa Awal -->
                 <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
