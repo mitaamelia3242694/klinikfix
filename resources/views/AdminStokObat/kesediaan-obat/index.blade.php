@@ -75,7 +75,6 @@ $filteredCount = 0;
             } elseif ($selisihHari <= 7) {
                 $rowColor = 'background-color: #fff5e6;';
             }
-        }
     @endphp
             <tr>
                 <td>{{ $filteredCount }}</td>
