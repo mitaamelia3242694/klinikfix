@@ -171,13 +171,6 @@
                     <input type="text" name="suhu_tubuh" min="34" max="42" step="0.1" required
                         class="input-style">
 
-                    <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                    <select name="status" required class="input-style">
-                        <option value="">-- Pilih Status --</option>
-                        <option value="belum">Belum</option>
-                        <option value="sudah">Sudah</option>
-                    </select>
-
                     <!-- Pelayanan -->
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
                     <select name="pelayanan_id" class="input-style" required>
@@ -186,9 +179,6 @@
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
                         @endforeach
                     </select>
-
-                    <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
-                    <textarea name="diagnosa_awal" id="diagnosa_awal" cols="10" rows="4" class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                     <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}"
@@ -242,13 +232,6 @@
                         @foreach ($layanans as $layanan)
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
                         @endforeach
-                    </select>
-
-                    <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                    <select name="status" required class="input-style">
-                        <option value="">-- Pilih Status --</option>
-                        <option value="belum_diperiksa">Belum Diperiksa</option>
-                        <option value="sudah_diperiksa">Sudah Diperiksa</option>
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>

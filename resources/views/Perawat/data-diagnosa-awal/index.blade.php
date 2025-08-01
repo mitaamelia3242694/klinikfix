@@ -151,15 +151,6 @@
                         @endforeach
                     </select>
 
-
-
-                    <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                    <select name="status" required class="input-style">
-                        <option value="">-- Pilih Status --</option>
-                        <option value="belum_diperiksa">Belum Diperiksa</option>
-                        <option value="sudah_diperiksa">Sudah Diperiksa</option>
-                    </select>
-
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
                     <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}" readonly>
                     <input type="text" class="input-style" value="{{ $perawats->nama_lengkap }}" readonly>

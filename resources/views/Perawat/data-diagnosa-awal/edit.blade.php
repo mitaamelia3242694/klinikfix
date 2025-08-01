@@ -59,16 +59,6 @@
                     @endforeach
                 </select>
 
-
-                <label style="display:block; text-align:left;"><strong>Status</strong></label>
-                <select name="status" required class="form-input">
-                    <option value="">-- Pilih Status --</option>
-                    <option value="belum_diperiksa" {{ $diagnosa->status == 'belum_diperiksa' ? 'selected' : '' }}>Belum
-                        Diperiksa</option>
-                    <option value="sudah_diperiksa" {{ $diagnosa->status == 'sudah_diperiksa' ? 'selected' : '' }}>Sudah
-                        Diperiksa</option>
-                </select>
-
                 <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                     <a href="{{ route('data-diagnosa-awal.index') }}" class="btn-cancel">Batal</a>
                     <button type="submit" class="btn-submit">Update</button>
