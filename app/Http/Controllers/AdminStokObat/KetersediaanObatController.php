@@ -86,8 +86,6 @@ class KetersediaanObatController extends Controller
     }
 
 
-
-
     public function show($id)
     {
         $sediaan = SediaanObat::with('obat.satuan')->findOrFail($id);
@@ -103,17 +101,7 @@ class KetersediaanObatController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'obat_id' => 'required|exists:obat,id',
-            'tanggal_masuk' => 'required|date',
-            'tanggal_keluar' => 'required|date|after_or_equal:tanggal_masuk',
-            'tanggal_kadaluarsa' => 'required|date|after_or_equal:tanggal_keluar',
-            'stok_total' => 'required|integer|min:1',
-            'keterangan' => 'nullable|string',
-        ]);
-
         $sediaan = SediaanObat::findOrFail($id);
-
 
         // Tambah stok ke tabel Obat
         $obat = $sediaan->obat;

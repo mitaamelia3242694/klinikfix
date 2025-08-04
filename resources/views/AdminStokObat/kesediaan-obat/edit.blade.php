@@ -29,7 +29,7 @@
             </select>
 
             <label style="display:block; text-align:left;"><strong>Stok yang akan ditambahkan</strong></label>
-            <input type="number" name="stok_total" min="1" class="form-input" required>
+            <input type="number" name="stok_total" min="1" class="form-input">
             @php
             $terpakai = $sediaan->obat->resepDetails->sum('jumlah') ?? 0;
             $stokTersisa = $sediaan->obat->stok_total - $terpakai;
@@ -38,18 +38,17 @@
             <input type="number" value="{{ $stokTersisa }}" class="form-input" readonly>
 
             <label style="display:block; text-align:left;"><strong>Tanggal Masuk</strong></label>
-            <input type="date" name="tanggal_masuk" value="{{ $sediaan->tanggal_masuk }}" required class="form-input">
+            <input type="date" name="tanggal_masuk" value="{{ $sediaan->tanggal_masuk }}" class="form-input">
 
         </div>
 
         <div style="flex: 1; min-width: 300px;">
             <label style="display:block; text-align:left;"><strong>Tanggal Keluar</strong></label>
-            <input type="date" name="tanggal_keluar" value="{{ $sediaan->tanggal_keluar }}" required class="form-input">
+            <input type="date" name="tanggal_keluar" value="{{ $sediaan->tanggal_keluar }}" class="form-input">
 
 
             <label style="display:block; text-align:left;"><strong>Tanggal Kadaluarsa</strong></label>
-            <input type="date" name="tanggal_kadaluarsa" value="{{ $sediaan->tanggal_kadaluarsa }}" required
-                class="form-input">
+            <input type="date" name="tanggal_kadaluarsa" value="{{ $sediaan->tanggal_kadaluarsa }}" class="form-input">
 
             <label style="display:block; text-align:left;"><strong>Keterangan</strong></label>
             <textarea name="keterangan" rows="5" class="form-input">{{ $sediaan->keterangan }}</textarea>
