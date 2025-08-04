@@ -27,8 +27,11 @@
                 <label style="display:block; text-align:left;"><strong>Keluhan Utama</strong></label>
                 <textarea name="keluhan_utama" rows="4" required class="form-input">{{ $kajian->keluhan_utama }}</textarea>
 
-                <label style="display:block; text-align:left;"><strong>Tekanan Darah</strong></label>
-                <input type="text" name="tekanan_darah" value="{{ $kajian->tekanan_darah }}" required class="form-input">
+                <label style="display:block; text-align:left;"><strong>Sistol</strong></label>
+                <input type="text" name="sistol" value="{{ $kajian->sistol }}" required class="form-input">
+
+                <label style="display:block; text-align:left;"><strong>Diastol</strong></label>
+                <input type="text" name="diastol" value="{{ $kajian->diastol }}" required class="form-input">
 
                 <label style="display:block; text-align:left;"><strong>Suhu Tubuh</strong></label>
                 <input type="text" name="suhu_tubuh" value="{{ $kajian->suhu_tubuh }}" required class="form-input">

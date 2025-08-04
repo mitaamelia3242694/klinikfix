@@ -14,8 +14,9 @@ class PengkajianAwal extends Model
         'tanggal',
         'status',
         'keluhan_utama',
-        'tekanan_darah',
         'suhu_tubuh',
+        'sistol',
+        'diastol',
         'catatan',
         'pelayanan_id',
         'diagnosa_awal'

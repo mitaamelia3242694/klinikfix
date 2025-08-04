@@ -54,7 +54,13 @@
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
                         <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-' }}</td>
-                        <td>{{ $item->pengkajianAwal->tekanan_darah ?? '-' }}</td>
+                        <td>
+                            @if ($item->pengkajianAwal && $item->pengkajianAwal->sistol !== null && $item->pengkajianAwal->diastol !== null)
+                                {{ $item->pengkajianAwal->sistol }} / {{ $item->pengkajianAwal->diastol }}
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>{{ $item->pengkajianAwal->suhu_tubuh ?? '-' }}</td>
                         <td>
                             @if ($item->pengkajianAwal == null)
@@ -163,9 +169,11 @@
                     <label style="display:block; text-align:left;"><strong>Keluhan Utama</strong></label>
                     <textarea name="keluhan_utama" rows="2" required class="input-style"></textarea>
 
-                    <label style="display:block; text-align:left;"><strong>Tekanan Darah</strong></label>
-                    <input type="text" name="tekanan_darah" required class="input-style" placeholder="Contoh: 120/80"
-                        pattern="^\d{2,3}/\d{2,3}$" title="Format harus seperti 120/80">
+                    <label style="display:block; text-align:left;"><strong>Sistol</strong></label>
+                    <input type="text" name="sistol" required class="input-style">
+
+                    <label style="display:block; text-align:left;"><strong>Diastol</strong></label>
+                    <input type="text" name="diastol" required class="input-style">
 
                     <label style="display:block; text-align:left;"><strong>Suhu Tubuh</strong></label>
                     <input type="text" name="suhu_tubuh" min="34" max="42" step="0.1" required

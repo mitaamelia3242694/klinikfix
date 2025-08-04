@@ -43,21 +43,8 @@ class DataKajianAwalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tekanan_darah' => [
-                'required',
-                'regex:/^\d{2,3}\/\d{2,3}$/',
-                function ($attribute, $value, $fail) {
-                    list($sistolik, $diastolik) = explode('/', $value);
-
-                    if ($sistolik < 80 || $sistolik > 200 || $diastolik < 50 || $diastolik > 130) {
-                        $fail('Tekanan darah tidak masuk rentang normal (80–200 / 50–130).');
-                    }
-
-                    if ($sistolik <= $diastolik) {
-                        $fail('Sistolik harus lebih tinggi dari diastolik.');
-                    }
-                },
-            ],
+            'sistol' => 'required|numeric',
+            'diastol' => 'required|numeric',
             'suhu_tubuh' => 'required|numeric|between:34,42',
         ]);
 
@@ -93,7 +80,8 @@ class DataKajianAwalController extends Controller
             'user_id' => 'required|exists:users,id',
             'tanggal' => 'required|date',
             'keluhan_utama' => 'required|string',
-            'tekanan_darah' => 'required|string',
+            'sistol' => 'required|string',
+            'diastol' => 'required|string',
             'suhu_tubuh' => 'required|string',
             'status' => 'required|in:belum,sudah',
             'diagnosa_awal' => 'required|string', // ✅ tambahkan

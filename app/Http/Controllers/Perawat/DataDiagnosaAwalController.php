@@ -50,7 +50,6 @@ class DataDiagnosaAwalController extends Controller
             'master_diagnosa_id' => 'required|exists:master_diagnosa,id',
             'pelayanan_id' => 'nullable|string',
             'catatan' => 'nullable|string',
-            'status' => 'required|in:belum_diperiksa,sudah_diperiksa',
         ]);
 
         DiagnosaAwal::create([
@@ -61,7 +60,6 @@ class DataDiagnosaAwalController extends Controller
             'master_diagnosa_id' => $request->master_diagnosa_id,
             'pelayanan_id' => $request->pelayanan_id,
             'catatan' => $request->catatan,
-            'status' => $request->status,
         ]);
 
         return redirect()->route('data-diagnosa-awal.index')->with('success', 'Data berhasil ditambahkan.');
@@ -97,7 +95,6 @@ class DataDiagnosaAwalController extends Controller
             'catatan' => 'nullable|string',
             'master_diagnosa_id' => 'required|exists:master_diagnosa,id',
             'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ diganti dari 'pelayanan'
-            'status' => 'required|in:belum_diperiksa,sudah_diperiksa',
         ]);
 
         $diagnosa = DiagnosaAwal::findOrFail($id);
