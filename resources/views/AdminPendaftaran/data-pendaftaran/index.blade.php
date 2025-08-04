@@ -116,13 +116,13 @@
                 @csrf
 
                 <label style="display:block; text-align:left;">Pasien</label>
-                <select name="pasien_id" class="input-style" required>
+                <select name="pasien_id" id="pasienSelect" class="input-style" required>
                     <option value="">-- Pilih Pasien --</option>
                     @foreach ($pasiens as $pasien)
                     <option value="{{ $pasien->id }}">{{ $pasien->nama }} - {{ $pasien->NIK }}</option>
                     @endforeach
                 </select>
-
+                <br>
                 <label style="display:block; text-align:left;">Dokter</label>
                 <select name="dokter_id" class="input-style" required>
                     <option value="">-- Pilih Dokter --</option>
@@ -157,9 +157,6 @@
 
                 <label style="display:block; text-align:left;">Keluhan</label>
                 <textarea name="keluhan" class="input-style" rows="3"></textarea>
-
-
-
 
                 <div style="margin-top: 1rem; text-align:right;">
                     <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
@@ -244,6 +241,14 @@
     border-radius: 8px;
     margin-bottom: 1rem;
 }
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+        text-align: left !important;
+    }
+
+    .select2-results__option {
+        text-align: left !important;
+    }
 </style>
 
 {{-- Script --}}
@@ -258,4 +263,25 @@ window.onload = function() {
     }
 }
 </script>
+<script>
+    window.onload = function() {
+        // Auto-hide alert
+        const alert = document.getElementById('successAlert');
+        if (alert) {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.style.display = 'none', 500);
+            }, 4000);
+        }
+
+        // Aktifkan Select2 untuk pencarian pasien
+        $('#pasienSelect').select2({
+            placeholder: '-- Pilih Pasien --',
+            width: '100%',
+            dropdownParent: $('#modalTambah').find('form') // supaya dropdown tetap muncul di dalam modal
+        });
+    };
+</script>
+
+
 @endsection
