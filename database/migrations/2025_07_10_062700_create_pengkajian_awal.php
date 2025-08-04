@@ -18,7 +18,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->date('tanggal');
             $table->text('keluhan_utama');
-            $table->string('tekanan_darah');
+            $table->string('sistol');
+            $table->string('diastol');
             $table->string('suhu_tubuh');
             $table->text('catatan')->nullable();
             $table->timestamps();
