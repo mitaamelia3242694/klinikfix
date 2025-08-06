@@ -22,8 +22,8 @@ class ManajemenTindakanController extends Controller
             'diagnosaAkhir',
             'perawat',
         ])
-            ->whereHas('diagnosaAwal')
-            ->whereHas('diagnosaAkhir')
+            // ->whereHas('diagnosaAwal')
+            // ->whereHas('diagnosaAkhir')
             ->when($search, function ($query, $search) {
                 $query->whereHas('pasien', function ($q) use ($search) {
                     $q->where('nama', 'like', '%' . $search . '%');

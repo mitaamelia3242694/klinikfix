@@ -5,15 +5,18 @@ namespace App\Http\Controllers\AdminStokObat;
 use Carbon\Carbon;
 use App\Models\Obat;
 use App\Models\SediaanObat;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class KetersediaanObatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = SediaanObat::with('obat.satuan', 'obat.resepDetails')->latest();
+        SediaanObat::where('tanggal_kadaluarsa', '<', Carbon::now())
+            ->where('status', 'aktif')
+            ->update(['status' => 'kadaluarsa']);
+        $query = SediaanObat::with('obat.satuan', 'obat.resepDetails')->where('status', 'aktif')->latest();
 
         // Filter untuk obat hampir kadaluarsa
         if ($request->has('expiring_soon')) {
@@ -63,11 +66,10 @@ class KetersediaanObatController extends Controller
 
     public function store(Request $request)
     {
-
-
         // Validasi input
         $request->validate([
             'obat_id' => 'required|exists:obat,id',
+            'jumlah' => 'required|integer|min:1',
             'tanggal_kadaluarsa' => 'required|date',
             'tanggal_keluar' => 'nullable|date',
             'keterangan' => 'nullable|string|max:255',
@@ -76,15 +78,20 @@ class KetersediaanObatController extends Controller
         // Simpan ke tabel sediaan_obat
         SediaanObat::create([
             'obat_id' => $request->obat_id,
+            'jumlah' => $request->jumlah,
             'tanggal_masuk' => Carbon::now(),
             'tanggal_keluar' => $request->tanggal_keluar ?: null,
             'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
             'keterangan' => $request->keterangan,
         ]);
 
+        // Tambah stok ke tabel Obat
+        $obat = Obat::find($request->obat_id);
+        $obat->stok_total += $request->jumlah;
+        $obat->save();
+
         return redirect()->back()->with('success', 'Data ketersediaan obat berhasil ditambahkan.');
     }
-
 
     public function show($id)
     {
@@ -102,11 +109,6 @@ class KetersediaanObatController extends Controller
     public function update(Request $request, $id)
     {
         $sediaan = SediaanObat::findOrFail($id);
-
-        // Tambah stok ke tabel Obat
-        $obat = $sediaan->obat;
-        $obat->stok_total += $request->stok_total;
-        $obat->save();
 
         // Update data sediaan_obat
         $sediaan->update([

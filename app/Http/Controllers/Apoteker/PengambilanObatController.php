@@ -67,8 +67,14 @@ class PengambilanObatController extends Controller
                     }
 
                     // Kurangi stok_total
-                    $obat->stok_total -= $jumlah;
+                    // $obat->stok_total -= $jumlah;
+                    // $obat->save();
+                    $this->kurangiStokSediaan($obat, $jumlah, $request->tanggal_pengambilan);
+
+                    // Update total stok di tabel obat
+                    $obat->stok_total = SediaanObat::where('obat_id', $obat->id)->sum('jumlah');
                     $obat->save();
+
 
                     // Tandai tanggal_keluar di entri SediaanObat (jika belum diisi)
                     SediaanObat::where('obat_id', $obat->id)
@@ -87,6 +93,30 @@ class PengambilanObatController extends Controller
             DB::rollBack();
             // dd($e->getMessage());
             return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    private function kurangiStokSediaan(Obat $obat, int $jumlah, $tanggalPengambilan)
+    {
+        $sediaans = SediaanObat::where('obat_id', $obat->id)
+            ->where('status', 'aktif')
+            ->where('jumlah', '>', 0)
+            ->orderBy('tanggal_masuk')
+            ->get();
+
+        foreach ($sediaans as $sediaan) {
+            if ($jumlah <= 0) break;
+
+            $pengurangan = min($jumlah, $sediaan->jumlah);
+            $sediaan->jumlah -= $pengurangan;
+            $sediaan->tanggal_keluar = $sediaan->jumlah == 0 ? $tanggalPengambilan : $sediaan->tanggal_keluar;
+            $sediaan->save();
+
+            $jumlah -= $pengurangan;
+        }
+
+        if ($jumlah > 0) {
+            throw new \Exception("Stok sediaan untuk '{$obat->nama_obat}' tidak mencukupi.");
         }
     }
 
@@ -122,54 +152,6 @@ class PengambilanObatController extends Controller
 
         return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
     }
-
-
-
-
-    // $request->validate([
-    //     'resep_id' => 'required|exists:resep,id',
-    //     'user_id' => 'required|exists:users,id',
-    //     'tanggal_pengambilan' => 'required|date',
-    //     'status_checklist' => 'required|in:belum,sudah',
-    // ]);
-
-    // $pengambilan = PengambilanObat::findOrFail($id);
-    // $statusSebelumnya = $pengambilan->status_checklist;
-    // $checklistIds = $request->input('checklist_ids', []);
-
-
-
-    // DB::beginTransaction();
-
-
-    //     $pengambilan->update($request->all());
-
-    //     // Jalankan pengurangan stok hanya jika status berubah jadi "sudah"
-    //     if ( $request->status_checklist === 'sudah') {
-    //         $resep = Resep::with('detail')->findOrFail($request->resep_id);
-    //          $obat= Obat::whereIn('id', $checklistIds)->update(['is_checked' => true]);
-
-    //             $jumlah = $detail->jumlah;
-
-    //             if ($obat->stok_total < $jumlah) {
-    //                 throw new \Exception("Stok obat '{$obat->nama_obat}' tidak mencukupi. Dibutuhkan: {$jumlah}, tersedia: {$obat->stok_total}");
-    //             }
-
-    //             $obat->stok_total -= $jumlah;
-    //             $obat->save();
-
-    //             // Tandai tanggal_keluar di entri SediaanObat (jika belum diisi)
-    //             SediaanObat::where('obat_id', $obat->id)
-    //                 ->orderBy('tanggal_masuk', 'asc')
-    //                 ->limit(1)
-    //                 ->update(['tanggal_keluar' => $request->tanggal_pengambilan]);
-    //         }
-    //     }
-
-    //     return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
-
-
-
 
     public function show($id)
     {
@@ -242,8 +224,12 @@ class PengambilanObatController extends Controller
                     $obat = $resepDetail->obat;
 
                     if ($obat && $obat->stok_total >= $jumlah) {
-                        $obat->stok_total -= $jumlah;
+                        // $obat->stok_total -= $jumlah;
+                        // $obat->save();
+                        $this->kurangiStokSediaan($obat, $jumlah, now());
+                        $obat->stok_total = SediaanObat::where('obat_id', $obat->id)->sum('jumlah');
                         $obat->save();
+
 
                         $resepDetail->status = "diambil";
                         $resepDetail->tanggal_penyerahan = Carbon::now();

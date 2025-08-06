@@ -10,6 +10,7 @@ class SediaanObat extends Model
     protected $table = 'sediaan_obat';
     protected $fillable = [
         'obat_id',
+        'jumlah',
         'tanggal_masuk',
         'tanggal_kadaluarsa',
         'keterangan',

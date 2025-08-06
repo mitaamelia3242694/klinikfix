@@ -43,9 +43,17 @@ class DataKajianAwalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'sistol' => 'required|numeric',
-            'diastol' => 'required|numeric',
-            'suhu_tubuh' => 'required|numeric|between:34,42',
+            // 'pasien_id' => 'required|exists:pasien,id',
+            // 'user_id' => 'required|exists:users,id',
+            'tanggal' => 'required|date',
+            'keluhan_utama' => 'required|string',
+            'sistol' => 'required|string',
+            'diastol' => 'required|string',
+            'suhu_tubuh' => 'required|string',
+            // 'status' => 'required|in:belum,sudah',
+            'diagnosa_awal' => 'nullable|string', // ✅ tambahkan
+            'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
+            'catatan' => 'nullable|string',
         ]);
 
         PengkajianAwal::create($request->all());
