@@ -24,6 +24,7 @@
                     <th>Tindakan</th>
                     <th>Tanggal</th>
                     <th>Dokter</th>
+                    <th>Perawat</th>
                     <th>Catatan</th>
                     {{-- <th>Aksi</th> --}}
                 </tr>
@@ -37,6 +38,7 @@
                         <td>{{ $item->diagnosaAkhir->diagnosa ?? '-' }}</td>
                         <td>{{ $item->tindakan->jenis_tindakan ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}</td>
+                        <td>{{ $item->dokter->nama_lengkap ?? '-' }}</td>
                         <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
                         <td>{{ $item->keluhan ?? '-' }}</td>
                         {{-- <td>

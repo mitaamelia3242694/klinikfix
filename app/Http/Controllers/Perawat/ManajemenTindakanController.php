@@ -21,6 +21,7 @@ class ManajemenTindakanController extends Controller
             'diagnosaAwal',
             'diagnosaAkhir',
             'perawat',
+            'dokter'
         ])
             // ->whereHas('diagnosaAwal')
             // ->whereHas('diagnosaAkhir')
