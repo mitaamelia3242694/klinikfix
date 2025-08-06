@@ -119,7 +119,7 @@
                 <select name="pasien_id" id="pasienSelect" class="input-style" required>
                     <option value="">-- Pilih Pasien --</option>
                     @foreach ($pasiens as $pasien)
-                    <option value="{{ $pasien->id }}">{{ $pasien->nama }} - {{ $pasien->NIK }}</option>
+                    <option value="{{ $pasien->id }}">{{ $pasien->nama }} - {{ $pasien->alamat}}</option>
                     @endforeach
                 </select>
                 <br>
