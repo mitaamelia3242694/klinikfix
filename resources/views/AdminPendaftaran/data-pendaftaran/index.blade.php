@@ -135,7 +135,7 @@
                 <select name="tindakan_id" class="input-style">
                     <option value="">-- Pilih Tindakan --</option>
                     @foreach ($tindakans as $tindakan)
-                    <option value="{{ $tindakan->id }}">{{ $tindakan->jenis_tindakan }}</option>
+                    <option value="{{ $tindakan->id }}">{{ $tindakan->nama_pelayanan }}</option>
                     @endforeach
                 </select>
 

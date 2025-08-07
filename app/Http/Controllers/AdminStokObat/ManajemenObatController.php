@@ -24,6 +24,8 @@ class ManajemenObatController extends Controller
             });
         }
 
+        $query->orderBy('created_at', 'desc');
+
         // Ambil 10 per halaman dan simpan parameter query (seperti filter_bulan)
         $obats = $query->paginate(10)->withQueryString();
 

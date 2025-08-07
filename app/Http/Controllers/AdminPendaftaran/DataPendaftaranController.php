@@ -5,6 +5,7 @@ namespace App\Http\Controllers\AdminPendaftaran;
 use App\Models\User;
 use App\Models\Pasien;
 use App\Models\Tindakan;
+use App\Models\Pelayanan;
 use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use App\Models\AsalPendaftaran;
@@ -28,7 +29,7 @@ class DataPendaftaranController extends Controller
         $pasiens = Pasien::all();
         $dokters = User::where('role_id', '3')->get();
         $perawats = User::where('role_id', '4')->get();
-        $tindakans = Tindakan::all();
+        $tindakans = Pelayanan::all();
         $asals = AsalPendaftaran::all();
 
         return view('AdminPendaftaran.data-pendaftaran.index', compact(
@@ -37,7 +38,7 @@ class DataPendaftaranController extends Controller
             'dokters',
             'perawats',
             'tindakans',
-            'asals'
+            'asals',
         ));
     }
 
@@ -46,7 +47,7 @@ class DataPendaftaranController extends Controller
     $request->validate([
         'pasien_id' => 'required|exists:pasien,id',
         'dokter_id' => 'required|exists:users,id',
-        'tindakan_id' => 'nullable|exists:tindakan,id',
+        'tindakan_id' => 'nullable|exists:pelayanan,id',
         'asal_pendaftaran_id' => 'nullable|exists:asal_pendaftaran,id',
         'status' => 'nullable|string',
         'perawat_id' => 'nullable|exists:users,id',

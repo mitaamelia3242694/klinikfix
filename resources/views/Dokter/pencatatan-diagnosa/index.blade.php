@@ -46,7 +46,7 @@
                         <td>{{ $item->keluhan }}</td>
                         <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-' }}</td>
                         <td>{{ $item->pengkajianAwal->pelayanan->nama_pelayanan ?? '-' }}</td>
-                        <td>{{ $item->pengkajianAwal->catatan ?? '-' }}</td>
+                        <td>{{ $item->diagnosaAkhir->catatan ?? '-' }}</td>
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                                 <a href="{{ route('pencatatan-diagnosa.show', $item->id) }}"
@@ -521,11 +521,11 @@
             document.getElementById('inputTanggalTindakan').value = createdAt;
             document.getElementById('modalTambahTindakan').style.display = 'flex';
         }
-        
+
         // function openModalResep(button) {
             //     const pasienId = button.dataset.pasienId;
             //     const pasienNama = button.dataset.pasienNama;
-            
+
             //     document.getElementById('modalTambahResep').style.display = 'flex';
             //     document.getElementById('resepPasienId').value = pasienId;
             //     document.getElementById('resepPasienNama').value = pasienNama;
@@ -534,12 +534,12 @@
                 const pasienId = button.dataset.pasienId;
                 const pasienNama = button.dataset.pasienNama;
                 const createdAt = button.dataset.createdAt;
-                
+
                 const modal = document.getElementById('modalTambahResep');
                 const inputPasienId = document.getElementById('resepPasienId');
                 const inputPasienNama = document.getElementById('resepPasienNama');
             document.getElementById('inputTanggalResep').value = createdAt;
-                
+
                 if (modal && inputPasienId && inputPasienNama) {
                     modal.style.display = 'flex';
                     inputPasienId.value = pasienId;
@@ -552,22 +552,22 @@
                     if (!inputPasienNama) console.error('Input dengan ID resepPasienNama tidak ditemukan');
                 }
             }
-            
+
             const obatData = @json($obats);
-            
+
             function tambahDetail() {
                 const container = document.getElementById('detailContainer');
                 const newGroup = document.createElement('div');
                 newGroup.classList.add('detail-row-group');
                 newGroup.style.marginBottom = '1rem';
-                
+
                 // Bangun opsi obat
                 let options = '<option value="">-- Pilih Obat --</option>';
                 obatData.forEach(obat => {
                     const satuan = obat.satuan?.nama_satuan || '';
                     options += `<option value="${obat.id}" data-satuan="${satuan}">${obat.nama_obat}</option>`;
                 });
-                
+
                 newGroup.innerHTML = `
                 <select name="obat_id[]" required class="input-style" onchange="updateSatuan(this)">
                 ${options}
