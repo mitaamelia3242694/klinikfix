@@ -92,21 +92,30 @@
                                         class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
                                 @endif
 
-                                <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
+                                <a href="{{ route('data-kajian-awal.create') }}"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-file-medical-alt"></i>
+                                </a>
+
+                                {{-- <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}"
                                     data-created-at="{{ $item->created_at->format('Y-m-d') }}"
                                     onclick="openModalKajian(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-file-medical-alt"></i>
-                                </button>
+                                </button> --}}
 
-                                <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
+                                <a href="{{ route('data-diagnosa-awal.create') }}"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-notes-medical"></i>
+                                </a>
+                                {{-- <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}"
                                     data-created-at="{{ $item->created_at->format('Y-m-d') }}"
                                     onclick="openModalDiagnosa(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-notes-medical"></i>
-                                </button>
+                                </button> --}}
 
                                 <a href="{{ route('manajemen-tindakan.index') }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">

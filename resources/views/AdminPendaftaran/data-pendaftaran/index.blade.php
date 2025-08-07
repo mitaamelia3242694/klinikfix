@@ -33,10 +33,9 @@
                 <th>Pasien</th>
                 <th>Kunjungan</th>
                 <th>Dokter</th>
-                <th>Tindakan</th>
+                <th>Pelayanan</th>
                 <th>Asal</th>
                 <th>Keluhan</th>
-
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -47,10 +46,9 @@
                 <td>{{ $daftar->pasien->nama ?? '-' }}</td>
                 <td>{{ ucfirst($daftar->jenis_kunjungan) }}</td>
                 <td>{{ $daftar->dokter->nama_lengkap ?? '-' }}</td>
-                <td>{{ $daftar->tindakan->jenis_tindakan ?? '-' }}</td>
+                <td>{{ $daftar->tindakan->nama_pelayanan ?? '-' }}</td>
                 <td>{{ $daftar->asalPendaftaran->nama ?? '-' }}</td>
                 <td>{{ $daftar->keluhan ?? '-' }}</td>
-
                 <td>
                     <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                         <a href="{{ route('data-pendaftaran.show', $daftar->id) }}" class="btn btn-info no-underline"><i

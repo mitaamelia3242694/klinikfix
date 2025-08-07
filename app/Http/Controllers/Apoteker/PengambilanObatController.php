@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Apoteker;
 
+use Carbon\Carbon;
+use App\Models\Obat;
 use App\Models\User;
 use App\Models\Resep;
 use App\Models\ResepDetail;
-use Carbon\Carbon;
+use App\Models\SediaanObat;
 use Illuminate\Http\Request;
 use App\Models\PengambilanObat;
-use App\Http\Controllers\Controller;
-use App\Models\Obat;
-use App\Models\SediaanObat;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\PengambilanObatDetail;
 
 class PengambilanObatController extends Controller
 {
@@ -123,8 +125,12 @@ class PengambilanObatController extends Controller
     public function edit($id)
     {
         $pengambilan = PengambilanObat::findOrFail($id);
-        $reseps = ResepDetail::with(['resep.pasien', 'obat'])
-            ->where('resep_id', $pengambilan->resep_id)->get();
+        // $reseps = ResepDetail::with(['resep.pasien', 'obat', 'sediaanObat'])
+        //     ->where('resep_id', $pengambilan->resep_id)->get();
+        $reseps = ResepDetail::with(['resep.pasien', 'obat.sediaan' => function ($query) {
+            $query->where('jumlah', '>', 0) // Hanya yang masih ada stok
+                ->orderBy('tanggal_kadaluarsa', 'asc'); // Urutkan berdasarkan yang paling dekat kadaluarsa
+        }])->where('resep_id', $pengambilan->resep_id)->get();
         $users = User::where('role_id', 5)->get();
 
         return view('Apoteker.pengambilan-obat.edit', compact('pengambilan', 'reseps', 'users'));
@@ -132,25 +138,71 @@ class PengambilanObatController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $checklistIds = $request->input('checklist_ids', []);
+        $sediaanData = $request->input('sediaan', []);
         $checkedReseps = ResepDetail::with('obat')
             ->whereIn('id', $checklistIds)
             ->get();
 
         $pengambilan = PengambilanObat::findOrFail($id);
 
-        foreach ($checkedReseps as $resepDetail) {
+        DB::beginTransaction();
+        try {
+            foreach ($checkedReseps as $resepDetail) {
+                // $resepDetail = ResepDetail::findOrFail($resepId);
 
-            // Tandai resep detail sudah dicheck
-            $resepDetail->tanggal_pengambilan = Carbon::now();
-            $resepDetail->save();
+                // Tandai resep detail sudah dicheck
+                $resepDetail->tanggal_pengambilan = Carbon::now();
+                $resepDetail->save();
+
+                // Kurangi stok sediaan obat
+                if (isset($sediaanData[$resepDetail->id])) {
+                    foreach ($sediaanData[$resepDetail->id] as $sediaanId => $jumlahDiambil) {
+                        if ($jumlahDiambil > 0) {
+                            $sediaan = SediaanObat::find($sediaanId);
+                            if ($sediaan && $sediaan->jumlah >= $jumlahDiambil) {
+                                $sediaan->decrement('jumlah', $jumlahDiambil);
+                                Log::info('Pengambilan detail', [
+                                    'pengambilan_obat_id' => $pengambilan->id,
+                                    'resep_detail_id' => $resepDetail->id,
+                                    'sediaan_obat_id' => $sediaanId,
+                                    'jumlah_diambil' => $jumlahDiambil,
+                                ]);
+
+                                // Catat detail pengambilan
+                                try {
+                                    PengambilanObatDetail::create([
+                                    'pengambilan_obat_id' => $pengambilan->id,
+                                    'resep_detail_id' => $resepDetail->id,
+                                    'sediaan_obat_id' => $sediaanId,
+                                    'jumlah_diambil' => $jumlahDiambil,
+                                ]);
+                                } catch (\Throwable $th) {
+                                    Log::error('Gagal menyimpan detail pengambilan obat', [
+                                        'error' => $th->getMessage(),
+                                        'pengambilan_obat_id' => $pengambilan->id,
+                                        'resep_detail_id' => $resepDetail->id,
+                                        'sediaan_obat_id' => $sediaanId,
+                                        'jumlah_diambil' => $jumlahDiambil,
+                                    ]);
+                                    throw new \Exception('Gagal menyimpan detail pengambilan obat: ' . $th->getMessage());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             $pengambilan->status_checklist = $request->status_checklist;
             $pengambilan->save();
-        }
 
-        return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+            DB::commit();
+
+            return redirect()->route('pengambilan-obat.index')->with('success', 'Data berhasil diperbarui.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     public function show($id)

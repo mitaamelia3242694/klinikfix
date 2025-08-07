@@ -300,7 +300,7 @@
                     `;
                         console.error('Error:', error);
                     });
-            }    
+            }
         </script>
     </section>
 

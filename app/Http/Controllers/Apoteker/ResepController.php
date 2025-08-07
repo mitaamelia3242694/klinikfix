@@ -15,7 +15,7 @@ class ResepController extends Controller
     {
         $keyword = $request->keyword;
 
-        $reseps = Resep::with(['pasien', 'user'])
+        $reseps = Resep::with(['pasien', 'user', 'pengambilanObat'])
             ->when($keyword, function ($query) use ($keyword) {
                 $query->whereHas('pasien', function ($q) use ($keyword) {
                     $q->where('nama', 'like', "%$keyword%");

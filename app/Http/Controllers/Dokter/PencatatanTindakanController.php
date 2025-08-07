@@ -18,7 +18,7 @@ class PencatatanTindakanController extends Controller
     {
         $keyword = $request->keyword;
 
-        $tindakans = Tindakan::with(['pasien', 'user'])
+        $tindakans = Tindakan::with(['pasien', 'user', 'pelayanan'])
             ->when($keyword, function ($query, $keyword) {
                 $query->whereHas('pasien', function ($q) use ($keyword) {
                     $q->where('nama', 'like', "%{$keyword}%");

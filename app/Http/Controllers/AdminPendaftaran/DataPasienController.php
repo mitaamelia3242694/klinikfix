@@ -138,7 +138,7 @@ class DataPasienController extends Controller
                     'nama_pasien' => $item->pasien->nama,
                     'tanggal' => $item->created_at->format('d F Y'),
                     'keluhan' => $item->keluhan ?? '-',
-                    'tindakan' => $item->tindakan->jenis_tindakan ?? '-',
+                    'tindakan' => $item->tindakan->nama_pelayanan ?? '-',
                     'diagnosa_awal' => $item->diagnosaAwal->diagnosa ?? '-',
                     'diagnosa_akhir' => $item->diagnosaAkhir->diagnosa ?? '-',
                     'resep' => $item->resep->isEmpty() ? null : $item->resep->map(function ($resep) {

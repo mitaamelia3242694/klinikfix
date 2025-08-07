@@ -24,4 +24,14 @@ class Obat extends Model
     {
         return $this->hasMany(\App\Models\ResepDetail::class, 'obat_id');
     }
+
+    public function sediaanObat()
+    {
+        return $this->hasMany(SediaanObat::class, 'obat_id');
+    }
+
+    public function pengambilanDetails()
+    {
+        return $this->hasMany(PengambilanObatDetail::class, 'sediaan_obat_id');
+    }
 }

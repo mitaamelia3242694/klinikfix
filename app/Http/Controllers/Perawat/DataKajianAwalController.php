@@ -39,11 +39,22 @@ class DataKajianAwalController extends Controller
         return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans', 'masters'));
     }
 
+    public function create()
+    {
+        $user = Auth::user()->id;
+        return view('Perawat.data-kajian-awal.create', [
+            'pasiens' => Pasien::all(),
+            'perawats' => User::where('id', $user)->first(),
+            'layanans' => Pelayanan::all(),
+            'pendaftarans' => Pendaftaran::with('pasien')->get(),
+        ]);
+    }
+
 
     public function store(Request $request)
     {
         $request->validate([
-            // 'pasien_id' => 'required|exists:pasien,id',
+            'pendaftaran_id' => 'required|exists:pendaftaran,id',
             // 'user_id' => 'required|exists:users,id',
             'tanggal' => 'required|date',
             'keluhan_utama' => 'required|string',
@@ -83,24 +94,28 @@ class DataKajianAwalController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'pasien_id' => 'required|exists:pasien,id',
-            'user_id' => 'required|exists:users,id',
-            'tanggal' => 'required|date',
-            'keluhan_utama' => 'required|string',
-            'sistol' => 'required|string',
-            'diastol' => 'required|string',
-            'suhu_tubuh' => 'required|string',
-            'status' => 'required|in:belum,sudah',
-            'diagnosa_awal' => 'required|string', // ✅ tambahkan
-            'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
-            'catatan' => 'nullable|string',
-        ]);
+        try {
+            $request->validate([
+                'pasien_id' => 'required|exists:pasien,id',
+                'user_id' => 'required|exists:users,id',
+                'tanggal' => 'required|date',
+                'keluhan_utama' => 'required|string',
+                'sistol' => 'required|string',
+                'diastol' => 'required|string',
+                'suhu_tubuh' => 'required|string',
+                // 'status' => 'required|in:belum,sudah',
+                'diagnosa_awal' => 'required|string', // ✅ tambahkan
+                'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
+                'catatan' => 'nullable|string',
+            ]);
 
-        $kajian = PengkajianAwal::findOrFail($id);
-        $kajian->update($request->all());
+            $kajian = PengkajianAwal::findOrFail($id);
+            $kajian->update($request->all());
 
-        return redirect()->route('data-kajian-awal.index')->with('success', 'Data kajian awal berhasil diperbarui.');
+            return redirect()->route('data-kajian-awal.index')->with('success', 'Data kajian awal berhasil diperbarui.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     public function destroy($id)

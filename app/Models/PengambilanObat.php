@@ -24,4 +24,8 @@ class PengambilanObat extends Model
     {
         return $this->belongsTo(User::class); // Relasi ke petugas
     }
+    public function details()
+    {
+        return $this->hasMany(PengambilanObatDetail::class, 'pengambilan_obat_id');
+    }
 }

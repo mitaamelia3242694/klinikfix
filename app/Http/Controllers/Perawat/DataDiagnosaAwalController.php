@@ -32,17 +32,30 @@ class DataDiagnosaAwalController extends Controller
             ->paginate(10)
             ->appends(['search' => $search]);
 
-        $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->get(); // untuk dropdown tambah
+        $pendaftarans = Pendaftaran::whereDate('created_at', Carbon::today())->with('pasien', 'pengkajianAwal')->get(); // untuk dropdown tambah
         $user = Auth::user()->id;
         $perawats = User::where('id', $user)->first();
         return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans', 'search', 'masters', 'layanans', 'perawats'));
+    }
+
+    public function create()
+    {
+        $user = Auth::user()->id;
+        return view('Perawat.data-diagnosa-awal.create', [
+            'masters' => MasterDiagnosa::all(),
+            'pasiens' => Pasien::all(),
+            'perawats' => User::where('id', $user)->first(),
+            'layanans' => Pelayanan::all(),
+            'pendaftarans' => Pendaftaran::with('pasien')->get(),
+        ]);
     }
 
 
     public function store(Request $request)
     {
 
-        $validated = $request->validate([
+        try {
+            $validated = $request->validate([
             'pasien_id' => 'required|exists:pasien,id',
             'user_id' => 'required|exists:users,id',
             'tanggal' => 'required|date',
@@ -63,6 +76,9 @@ class DataDiagnosaAwalController extends Controller
         ]);
 
         return redirect()->route('data-diagnosa-awal.index')->with('success', 'Data berhasil ditambahkan.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Gagal menambahkan data: ' . $th->getMessage());
+        }
     }
 
     public function show($id)

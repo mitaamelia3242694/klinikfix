@@ -21,4 +21,9 @@ class SediaanObat extends Model
     {
         return $this->belongsTo(Obat::class);
     }
+
+    public function pengambilanDetails()
+    {
+        return $this->hasMany(PengambilanObatDetail::class, 'sediaan_obat_id');
+    }
 }

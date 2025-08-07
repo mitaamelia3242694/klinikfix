@@ -34,4 +34,9 @@ class Resep extends Model
     {
         return $this->belongsTo(Pelayanan::class);
     }
+
+    public function pengambilanObat()
+    {
+        return $this->hasOne(PengambilanObat::class, 'resep_id');
+    }
 }

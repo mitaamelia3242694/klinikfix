@@ -36,7 +36,7 @@ class Pendaftaran extends Model
 
     public function tindakan()
     {
-        return $this->belongsTo(Tindakan::class);
+        return $this->belongsTo(Pelayanan::class, 'tindakan_id');
     }
 
     public function asalPendaftaran()

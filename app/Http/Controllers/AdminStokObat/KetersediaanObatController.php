@@ -30,12 +30,12 @@ class KetersediaanObatController extends Controller
             $obat = $sediaan->obat;
 
             // Total resep keluar keseluruhan
-            $sediaan->jumlah_keluar_total = $obat->resepDetails->sum('jumlah');
+            $sediaan->jumlah_keluar_total = $obat->pengambilanDetails->sum('jumlah_diambil');
 
             // Jumlah keluar hari ini
-            $sediaan->jumlah_keluar_hari_ini = $obat->resepDetails
+            $sediaan->jumlah_keluar_hari_ini = $obat->pengambilanDetails
                 ->where('created_at', '>=', Carbon::today())
-                ->sum('jumlah');
+                ->sum('jumlah_diambil');
         }
 
         // Hitung stok tersisa per obat (tidak wajib jika tidak digunakan)
