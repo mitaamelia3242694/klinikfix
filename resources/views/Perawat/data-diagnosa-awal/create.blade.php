@@ -18,8 +18,8 @@
                     onchange="updateTanggalPendaftaran()">
                     <option value="">-- Pilih Pasien --</option>
                     @foreach ($pendaftarans as $item)
-                        <option value="{{ $item->id }}" data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                            data-pelayanan-id="{{ (string) $item->pengkajianAwal->pelayanan_id ?? '' }}">
+                        <option value="{{ $item->pasien->id }}" data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                            data-pelayanan-id="{{ (string) $item->pengkajianAwal?->pelayanan_id ?? '' }}">
                             {{ $item->pasien->nama }}
                         </option>
                     @endforeach

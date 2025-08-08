@@ -46,7 +46,7 @@ class DataDiagnosaAwalController extends Controller
             'pasiens' => Pasien::all(),
             'perawats' => User::where('id', $user)->first(),
             'layanans' => Pelayanan::all(),
-            'pendaftarans' => Pendaftaran::with('pasien')->get(),
+            'pendaftarans' => Pendaftaran::with('pasien', 'pengkajianAwal')->get(),
         ]);
     }
 

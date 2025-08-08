@@ -67,6 +67,7 @@
                             <th>#</th>
                             <th>Obat</th>
                             <th style="width: 50px;">Dosis</th>
+                            <th>Sediaan</th>
                             <th>Checklist</th>
                         </tr>
                     </thead>
@@ -77,6 +78,39 @@
                                 <td>{{ $resep->obat->nama_obat ?? 'Tidak Ada Obat' }}</td>
                                 <td style="text-align: center;">{{ $resep->jumlah ?? 'Tidak Ada Obat' }}</td>
                                 <td>
+                                    @if ($resep->obat->sediaan && $resep->obat->sediaan->count() > 0)
+                                        <table class="table-sediaan">
+                                            @foreach ($resep->obat->sediaan as $sediaan)
+                                                <tr>
+                                                    <td>
+                                                        <div class="sediaan-item">
+                                                            <span>Kadaluarsa:
+                                                                {{ Carbon\Carbon::parse($sediaan->tanggal_kadaluarsa)->translatedFormat('d F Y') }}</span>
+                                                            <span>Stok: {{ $sediaan->jumlah }}</span>
+                                                            <select
+                                                                name="sediaan[{{ $resep->id }}][{{ $sediaan->id }}]"
+                                                                class="select-jumlah">
+                                                                @php
+                                                                    $maxAvailable = min(
+                                                                        $sediaan->jumlah,
+                                                                        $resep->jumlah,
+                                                                    );
+                                                                @endphp
+                                                                @for ($i = 0; $i <= $maxAvailable; $i++)
+                                                                    <option value="{{ $i }}">
+                                                                        {{ $i }}</option>
+                                                                @endfor
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </table>
+                                    @else
+                                        <span style="color: red;">Tidak ada stok tersedia</span>
+                                    @endif
+                                </td>
+                                <td>
                                     <input type="checkbox" class="obat-checkbox" name="checklist_ids[]"
                                         value="{{ $resep->id }}" {{ $resep->status_checklist ? 'checked' : '' }}>
                                 </td>
@@ -85,7 +119,7 @@
                     </tbody>
                 </table>
             </div>
-            <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <div style="margin-top: 1rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                 <a href="{{ route('pengambilan-obat-pasien.index') }}" class="btn-cancel">Batal</a>
                 <button type="submit" class="btn-submit">Update</button>
             </div>
@@ -93,6 +127,40 @@
     </section>
 
     <style>
+        .table-obat {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-obat th,
+        .table-obat td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            vertical-align: top;
+            text-align: left;
+        }
+
+        .table-sediaan {
+            width: 100%;
+            border: none;
+        }
+
+        .sediaan-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 8px;
+            background-color: #f9f9f9;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .select-jumlah {
+            width: 100%;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
         .obat-checklist-container {
             max-height: 300px;
             overflow-y: auto;

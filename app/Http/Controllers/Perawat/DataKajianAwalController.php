@@ -53,24 +53,28 @@ class DataKajianAwalController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'pendaftaran_id' => 'required|exists:pendaftaran,id',
-            // 'user_id' => 'required|exists:users,id',
-            'tanggal' => 'required|date',
-            'keluhan_utama' => 'required|string',
-            'sistol' => 'required|string',
-            'diastol' => 'required|string',
-            'suhu_tubuh' => 'required|string',
-            // 'status' => 'required|in:belum,sudah',
-            'diagnosa_awal' => 'nullable|string', // ✅ tambahkan
-            'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
-            'catatan' => 'nullable|string',
-        ]);
+        try {
+            $request->validate([
+                'pendaftaran_id' => 'required|exists:pendaftaran,id',
+                // 'user_id' => 'required|exists:users,id',
+                'tanggal' => 'required|date',
+                'keluhan_utama' => 'required|string',
+                'sistol' => 'required|string',
+                'diastol' => 'required|string',
+                'suhu_tubuh' => 'required|string',
+                // 'status' => 'required|in:belum,sudah',
+                'diagnosa_awal' => 'nullable|string', // ✅ tambahkan
+                'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
+                'catatan' => 'nullable|string',
+            ]);
 
-        PengkajianAwal::create($request->all());
+            PengkajianAwal::create($request->all());
 
-        return redirect()->route('data-kajian-awal.index')
-            ->with('success', 'Data kajian awal berhasil ditambahkan.');
+            return redirect()->route('data-kajian-awal.index')
+                ->with('success', 'Data kajian awal berhasil ditambahkan.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     public function show($id)

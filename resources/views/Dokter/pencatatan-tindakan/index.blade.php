@@ -43,7 +43,7 @@
                 @foreach ($tindakans as $index => $item)
                     <tr>
                         <td>{{ $tindakans->firstItem() + $index }}</td>
-                        <td>{{ $item->pelayanan->nama_pelayanan ?? '-' }}</td>
+                        <td>{{ $item->jenis_tindakan ?? '-' }}</td>
                         <td>{{ $item->pasien->nama ?? '-' }}</td>
                         <td>{{ $item->user->nama_lengkap ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>

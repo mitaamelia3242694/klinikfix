@@ -55,7 +55,7 @@ class Pendaftaran extends Model
 
     public function pengkajianAwal()
     {
-        return $this->hasOne(PengkajianAwal::class);
+        return $this->hasOne(PengkajianAwal::class, 'pendaftaran_id');
     }
 
     public function diagnosaAwal()

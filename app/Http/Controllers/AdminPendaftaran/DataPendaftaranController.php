@@ -42,44 +42,48 @@ class DataPendaftaranController extends Controller
         ));
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'pasien_id' => 'required|exists:pasien,id',
-        'dokter_id' => 'required|exists:users,id',
-        'tindakan_id' => 'nullable|exists:pelayanan,id',
-        'asal_pendaftaran_id' => 'nullable|exists:asal_pendaftaran,id',
-        'status' => 'nullable|string',
-        'perawat_id' => 'nullable|exists:users,id',
-        'keluhan' => 'nullable|string',
-    ]);
+    public function store(Request $request)
+    {
+        try {
+            $request->validate([
+                'pasien_id' => 'required|exists:pasien,id',
+                'dokter_id' => 'required|exists:users,id',
+                'tindakan_id' => 'nullable|exists:pelayanan,id',
+                'asal_pendaftaran_id' => 'nullable|exists:asal_pendaftaran,id',
+                'status' => 'nullable|string',
+                'perawat_id' => 'nullable|exists:users,id',
+                'keluhan' => 'nullable|string',
+            ]);
 
-    // Cek apakah pasien sudah pernah mendaftar sebelumnya
-    $isPasienExist = Pendaftaran::where('pasien_id', $request->pasien_id)->exists();
+            // Cek apakah pasien sudah pernah mendaftar sebelumnya
+            $isPasienExist = Pendaftaran::where('pasien_id', $request->pasien_id)->exists();
 
-    // Jika pasien sudah pernah mendaftar, set jenis_kunjungan menjadi 'lama'
-    // Kecuali jika secara eksplisit diinput sebagai 'baru'
-    $jenisKunjungan = $isPasienExist ? 'lama' : 'baru';
+            // Jika pasien sudah pernah mendaftar, set jenis_kunjungan menjadi 'lama'
+            // Kecuali jika secara eksplisit diinput sebagai 'baru'
+            $jenisKunjungan = $isPasienExist ? 'lama' : 'baru';
 
-    // Jika input request adalah 'baru', pertahankan 'baru'
-    if ($request->jenis_kunjungan === 'baru') {
-        $jenisKunjungan = 'baru';
+            // Jika input request adalah 'baru', pertahankan 'baru'
+            if ($request->jenis_kunjungan === 'baru') {
+                $jenisKunjungan = 'baru';
+            }
+
+            // Buat data pendaftaran dengan jenis_kunjungan yang sudah disesuaikan
+            Pendaftaran::create([
+                'pasien_id' => $request->pasien_id,
+                'jenis_kunjungan' => $jenisKunjungan,
+                'dokter_id' => $request->dokter_id,
+                'tindakan_id' => $request->tindakan_id,
+                'asal_pendaftaran_id' => $request->asal_pendaftaran_id,
+                'status' => $request->status,
+                'perawat_id' => $request->perawat_id,
+                'keluhan' => $request->keluhan,
+            ]);
+
+            return redirect()->route('data-pendaftaran.index')->with('success', 'Pendaftaran berhasil disimpan.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Gagal menyimpan pendaftaran: ' . $th->getMessage());
+        }
     }
-
-    // Buat data pendaftaran dengan jenis_kunjungan yang sudah disesuaikan
-    Pendaftaran::create([
-        'pasien_id' => $request->pasien_id,
-        'jenis_kunjungan' => $jenisKunjungan,
-        'dokter_id' => $request->dokter_id,
-        'tindakan_id' => $request->tindakan_id,
-        'asal_pendaftaran_id' => $request->asal_pendaftaran_id,
-        'status' => $request->status,
-        'perawat_id' => $request->perawat_id,
-        'keluhan' => $request->keluhan,
-    ]);
-
-    return redirect()->route('data-pendaftaran.index')->with('success', 'Pendaftaran berhasil disimpan.');
-}
 
     // Tampilkan form edit pendaftaran
     public function edit($id)

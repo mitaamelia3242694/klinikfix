@@ -61,8 +61,8 @@
                 </select>
 
                 <!-- Catatan (opsional) -->
-                <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
-                <textarea name="catatan" rows="3" class="form-input"></textarea>
+                <!-- <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
+                <textarea name="catatan" rows="3" class="form-input"></textarea> -->
 
                 <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
                     <a href="{{ route('data-kajian-awal.index') }}" class="btn-cancel">Batal</a>

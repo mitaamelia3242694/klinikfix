@@ -66,7 +66,7 @@ class PencatatanTindakanController extends Controller
         $tindakan = Tindakan::findOrFail($id);
         $pasiens = Pasien::all();
         $user = Auth::user()->id;
-        $dokters = User::where('id', $user)->first();
+        $dokters = User::where('id', $user)->get();
 
         return view('Dokter.pencatatan-tindakan.edit', compact('tindakan', 'pasiens', 'dokters'));
     }

@@ -54,7 +54,7 @@
                         Belum</option>
                 </select>
             </div>
-
+            
             <div class="obat-checklist-container">
                 <table class="table-obat">
                     <thead>
@@ -115,12 +115,12 @@
                     </tbody>
                 </table>
             </div>
-            <div style="display: flex; min-width: 300px;">
-                <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+            <!-- <div style="display: flex; min-width: 300px;"> -->
+                <div style="margin-top: 1rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
                     <a href="{{ route('pengambilan-obat.index') }}" class="btn-cancel">Batal</a>
                     <button type="submit" class="btn-submit">Update</button>
                 </div>
-            </div>
+            <!-- </div> -->
         </form>
     </section>
 
