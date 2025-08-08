@@ -228,6 +228,7 @@ Route::middleware(['auth', 'role:Apoteker'])->group(function () {
     Route::delete('/pengambilan-obat/{id}', [PengambilanObatController::class, 'destroy'])->name('pengambilan-obat.destroy');
 
     Route::get('/resep-obat/{id}', [PengambilanObatController::class, 'getResepDetail']);
+    Route::get('/resep/{id}/info', [PengambilanObatController::class, 'getResepInfo']);
 
 
       // Data Pengambilan Obat

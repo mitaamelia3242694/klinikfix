@@ -15,4 +15,9 @@ class PengambilanObatDetail extends Model
     {
         return $this->belongsTo(PengambilanObat::class);
     }
+
+    public function sediaanObat()
+    {
+        return $this->belongsTo(SediaanObat::class, 'sediaan_obat_id');
+    }
 }

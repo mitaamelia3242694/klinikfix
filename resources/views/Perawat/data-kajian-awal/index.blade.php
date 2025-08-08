@@ -92,10 +92,20 @@
                                         class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
                                 @endif
 
-                                <a href="{{ route('data-kajian-awal.create') }}"
-                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-file-medical-alt"></i>
-                                </a>
+                                {{-- Tombol Tambah Kajian Awal --}}
+                                @if ($item->pengkajianAwal == null)
+                                    <a href="{{ route('data-kajian-awal.create') }}"
+                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                        <i class="fas fa-file-medical-alt"></i>
+                                    </a>
+                                @else
+                                    <!-- Tombol diagnosa dinonaktifkan jika belum ada kajian -->
+                                    <button
+                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:not-allowed;"
+                                        title="Harap isi kajian awal terlebih dahulu" disabled>
+                                        <i class="fas fa-notes-medical"></i>
+                                    </button>
+                                @endif
 
                                 {{-- <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}"
@@ -105,10 +115,18 @@
                                     <i class="fas fa-file-medical-alt"></i>
                                 </button> --}}
 
-                                <a href="{{ route('data-diagnosa-awal.create') }}"
+                                @if ($item->pengkajianAwal->diagnosa_awal == null)
+                                    <a href="{{ route('data-diagnosa-awal.create', ['pendaftaran_id' => $item->id, 'pasien_id' => $item->pasien->id]) }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-notes-medical"></i>
                                 </a>
+                                @else
+                                    <button
+                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:not-allowed;"
+                                        title="Harap isi kajian awal terlebih dahulu" disabled>
+                                        <i class="fas fa-notes-medical"></i>
+                                    </button>
+                                @endif
                                 {{-- <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}"
                                     data-created-at="{{ $item->created_at->format('Y-m-d') }}"
@@ -198,8 +216,7 @@
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                    <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}"
-                        readonly>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}" readonly>
                     <input type="text" class="input-style" value="{{ $perawats->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">

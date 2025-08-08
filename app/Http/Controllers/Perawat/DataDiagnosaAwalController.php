@@ -38,8 +38,14 @@ class DataDiagnosaAwalController extends Controller
         return view('Perawat.data-diagnosa-awal.index', compact('diagnosas', 'pendaftarans', 'search', 'masters', 'layanans', 'perawats'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        $pendaftaran = null;
+
+        if ($request->has('pendaftaran_id')) {
+            $pendaftaran = Pendaftaran::with('pasien')->find($request->pendaftaran_id);
+            $tanggal = $pendaftaran->created_at->format('Y-m-d');
+        }
         $user = Auth::user()->id;
         return view('Perawat.data-diagnosa-awal.create', [
             'masters' => MasterDiagnosa::all(),
@@ -47,6 +53,8 @@ class DataDiagnosaAwalController extends Controller
             'perawats' => User::where('id', $user)->first(),
             'layanans' => Pelayanan::all(),
             'pendaftarans' => Pendaftaran::with('pasien', 'pengkajianAwal')->get(),
+            'pendaftaran' => $pendaftaran,
+            'defaultTanggal' => $tanggal,
         ]);
     }
 
@@ -56,26 +64,26 @@ class DataDiagnosaAwalController extends Controller
 
         try {
             $validated = $request->validate([
-            'pasien_id' => 'required|exists:pasien,id',
-            'user_id' => 'required|exists:users,id',
-            'tanggal' => 'required|date',
-            'diagnosa' => 'required|string',
-            'master_diagnosa_id' => 'required|exists:master_diagnosa,id',
-            'pelayanan_id' => 'nullable|string',
-            'catatan' => 'nullable|string',
-        ]);
+                'pasien_id' => 'required|exists:pasien,id',
+                'user_id' => 'required|exists:users,id',
+                'tanggal' => 'required|date',
+                'diagnosa' => 'required|string',
+                'master_diagnosa_id' => 'required|exists:master_diagnosa,id',
+                'pelayanan_id' => 'nullable|string',
+                'catatan' => 'nullable|string',
+            ]);
 
-        DiagnosaAwal::create([
-            'pasien_id' => $request->pasien_id,
-            'user_id' => $request->user_id,
-            'tanggal' => $request->tanggal,
-            'diagnosa' => $request->diagnosa,
-            'master_diagnosa_id' => $request->master_diagnosa_id,
-            'pelayanan_id' => $request->pelayanan_id,
-            'catatan' => $request->catatan,
-        ]);
+            DiagnosaAwal::create([
+                'pasien_id' => $request->pasien_id,
+                'user_id' => $request->user_id,
+                'tanggal' => $request->tanggal,
+                'diagnosa' => $request->diagnosa,
+                'master_diagnosa_id' => $request->master_diagnosa_id,
+                'pelayanan_id' => $request->pelayanan_id,
+                'catatan' => $request->catatan,
+            ]);
 
-        return redirect()->route('data-diagnosa-awal.index')->with('success', 'Data berhasil ditambahkan.');
+            return redirect()->route('data-diagnosa-awal.index')->with('success', 'Data berhasil ditambahkan.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Gagal menambahkan data: ' . $th->getMessage());
         }

@@ -13,7 +13,7 @@
 
             <div style="flex: 1; min-width: 300px;">
                 <!-- Pilih Pasien -->
-                <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
+                {{-- <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                 <select name="pasien_id" id="selectPasien" class="form-input" required
                     onchange="updateTanggalPendaftaran()">
                     <option value="">-- Pilih Pasien --</option>
@@ -23,10 +23,28 @@
                             {{ $item->pasien->nama }}
                         </option>
                     @endforeach
-                </select>
+                </select> --}}
+                <!-- Pasien (auto-filled) -->
+                <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
+                @if (isset($pendaftaran))
+                    <input type="hidden" name="pasien_id" value="{{ $pendaftaran->id }}">
+                    <input type="text" class="form-input" value="{{ $pendaftaran->pasien->nama }}" readonly>
+                @else
+                    <select name="pasien_id" id="selectPasien" class="form-input" required
+                        onchange="updateTanggalPendaftaran()">
+                        <option value="">-- Pilih Pasien --</option>
+                        @foreach ($pendaftarans as $item)
+                            <option value="{{ $item->pasien->id }}"
+                                data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                data-pelayanan-id="{{ (string) $item->pengkajianAwal?->pelayanan_id ?? '' }}">
+                                {{ $item->pasien->nama }}</option>
+                        @endforeach
+                    </select>
+                @endif
 
                 <label style="display:block; text-align:left;"><strong>Tanggal</strong></label>
-                <input type="date" name="tanggal" required class="form-input" id="tanggalPendaftaran">
+                <input type="date" name="tanggal" required class="form-input"
+                    value="{{ $defaultTanggal ?? date('Y-m-d') }}" id="tanggalPendaftaran">
 
                 <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
                 <textarea name="diagnosa" rows="3" required class="form-input"></textarea>
@@ -39,11 +57,21 @@
                     @endforeach
                 </select>
 
-                <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
+                {{-- <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
                 <select name="pelayanan_id" class="form-input" required disabled>
                     <option value="">-- Pilih Pelayanan --</option>
                     @foreach ($layanans as $layanan)
                         <option value="{{ (string) $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
+                    @endforeach
+                </select> --}}
+                <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
+                <select name="pelayanan_id" class="form-input" required
+                    @if (isset($pendaftaran)) id="pelayananSelect" @else disabled @endif>
+                    <option value="">-- Pilih Pelayanan --</option>
+                    @foreach ($layanans as $layanan)
+                        <option value="{{ $layanan->id }}" @if (isset($pendaftaran) && $pendaftaran->pengkajianAwal && $pendaftaran->pengkajianAwal->pelayanan_id == $layanan->id) selected @endif>
+                            {{ $layanan->nama_pelayanan }}
+                        </option>
                     @endforeach
                 </select>
 
@@ -91,6 +119,21 @@
     </style>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Jika ada pendaftaran yang dipilih, set nilai awal
+            @if (isset($pendaftaran))
+                document.getElementById('tanggalPendaftaran').value = "{{ $defaultTanggal }}";
+
+                const pelayananSelect = document.getElementById('pelayananSelect');
+                if (pelayananSelect) {
+                    pelayananSelect.disabled = false;
+                    @if ($pendaftaran->pengkajianAwal && $pendaftaran->pengkajianAwal->pelayanan_id)
+                        pelayananSelect.value = "{{ $pendaftaran->pengkajianAwal->pelayanan_id }}";
+                    @endif
+                }
+            @endif
+        });
+
         function updateTanggalPendaftaran() {
             const pasienSelect = document.getElementById('selectPasien');
             const selectedOption = pasienSelect.options[pasienSelect.selectedIndex];

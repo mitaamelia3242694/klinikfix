@@ -54,7 +54,7 @@
                         Belum</option>
                 </select>
             </div>
-            
+
             <div class="obat-checklist-container">
                 <table class="table-obat">
                     <thead>
@@ -77,6 +77,16 @@
                                     @if ($resep->obat->sediaan && $resep->obat->sediaan->count() > 0)
                                         <table class="table-sediaan">
                                             @foreach ($resep->obat->sediaan as $sediaan)
+                                                @php
+                                                    // Cari detail pengambilan yang sudah ada
+                                                    $existingDetail = $resep->pengambilanObatDetail->firstWhere(
+                                                        'sediaan_obat_id',
+                                                        $sediaan->id,
+                                                    );
+                                                    $jumlahDiambil = $existingDetail
+                                                        ? $existingDetail->jumlah_diambil
+                                                        : 0;
+                                                @endphp
                                                 <tr>
                                                     <td>
                                                         <div class="sediaan-item">
@@ -85,7 +95,7 @@
                                                             <span>Stok: {{ $sediaan->jumlah }}</span>
                                                             <select
                                                                 name="sediaan[{{ $resep->id }}][{{ $sediaan->id }}]"
-                                                                class="select-jumlah">
+                                                                class="select-jumlah" disabled>
                                                                 @php
                                                                     $maxAvailable = min(
                                                                         $sediaan->jumlah,
@@ -93,8 +103,10 @@
                                                                     );
                                                                 @endphp
                                                                 @for ($i = 0; $i <= $maxAvailable; $i++)
-                                                                    <option value="{{ $i }}">
-                                                                        {{ $i }}</option>
+                                                                    <option value="{{ $i }}"
+                                                                        {{ $i == $jumlahDiambil ? 'selected' : '' }}>
+                                                                        {{ $i }}
+                                                                    </option>
                                                                 @endfor
                                                             </select>
                                                         </div>
@@ -108,18 +120,23 @@
                                 </td>
                                 <td>
                                     <input type="checkbox" class="obat-checkbox" name="checklist_ids[]"
-                                        value="{{ $resep->id }}" {{ $resep->status_checklist ? 'checked' : '' }}>
+                                        value="{{ $resep->id }}"
+                                        {{ $resep->tanggal_pengambilan ? 'checked disabled' : '' }}>
                                 </td>
+                                {{-- <td>
+                                    <input type="checkbox" class="obat-checkbox" name="checklist_ids[]"
+                                        value="{{ $resep->id }}" {{ $resep->status_checklist ? 'checked' : '' }}>
+                                </td> --}}
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
             <!-- <div style="display: flex; min-width: 300px;"> -->
-                <div style="margin-top: 1rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
-                    <a href="{{ route('pengambilan-obat.index') }}" class="btn-cancel">Batal</a>
-                    <button type="submit" class="btn-submit">Update</button>
-                </div>
+            <div style="margin-top: 1rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+                <a href="{{ route('pengambilan-obat.index') }}" class="btn-cancel">Batal</a>
+                <button type="submit" class="btn-submit">Update</button>
+            </div>
             <!-- </div> -->
         </form>
     </section>

@@ -77,10 +77,20 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $resep->obat->nama_obat ?? 'Tidak Ada Obat' }}</td>
                                 <td style="text-align: center;">{{ $resep->jumlah ?? 'Tidak Ada Obat' }}</td>
-                                <td>
+                               <td>
                                     @if ($resep->obat->sediaan && $resep->obat->sediaan->count() > 0)
                                         <table class="table-sediaan">
                                             @foreach ($resep->obat->sediaan as $sediaan)
+                                                @php
+                                                    // Cari detail pengambilan yang sudah ada
+                                                    $existingDetail = $resep->pengambilanObatDetail->firstWhere(
+                                                        'sediaan_obat_id',
+                                                        $sediaan->id,
+                                                    );
+                                                    $jumlahDiambil = $existingDetail
+                                                        ? $existingDetail->jumlah_diambil
+                                                        : 0;
+                                                @endphp
                                                 <tr>
                                                     <td>
                                                         <div class="sediaan-item">
@@ -89,7 +99,7 @@
                                                             <span>Stok: {{ $sediaan->jumlah }}</span>
                                                             <select
                                                                 name="sediaan[{{ $resep->id }}][{{ $sediaan->id }}]"
-                                                                class="select-jumlah">
+                                                                class="select-jumlah" disabled>
                                                                 @php
                                                                     $maxAvailable = min(
                                                                         $sediaan->jumlah,
@@ -97,8 +107,10 @@
                                                                     );
                                                                 @endphp
                                                                 @for ($i = 0; $i <= $maxAvailable; $i++)
-                                                                    <option value="{{ $i }}">
-                                                                        {{ $i }}</option>
+                                                                    <option value="{{ $i }}"
+                                                                        {{ $i == $jumlahDiambil ? 'selected' : '' }}>
+                                                                        {{ $i }}
+                                                                    </option>
                                                                 @endfor
                                                             </select>
                                                         </div>
@@ -112,7 +124,8 @@
                                 </td>
                                 <td>
                                     <input type="checkbox" class="obat-checkbox" name="checklist_ids[]"
-                                        value="{{ $resep->id }}" {{ $resep->status_checklist ? 'checked' : '' }}>
+                                        value="{{ $resep->id }}"
+                                        {{ $resep->tanggal_pengambilan ? 'checked disabled' : '' }}>
                                 </td>
                             </tr>
                         @endforeach
