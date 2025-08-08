@@ -155,13 +155,22 @@
 
                 <label style="display:block; text-align:left;">Keluhan</label>
                 <textarea name="keluhan" class="input-style" rows="3"></textarea>
+                <p style="color: red;">Kalau pasien tidak ditemukan, tambahkan pasien baru !!</p>
 
-                <div style="margin-top: 1rem; text-align:right;">
-                    <button type="button" onclick="document.getElementById('modalTambah').style.display='none'"
-                        class="btn btn-warning">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+
+                <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+                    <!-- Kiri -->
+                    <button type="button" onclick="window.location.href='{{ route('data-pasien.index') }}'" class="btn btn-success">
+                        Tambah Pasien
+                    </button>
+
+                    <!-- Kanan -->
+                    <div>
+                        <button type="button" onclick="document.getElementById('modalTambah').style.display='none'" class="btn btn-warning">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
                 </div>
-            </form>
+
         </div>
     </div>
 </section>
