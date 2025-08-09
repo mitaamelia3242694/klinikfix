@@ -49,10 +49,10 @@
             <tbody>
                 @foreach ($pengkajian as $index => $item)
                     <tr>
-                        <td>{{ $pengkajian->firstItem() + $index }}</td>
-                        <td>{{ $item->pasien->nama ?? '-' }}</td>
-                        <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
-                        <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $item->pasien->nama }}</td>
+                        <td>{{ $item->perawat->nama_lengkap }}</td>
+                        <td>{{ Carbon\Carbon::parse($item->tanggal)->format(' d F Y') }}</td>
                         <td>{{ $item->pengkajianAwal->keluhan_utama ?? '-' }}</td>
                         <td>
                             @if ($item->pengkajianAwal && $item->pengkajianAwal->sistol !== null && $item->pengkajianAwal->diastol !== null)
@@ -81,6 +81,38 @@
                         </td>
 
                         <td>{{ $item->pengkajianAwal->diagnosa_awal ?? '-' }}</td>
+                        <!-- <td>{{ $index + 1 }}</td>
+                        <td>{{ $item->pasien->nama ?? '-' }}</td>
+                        <td>{{ $item->perawat->nama_lengkap ?? '-' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}</td>
+                        <td>{{ $item->keluhan_utama ?? '-' }}</td>
+                        <td>
+                            @if ($item->pengkajianAwal && $item->pengkajianAwal->sistol !== null && $item->pengkajianAwal->diastol !== null)
+                                {{ $item->pengkajianAwal->sistol }} / {{ $item->pengkajianAwal->diastol }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td>{{ $item->pengkajianAwal->suhu_tubuh ?? '-' }}</td>
+                        <td>
+                            @if ($item->pengkajianAwal == null)
+                                -
+                            @elseif($item->pengkajianAwal != null)
+                                @if ($item->pengkajianAwal->status === 'sudah')
+                                    <span
+                                        style="background-color: #28a745; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
+                                        Sudah
+                                    </span>
+                                @elseif ($item->pengkajianAwal->status === 'belum')
+                                    <span
+                                        style="background-color: #6c757d; color: white; padding: 0.3rem 0.6rem; border-radius: 6px;">
+                                        Belum
+                                    </span>
+                                @endif
+                            @endif
+                        </td>
+
+                        <td>{{ $item->pengkajianAwal->diagnosa_awal ?? '-' }}</td> -->
 
                         <td>
                             <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
@@ -93,8 +125,8 @@
                                 @endif
 
                                 {{-- Tombol Tambah Kajian Awal --}}
-                                @if ($item->pengkajianAwal == null)
-                                    <a href="{{ route('data-kajian-awal.create') }}"
+                                @if ($item->keluhan_utama == null)
+                                    <a href="{{ route('data-kajian-awal.create', ['pendaftaran_id' => $item->id, 'pasien_id' => $item->pasien->nama]) }}"
                                         style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                         <i class="fas fa-file-medical-alt"></i>
                                     </a>
@@ -107,15 +139,23 @@
                                     </button>
                                 @endif
 
-                                {{-- <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
+                                <!-- <button class="btn-kajian" data-pasien-id="{{ $item->id }}"
                                     data-pasien-nama="{{ $item->pasien->nama }}"
                                     data-created-at="{{ $item->created_at->format('Y-m-d') }}"
                                     onclick="openModalKajian(this)"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-file-medical-alt"></i>
-                                </button> --}}
+                                </button>
 
-                                @if ($item->pengkajianAwal->diagnosa_awal == null)
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    onclick="openModalDiagnosa(this)"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-notes-medical"></i>
+                                </button> -->
+
+                                @if ($item->diagnosa_awal == null)
                                     <a href="{{ route('data-diagnosa-awal.create', ['pendaftaran_id' => $item->id, 'pasien_id' => $item->pasien->id]) }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-notes-medical"></i>
@@ -127,13 +167,6 @@
                                         <i class="fas fa-notes-medical"></i>
                                     </button>
                                 @endif
-                                {{-- <button class="btn-diagnosa" data-pasien-id="{{ $item->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}"
-                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                                    onclick="openModalDiagnosa(this)"
-                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-notes-medical"></i>
-                                </button> --}}
 
                                 <a href="{{ route('manajemen-tindakan.index') }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
@@ -216,7 +249,8 @@
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
-                    <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}" readonly>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $perawats->id }}"
+                        readonly>
                     <input type="text" class="input-style" value="{{ $perawats->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">

@@ -13,7 +13,7 @@
 
             <div style="flex: 1; min-width: 300px;">
                 <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                <input type="hidden" name="pasien_id" class="form-input" value="{{$kajian->pendaftaran_id}}">
+                <input type="hidden" name="pasien_id" class="form-input" value="{{$kajian->pendaftaran->pasien->id}}">
                 <input type="text" class="form-input" value="{{$kajian->pendaftaran->pasien->nama}}">
 
                 <label style="display:block; text-align:left;"><strong>Perawat</strong></label>
@@ -42,7 +42,7 @@
 
                 <!-- Diagnosa Awal -->
                 <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
-                <textarea name="diagnosa_awal" rows="3" required class="form-input">{{ $kajian->diagnosa_awal }}</textarea>
+                <textarea name="diagnosa_awal" rows="3"  class="form-input">{{ $kajian->diagnosa_awal }}</textarea>
 
                 <!-- Pelayanan -->
                 <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>

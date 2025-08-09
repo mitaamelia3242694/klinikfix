@@ -122,8 +122,7 @@
                         <option value="">-- Pilih Pasien --</option>
                         @foreach ($pendaftarans as $pendaftaran)
                             <option value="{{ $pendaftaran->pasien->id }}"
-                                data-created-at="{{ $pendaftaran->created_at->format('Y-m-d') }}"
-                                data-pelayanan-id="{{ (string) $pendaftaran->pengkajianAwal->pelayanan_id ?? '' }}">
+                                data-created-at="{{ $pendaftaran->created_at->format('Y-m-d') }}">
                                 {{ $pendaftaran->pasien->nama }}
                             </option>
                         @endforeach
@@ -145,10 +144,10 @@
 
                     <!-- Pelayanan -->
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan_id" class="input-style" required disabled>
+                    <select name="pelayanan_id" class="input-style" required>
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $layanan)
-                            <option value="{{ (string) $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
+                            <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
                         @endforeach
                     </select>
 
@@ -333,20 +332,14 @@
 
     <script>
         function updateTanggalPendaftaran() {
-            const selectPasien = document.getElementById('selectPasien');
-            const selectedOption = selectPasien.options[selectPasien.selectedIndex];
+            const select = document.getElementById('selectPasien');
+            const selectedOption = select.options[select.selectedIndex];
+            const createdAt = selectedOption.getAttribute('data-created-at');
 
-            // Ambil tanggal pendaftaran
-            const tanggal = selectedOption.getAttribute('data-created-at');
-            document.getElementById('tanggalPendaftaran').value = tanggal;
-
-            // Ambil pelayanan_id dari pengkajian awal
-            const pelayananId = selectedOption.getAttribute('data-pelayanan-id');
-            const selectPelayanan = document.querySelector('select[name="pelayanan_id"]');
-            if (pelayananId) {
-                selectPelayanan.value = pelayananId;
+            if (createdAt) {
+                document.getElementById('tanggalPendaftaran').value = createdAt;
             } else {
-                selectPelayanan.value = "";
+                document.getElementById('tanggalPendaftaran').value = '';
             }
         }
     </script>

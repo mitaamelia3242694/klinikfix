@@ -62,11 +62,11 @@
                                     <i class="fas fa-pills"></i>
                                 </button>
                             @endif --}}
-                            <a href="{{ route('pengambilan-obat.create') }}"
+                            <a href="{{ route('pengambilan-obat.create', ['resep_id' => $resep->id ?? '-']) }}"
                                     style="padding: 0.5rem 1rem; margin-right: 5px; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-pills"></i>
                                 </a>
-                            <a href="{{ route('pengambilan-obat-pasien.edit', $resep->pengambilanObat->id) }}"
+                            <a href="{{ route('pengambilan-obat-pasien.edit', $resep->pengambilanObat->id ?? '-') }}"
                                 style="padding: 0.5rem 1rem; background:rgb(255, 193, 7); color:#000; border:none; border-radius:8px; cursor:pointer;"><i
                                     class="fas fa-pills"></i></a>
                         </td>

@@ -176,14 +176,120 @@
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const resepSelect = document.getElementById('resep_id');
             const pasienInfoDiv = document.getElementById('pasien-info');
             const daftarObatDiv = document.getElementById('daftar-obat');
 
-            resepSelect.addEventListener('change', function() {
-                const resepId = this.value;
+            // Jika ada resep yang dipilih dari parameter
+            @if(isset($selected_resep_id) && $selected_resep_id)
+                resepSelect.value = '{{ $selected_resep_id }}';
 
+                // Trigger change event untuk memuat data obat
+                const event = new Event('change');
+                resepSelect.dispatchEvent(event);
+            @endif
+            // const resepSelect = document.getElementById('resep_id');
+            // const pasienInfoDiv = document.getElementById('pasien-info');
+            // const daftarObatDiv = document.getElementById('daftar-obat');
+
+            // resepSelect.addEventListener('change', function () {
+            //     const resepId = this.value;
+
+            //     // Reset display
+            //     pasienInfoDiv.style.display = 'none';
+            //     daftarObatDiv.innerHTML =
+            //         '<p style="text-align: center; padding: 1rem; color: #666;">Memuat data...</p>';
+
+            //     if (resepId) {
+            //         fetch(`/resep/${resepId}/info`)
+            //             .then(response => {
+            //                 if (!response.ok) throw new Error('Network response was not ok');
+            //                 return response.json();
+            //             })
+            //             .then(data => {
+            //                 // Update patient info
+            //                 document.getElementById('pasien-nama').textContent = data.pasien.nama;
+            //                 document.getElementById('pasien-dokter').textContent = data.dokter;
+            //                 document.getElementById('pasien-pelayanan').textContent = data.pelayanan;
+            //                 document.getElementById('pasien-tanggal').textContent = data.tanggal;
+            //                 pasienInfoDiv.style.display = 'block';
+
+            //                 // Update medicine list
+            //                 if (data.obat && data.obat.length > 0) {
+            //                     let html = `
+            //                             <table class="table-obat">
+            //                                 <thead>
+            //                                     <tr>
+            //                                         <th>#</th>
+            //                                         <th>Nama Obat</th>
+            //                                         <th>Jumlah</th>
+            //                                         <th>Dosis & Aturan Pakai</th>
+            //                                         <th>Sediaan & Stok</th>
+            //                                         <th>Checklist</th>
+            //                                     </tr>
+            //                                 </thead>
+            //                                 <tbody>
+            //                         `;
+
+            //                     data.obat.forEach((obat, index) => {
+            //                         // Prepare sediaan options
+            //                         let sediaanOptions = '';
+            //                         if (obat.sediaan && obat.sediaan.length > 0) {
+            //                             obat.sediaan.forEach(sediaan => {
+            //                                 const stokClass = sediaan.stok <= 0 ?
+            //                                     'stok-empty' :
+            //                                     (sediaan.stok < obat.jumlah ?
+            //                                         'stok-low' : 'stok-available');
+
+            //                                 sediaanOptions += `
+            //                                         <div class="sediaan-item">
+
+            //                                             <span class="stok-info ${stokClass}">
+            //                                                 Stok: ${sediaan.stok} | Kadaluarsa: ${sediaan.kadaluarsa}
+            //                                             </span>
+            //                                             <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
+            //                                                 ${generateJumlahOptions(obat.jumlah, sediaan.stok)}
+            //                                             </select>
+            //                                         </div>
+            //                                     `;
+            //                             });
+            //                         } else {
+            //                             sediaanOptions =
+            //                                 '<div class="sediaan-item"><em>Tidak ada sediaan tersedia</em></div>';
+            //                         }
+
+            //                         html += `
+            //                                 <tr>
+            //                                     <td>${index + 1}</td>
+            //                                     <td>${obat.nama_obat}</td>
+            //                                     <td>${obat.jumlah}</td>
+            //                                     <td>${obat.dosis} | ${obat.aturan_pakai}</td>
+            //                                     <td>${sediaanOptions}</td>
+            //                                     <td><input type="checkbox" class="obat-checkbox" name="checklist_ids[]" value="${obat.id}"></td>
+            //                                 </tr>
+            //                             `;
+            //                     });
+
+            //                     html += `</tbody></table>`;
+            //                     daftarObatDiv.innerHTML = html;
+            //                 } else {
+            //                     daftarObatDiv.innerHTML =
+            //                         '<p style="text-align: center; padding: 1rem; color: #666;">Tidak ada obat dalam resep ini.</p>';
+            //                 }
+            //             })
+            //             .catch(error => {
+            //                 console.error('Error:', error);
+            //                 daftarObatDiv.innerHTML =
+            //                     '<p style="text-align: center; padding: 1rem; color: red;">Gagal memuat data resep.</p>';
+            //             });
+            //     } else {
+            //         daftarObatDiv.innerHTML =
+            //             '<p style="text-align: center; padding: 1rem; color: #666;">Pilih resep untuk menampilkan daftar obat</p>';
+            //     }
+            // });
+
+            function showResepData(resepId) {
                 // Reset display
                 pasienInfoDiv.style.display = 'none';
                 daftarObatDiv.innerHTML =
@@ -206,19 +312,19 @@
                             // Update medicine list
                             if (data.obat && data.obat.length > 0) {
                                 let html = `
-                                    <table class="table-obat">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Nama Obat</th>
-                                                <th>Jumlah</th>
-                                                <th>Dosis & Aturan Pakai</th>
-                                                <th>Sediaan & Stok</th>
-                                                <th>Checklist</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                `;
+                                <table class="table-obat">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nama Obat</th>
+                                            <th>Jumlah</th>
+                                            <th>Dosis & Aturan Pakai</th>
+                                            <th>Sediaan & Stok</th>
+                                            <th>Checklist</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                            `;
 
                                 data.obat.forEach((obat, index) => {
                                     // Prepare sediaan options
@@ -231,16 +337,15 @@
                                                     'stok-low' : 'stok-available');
 
                                             sediaanOptions += `
-                                                <div class="sediaan-item">
-
-                                                    <span class="stok-info ${stokClass}">
-                                                        Stok: ${sediaan.stok} | Kadaluarsa: ${sediaan.kadaluarsa}
-                                                    </span>
-                                                    <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
-                                                        ${generateJumlahOptions(obat.jumlah, sediaan.stok)}
-                                                    </select>
-                                                </div>
-                                            `;
+                                            <div class="sediaan-item">
+                                                <span class="stok-info ${stokClass}">
+                                                    Stok: ${sediaan.stok} | Kadaluarsa: ${sediaan.kadaluarsa}
+                                                </span>
+                                                <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
+                                                    ${generateJumlahOptions(obat.jumlah, sediaan.stok)}
+                                                </select>
+                                            </div>
+                                        `;
                                         });
                                     } else {
                                         sediaanOptions =
@@ -248,19 +353,22 @@
                                     }
 
                                     html += `
-                                        <tr>
-                                            <td>${index + 1}</td>
-                                            <td>${obat.nama_obat}</td>
-                                            <td>${obat.jumlah}</td>
-                                            <td>${obat.dosis} | ${obat.aturan_pakai}</td>
-                                            <td>${sediaanOptions}</td>
-                                            <td><input type="checkbox" class="obat-checkbox" name="checklist_ids[]" value="${obat.id}"></td>
-                                        </tr>
-                                    `;
+                                    <tr>
+                                        <td>${index + 1}</td>
+                                        <td>${obat.nama_obat}</td>
+                                        <td>${obat.jumlah}</td>
+                                        <td>${obat.dosis} | ${obat.aturan_pakai}</td>
+                                        <td>${sediaanOptions}</td>
+                                        <td><input type="checkbox" class="obat-checkbox" name="checklist_ids[]" value="${obat.id}"></td>
+                                    </tr>
+                                `;
                                 });
 
                                 html += `</tbody></table>`;
                                 daftarObatDiv.innerHTML = html;
+
+                                // Auto-update status berdasarkan checklist
+                                updateStatusChecklist();
                             } else {
                                 daftarObatDiv.innerHTML =
                                     '<p style="text-align: center; padding: 1rem; color: #666;">Tidak ada obat dalam resep ini.</p>';
@@ -275,7 +383,19 @@
                     daftarObatDiv.innerHTML =
                         '<p style="text-align: center; padding: 1rem; color: #666;">Pilih resep untuk menampilkan daftar obat</p>';
                 }
+            }
+
+            // Jika ada resep yang dipilih dari parameter
+            @if(isset($selected_resep_id) && $selected_resep_id)
+                resepSelect.value = '{{ $selected_resep_id }}';
+                showResepData('{{ $selected_resep_id }}');
+            @endif
+
+            // Event listener untuk perubahan select
+            resepSelect.addEventListener('change', function () {
+                showResepData(this.value);
             });
+
 
             // Function to generate jumlah options
             function generateJumlahOptions(jumlahResep, stok) {
@@ -315,7 +435,7 @@
             }
 
             // Event delegation for dynamically loaded checkboxes
-            document.addEventListener('change', function(e) {
+            document.addEventListener('change', function (e) {
                 if (e.target.classList.contains('obat-checkbox')) {
                     updateStatusChecklist();
                 }

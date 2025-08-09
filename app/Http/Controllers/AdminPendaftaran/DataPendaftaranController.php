@@ -10,6 +10,7 @@ use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use App\Models\AsalPendaftaran;
 use App\Http\Controllers\Controller;
+use App\Models\PengkajianAwal;
 
 class DataPendaftaranController extends Controller
 {
@@ -78,6 +79,19 @@ class DataPendaftaranController extends Controller
                 'perawat_id' => $request->perawat_id,
                 'keluhan' => $request->keluhan,
             ]);
+
+            // PengkajianAwal::create([
+            //     'pendaftaran_id' => $pendaftaran->id,
+            //     'user_id' => auth()->user()->id,
+            //     'tanggal' => now(),
+            //     // 'keluhan_utama' => $request->keluhan,
+            //     // 'sistol' => $request->sistol,
+            //     // 'diastol' => $request->diastol,
+            //     // 'suhu_tubuh' => $request->suhu_tubuh,
+            //     // 'diagnosa_awal' => $request->diagnosa_awal,
+            //     'pelayanan_id' => $request->pelayanan_id,
+            //     // 'catatan' => $request->catatan,
+            // ]);
 
             return redirect()->route('data-pendaftaran.index')->with('success', 'Pendaftaran berhasil disimpan.');
         } catch (\Throwable $th) {

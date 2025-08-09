@@ -14,6 +14,7 @@ use App\Models\Pendaftaran;
 use App\Models\PengkajianAwal;
 use App\Models\Tindakan;
 use Carbon\Carbon;
+use App\Models\Resep;
 use Illuminate\Support\Facades\Auth;
 
 class PencatatanDiagnosaController extends Controller
@@ -49,8 +50,6 @@ class PencatatanDiagnosaController extends Controller
 
         return view('Dokter.pencatatan-diagnosa.index', compact('pendaftarans', 'dokters', 'masters', 'layanans', 'obats', 'tindakans'));
     }
-
-
 
     public function store(Request $request)
     {

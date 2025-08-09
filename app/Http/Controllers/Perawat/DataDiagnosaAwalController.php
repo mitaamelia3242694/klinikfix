@@ -28,7 +28,7 @@ class DataDiagnosaAwalController extends Controller
                     $q->where('nama_lengkap', 'like', '%' . $search . '%');
                 });
             })
-            ->orderBy('tanggal', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->appends(['search' => $search]);
 

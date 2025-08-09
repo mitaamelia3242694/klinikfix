@@ -15,15 +15,14 @@ use Illuminate\Support\Facades\Auth;
 
 class DataKajianAwalController extends Controller
 {
-
     public function index(Request $request)
     {
         $search = $request->search;
 
-        $pengkajian = Pendaftaran::where('perawat_id', auth()->user()->id)->with(['perawat'])
+        $pengkajian = Pendaftaran::with(['perawat', 'pasien', 'pengkajianAwal'])
             ->when($search, function ($query, $search) {
-                $query->whereHas('perawat', function ($q) use ($search) {
-                    $q->where('perawat_id', 'like', "%$search%");
+                $query->whereHas('pasien', function ($q) use ($search) {
+                    $q->where('nama_lengkap', 'like', "%$search%");
                 });
             })
             ->latest()
@@ -39,17 +38,20 @@ class DataKajianAwalController extends Controller
         return view('Perawat.data-kajian-awal.index', compact('pengkajian', 'pendaftarans', 'perawats', 'layanans', 'masters'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $user = Auth::user()->id;
+        $selectedPasien = $request->pendaftaran_id;
+        $selectedPelayanan = $request->pelayanan_id;
         return view('Perawat.data-kajian-awal.create', [
             'pasiens' => Pasien::all(),
             'perawats' => User::where('id', $user)->first(),
             'layanans' => Pelayanan::all(),
             'pendaftarans' => Pendaftaran::with('pasien')->get(),
+            'selectedPasien' => $selectedPasien, // Tambahkan ini untuk mengirim ID pendaftaran yang dipilih
+            'selectedPelayanan' => $selectedPelayanan, // Tambahkan ini untuk mengirim ID pelayanan yang dipilih
         ]);
     }
-
 
     public function store(Request $request)
     {
@@ -108,7 +110,7 @@ class DataKajianAwalController extends Controller
                 'diastol' => 'required|string',
                 'suhu_tubuh' => 'required|string',
                 // 'status' => 'required|in:belum,sudah',
-                'diagnosa_awal' => 'required|string', // ✅ tambahkan
+                'diagnosa_awal' => 'nullable|string', // ✅ tambahkan
                 'pelayanan_id' => 'required|exists:pelayanan,id', // ✅ tambahkan
                 'catatan' => 'nullable|string',
             ]);

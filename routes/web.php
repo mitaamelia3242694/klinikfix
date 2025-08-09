@@ -220,7 +220,7 @@ Route::middleware(['auth', 'role:Apoteker'])->group(function () {
 
     // Data Pengambilan Obat
     Route::get('/pengambilan-obat', [PengambilanObatController::class, 'index'])->name('pengambilan-obat.index');
-    Route::get('/pengambilan-obat/create', [PengambilanObatController::class, 'create'])->name('pengambilan-obat.create');
+    Route::get('/pengambilan-obat/create/{resep_id?}', [PengambilanObatController::class, 'create'])->name('pengambilan-obat.create');
     Route::post('/pengambilan-obat', [PengambilanObatController::class, 'store'])->name('pengambilan-obat.store');
     Route::get('/pengambilan-obat/{id}', [PengambilanObatController::class, 'show'])->name('pengambilan-obat.show');
     Route::get('/pengambilan-obat/{id}/edit', [PengambilanObatController::class, 'edit'])->name('pengambilan-obat.edit');

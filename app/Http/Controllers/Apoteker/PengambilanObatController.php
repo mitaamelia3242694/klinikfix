@@ -77,11 +77,28 @@ class PengambilanObatController extends Controller
         ]);
     }
 
-    public function create()
+    // public function create()
+    // {
+    //     $reseps = Resep::with('pasien')->get();
+    //     $users = User::where('role_id', 5)->get(); // Assuming role_id 5 is for pharmacists
+    //     return view('Apoteker.pengambilan-obat.create', compact('reseps', 'users'));
+    // }
+    public function create($resep_id = null)
     {
         $reseps = Resep::with('pasien')->get();
-        $users = User::where('role_id', 5)->get(); // Assuming role_id 5 is for pharmacists
-        return view('Apoteker.pengambilan-obat.create', compact('reseps', 'users'));
+        $users = User::where('role_id', 5)->get();
+
+        // jika ada parameter resep_id, ambil data resep tersebut
+        $selected_resep_id = null;
+        if ($resep_id) {
+            $selected_resep_id = Resep::find($resep_id);
+        }
+
+        return view('Apoteker.pengambilan-obat.create', [
+            'reseps' => $reseps,
+            'users' => $users,
+            'selected_resep_id' => $resep_id // Kirim ID resep yang dipilih
+        ]);
     }
 
     public function store(Request $request)

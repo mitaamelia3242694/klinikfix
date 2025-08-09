@@ -16,7 +16,7 @@
                 <select name="pendaftaran_id" class="form-input" required>
                     <option value="">-- Pilih Pasien --</option>
                     @foreach ($pendaftarans as $item)
-                        <option value="{{ $item->id }}">{{ $item->pasien->nama }}</option>
+                        <option value="{{ $item->id }}" {{ isset($selectedPasien) && $selectedPasien == $item->id ? 'selected' : '' }}>{{ $item->pasien->nama }}</option>
                     @endforeach
                 </select>
 
@@ -48,7 +48,7 @@
 
             <div style="flex: 1; min-width: 300px;">
                 <!-- Diagnosa Awal -->
-                <label style="display:block; text-align:left;"><strong>Diagnosa Awal</strong></label>
+                <label style="display:block; text-align:left;"><strong>Kajian Awal</strong></label>
                 <textarea name="diagnosa_awal" rows="3" class="form-input"></textarea>
 
                 <!-- Pelayanan -->
@@ -56,7 +56,7 @@
                 <select name="pelayanan_id" class="form-input" required>
                     <option value="">-- Pilih Pelayanan --</option>
                     @foreach ($layanans as $layanan)
-                        <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
+                        <option value="{{ $layanan->id }}" {{ isset($selectedPelayanan) && $selectedPelayanan == $layanan->id ? 'selected' : '' }}>{{ $layanan->nama_pelayanan }}</option>
                     @endforeach
                 </select>
 

@@ -13,7 +13,7 @@
 
             <div style="flex: 1; min-width: 300px;">
                 <!-- Pilih Pasien -->
-                {{-- <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
+                <!-- <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                 <select name="pasien_id" id="selectPasien" class="form-input" required
                     onchange="updateTanggalPendaftaran()">
                     <option value="">-- Pilih Pasien --</option>
@@ -23,11 +23,11 @@
                             {{ $item->pasien->nama }}
                         </option>
                     @endforeach
-                </select> --}}
+                </select> -->
                 <!-- Pasien (auto-filled) -->
                 <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
                 @if (isset($pendaftaran))
-                    <input type="hidden" name="pasien_id" value="{{ $pendaftaran->id }}">
+                    <input type="hidden" name="pasien_id" value="{{ $pendaftaran->pasien->id }}">
                     <input type="text" class="form-input" value="{{ $pendaftaran->pasien->nama }}" readonly>
                 @else
                     <select name="pasien_id" id="selectPasien" class="form-input" required
