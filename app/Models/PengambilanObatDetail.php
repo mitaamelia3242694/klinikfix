@@ -20,4 +20,8 @@ class PengambilanObatDetail extends Model
     {
         return $this->belongsTo(SediaanObat::class, 'sediaan_obat_id');
     }
+    public function resepDetail()
+    {
+        return $this->belongsTo(ResepDetail::class, 'resep_detail_id');
+    }
 }

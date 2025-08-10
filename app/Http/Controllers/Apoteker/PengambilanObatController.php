@@ -184,7 +184,7 @@ class PengambilanObatController extends Controller
 
     public function edit($id)
     {
-        $pengambilan = PengambilanObat::with(['resep.pasien', 'details.sediaanObat'])->findOrFail($id);
+        $pengambilan = PengambilanObat::with(['resep.pasien', 'details.sediaanObat',  'details.resepDetail.obat.sediaan'])->findOrFail($id);
         $reseps = ResepDetail::with(['obat.sediaan', 'pengambilanObatDetail'])
             ->where('resep_id', $pengambilan->resep_id)
             ->get();

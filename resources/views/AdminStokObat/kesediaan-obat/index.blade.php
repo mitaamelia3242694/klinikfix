@@ -401,7 +401,7 @@
 
                     console.log(
                         `Obat: ${sediaan.obat?.nama_obat}, Kadaluarsa: ${sediaan.tanggal_kadaluarsa}, Selisih hari: ${diffDays}`
-                        );
+                    );
 
                     // Filter: tampilkan jika <= 90 hari (termasuk yang sudah kadaluarsa)
                     if (diffDays <= 90) {
@@ -455,14 +455,24 @@
                 } = getRowStyle(daysDiff);
 
                 // Perhitungan stok akhir yang benar
-                const stokTotal = sediaan.obat?.stok_total || 0;
-                const jumlahKeluar = calculateJumlahKeluar(sediaan);
+                // const stokTotal = sediaan.obat?.stok_total || 0;
+                // const jumlahKeluar = calculateJumlahKeluar(sediaan);
+                // const jumlahKeluar = sediaan.jumlah_keluar_hari_ini || 0;
+                // const stokAkhir = Math.max(stokTotal - jumlahKeluar, 0);
+                // const isDemoData = jumlahKeluar > 0 && sediaan.pengambilan_details.length === 0;
+                const obat = sediaan.obat || {};
+                const stokTotal = obat.stok_total || 0;
+                const jumlahKeluar = sediaan.jumlah_keluar_hari_ini || 0;
                 const stokAkhir = Math.max(stokTotal - jumlahKeluar, 0);
+
+                // Safe check for pengambilan_details
+                const pengambilanDetails = sediaan.pengambilan_details || [];
+                const isDemoData = jumlahKeluar > 0 && pengambilanDetails.length === 0;
 
                 // Debug logging untuk stok akhir
                 console.log(
                     `Obat: ${sediaan.obat?.nama_obat}, Stok Total: ${stokTotal}, Jumlah Keluar: ${jumlahKeluar}, Stok Akhir: ${stokAkhir}`
-                    );
+                );
 
                 html += `
                 <tr class="${rowClass}">
@@ -474,8 +484,11 @@
                     <td>${sediaan.obat?.satuan?.nama_satuan || '-'}</td>
                     <td>${sediaan.obat?.stok_total}</td> <!-- total -->
                     <td>
-                        ${(sediaan.jumlah_keluar_total || 0) > 0 ?
-                            `<span style="color:red; font-weight:bold;">Berkurang (${sediaan.jumlah_keluar_total}) hari ini</span>` :
+                        ${jumlahKeluar > 0 ?
+                            `<span style="color:red; font-weight:bold;">
+                                            Berkurang (${jumlahKeluar}) hari ini
+
+                                        </span>` :
                             '<span style="color:gray;">-</span>'
                         }
                     </td>
@@ -627,17 +640,17 @@
             summaryContent.innerHTML = `
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 ${expired > 0 ? `<div style="background: #ffcdd2; padding: 12px; border-radius: 8px; border-left: 4px solid #f44336;">
-                        <div style="font-weight: bold; color: #d32f2f;">🚨 Sudah Kadaluarsa</div>
-                        <div style="font-size: 24px; color: #d32f2f;">${expired} obat</div>
-                    </div>` : ''}
+                                    <div style="font-weight: bold; color: #d32f2f;">🚨 Sudah Kadaluarsa</div>
+                                    <div style="font-size: 24px; color: #d32f2f;">${expired} obat</div>
+                                </div>` : ''}
                 ${warning > 0 ? `<div style="background: #ffe0b2; padding: 12px; border-radius: 8px; border-left: 4px solid #ff9800;">
-                        <div style="font-weight: bold; color: #f57c00;">⚠️ Kritis (≤30 hari)</div>
-                        <div style="font-size: 24px; color: #f57c00;">${warning} obat</div>
-                    </div>` : ''}
+                                    <div style="font-weight: bold; color: #f57c00;">⚠️ Kritis (≤30 hari)</div>
+                                    <div style="font-size: 24px; color: #f57c00;">${warning} obat</div>
+                                </div>` : ''}
                 ${caution > 0 ? `<div style="background: #fff9c4; padding: 12px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                        <div style="font-weight: bold; color: #f9a825;">🔔 Perhatian (31-90 hari)</div>
-                        <div style="font-size: 24px; color: #f9a825;">${caution} obat</div>
-                    </div>` : ''}
+                                    <div style="font-weight: bold; color: #f9a825;">🔔 Perhatian (31-90 hari)</div>
+                                    <div style="font-size: 24px; color: #f9a825;">${caution} obat</div>
+                                </div>` : ''}
                 <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; border-left: 4px solid #2196f3;">
                     <div style="font-weight: bold; color: #1976d2;">📋 Total Ditampilkan</div>
                     <div style="font-size: 24px; color: #1976d2;">${data.length} obat</div>
@@ -695,19 +708,19 @@
         }
 
         function hitungStok(select) {
-        const selectedOption = select.options[select.selectedIndex];
-        const totalStok = parseInt(selectedOption.dataset.total || 0);
-        const jumlahInput = document.getElementById('jumlahInput');
-        const stokAwal = document.getElementById('stokAwal');
-        const stokAkhir = document.getElementById('stokAkhir');
-        const totalStokInput = document.getElementById('totalStok');
+            const selectedOption = select.options[select.selectedIndex];
+            const totalStok = parseInt(selectedOption.dataset.total || 0);
+            const jumlahInput = document.getElementById('jumlahInput');
+            const stokAwal = document.getElementById('stokAwal');
+            const stokAkhir = document.getElementById('stokAkhir');
+            const totalStokInput = document.getElementById('totalStok');
 
-        jumlahInput.addEventListener('input', () => {
-            const jumlah = parseInt(jumlahInput.value || 0);
-            stokAwal.value = totalStok;
-            stokAkhir.value = totalStok + jumlah;
-            totalStokInput.value = totalStok + jumlah;
-        });
-    }
+            jumlahInput.addEventListener('input', () => {
+                const jumlah = parseInt(jumlahInput.value || 0);
+                stokAwal.value = totalStok;
+                stokAkhir.value = totalStok + jumlah;
+                totalStokInput.value = totalStok + jumlah;
+            });
+        }
     </script>
 @endsection

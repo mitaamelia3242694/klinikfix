@@ -23,7 +23,10 @@ class SediaanObat extends Model
     }
 
     public function pengambilanDetails()
-    {
-        return $this->hasMany(PengambilanObatDetail::class, 'sediaan_obat_id');
-    }
+{
+    return $this->hasMany(PengambilanObatDetail::class, 'sediaan_obat_id')
+                ->with(['pengambilanObat' => function($query) {
+                    $query->select('id', 'tanggal_pengambilan');
+                }]);
+}
 }

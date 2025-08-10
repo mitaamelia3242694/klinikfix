@@ -39,4 +39,8 @@ class Resep extends Model
     {
         return $this->hasOne(PengambilanObat::class, 'resep_id');
     }
+
+    public function pengambilanObatDetail() {
+        return $this->hasMany(PengambilanObatDetail::class, 'resep_id');
+    }
 }

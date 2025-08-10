@@ -28,7 +28,7 @@ class ResepDetail extends Model
 
     public function pengambilanObatDetail()
     {
-        return $this->hasOne(PengambilanObatDetail::class, 'pengambilan_obat_id');
+        return $this->hasOne(PengambilanObatDetail::class, 'resep_detail_id');
     }
 
     public function scopeSudahDiambil($query)

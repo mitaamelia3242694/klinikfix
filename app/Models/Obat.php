@@ -32,6 +32,14 @@ class Obat extends Model
 
     public function pengambilanDetails()
     {
-        return $this->hasMany(PengambilanObatDetail::class, 'sediaan_obat_id');
+        // Relasi melalui sediaan obat
+        return $this->hasManyThrough(
+            PengambilanObatDetail::class,
+            SediaanObat::class,
+            'obat_id', // Foreign key di sediaan_obat
+            'sediaan_obat_id', // Foreign key di pengambilan_obat_detail
+            'id', // Local key di obat
+            'id' // Local key di sediaan_obat
+        );
     }
 }

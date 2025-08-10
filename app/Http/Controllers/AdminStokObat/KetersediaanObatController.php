@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\AdminStokObat;
 
+use Log;
 use Carbon\Carbon;
 use App\Models\Obat;
 use App\Models\SediaanObat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\PengambilanObatDetail;
 
 class KetersediaanObatController extends Controller
 {
@@ -29,28 +31,43 @@ class KetersediaanObatController extends Controller
 
         $sediaans = $query->get();
         $obats = Obat::with('satuan', 'resepDetails', 'sediaan')->get();
+        // Tambahkan di controller sebelum foreach
+        $pengambilanHariIni = PengambilanObatDetail::whereDate('created_at', Carbon::today())
+            ->select('sediaan_obat_id', DB::raw('SUM(jumlah_diambil) as total'))
+            ->groupBy('sediaan_obat_id')
+            ->get()
+            ->keyBy('sediaan_obat_id');
+
+        Log::debug("Data Pengambilan Hari Ini", $pengambilanHariIni->toArray());
 
         foreach ($sediaans as $sediaan) {
-            $obat = $sediaan->obat;
+            // Hitung total keluar untuk batch ini (semua waktu)
+            $totalKeluar = $sediaan->pengambilanDetails()->sum('jumlah_diambil');
 
-            // Total keluar (global) dari stok_total
-            $totalKeluar = $obat->pengambilanDetails->sum('jumlah_diambil');
-            $keluarHariIni = $obat->pengambilanDetails
-                ->where('created_at', '>=', Carbon::today())
+            // Hitung pengambilan hari ini untuk batch ini
+            $keluarHariIni = $sediaan->pengambilanDetails()
+                ->whereDate('created_at', Carbon::today())
+                ->sum('jumlah_diambil');
+
+            // Untuk demo, kita set nilai default jika tidak ada data
+            // $defaultValue = $sediaan->jumlah <= 5 ? 5 : 4;
+            // $keluarHariIni = $keluarHariIni > 0 ? $keluarHariIni : $defaultValue;
+            $keluarHariIni = $sediaan->pengambilanDetails()
+                ->whereDate('created_at', Carbon::today())
                 ->sum('jumlah_diambil');
 
             $sediaan->jumlah_keluar_total = $totalKeluar;
             $sediaan->jumlah_keluar_hari_ini = $keluarHariIni;
+            $sediaan->stok_akhir = max($sediaan->jumlah - $totalKeluar, 0);
 
-            // stok awal global sebelum batch ini masuk
-            $stokAwalGlobal = $obat->stok_total - $sediaan->jumlah;
-            $sediaan->stok_awal = max($stokAwalGlobal, 0);
-
-            // stok akhir = stok_total - total keluar (global)
-            $sediaan->stok_akhir = max($obat->stok_total - $totalKeluar, 0);
-
-            // Simpan stok_total global biar view bisa akses
-            $sediaan->stok_total_global = $obat->stok_total;
+            Log::debug("Sediaan Final", [
+                'id' => $sediaan->id,
+                'nama_obat' => $sediaan->obat->nama_obat,
+                'jumlah_batch' => $sediaan->jumlah,
+                'keluar_hari_ini' => $keluarHariIni,
+                'total_keluar' => $totalKeluar,
+                'stok_akhir' => $sediaan->stok_akhir
+            ]);
         }
 
         // Hitung stok tersisa per obat
@@ -129,8 +146,6 @@ class KetersediaanObatController extends Controller
         return redirect()->route('kesediaan-obat.index')
             ->with('success', 'Data berhasil diperbarui dan stok ditambahkan.');
     }
-
-
 
     public function destroy($id)
     {
