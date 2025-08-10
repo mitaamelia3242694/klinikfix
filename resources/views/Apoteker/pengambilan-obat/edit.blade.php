@@ -92,7 +92,7 @@
                                                         <div class="sediaan-item">
                                                             <span>Kadaluarsa:
                                                                 {{ Carbon\Carbon::parse($sediaan->tanggal_kadaluarsa)->translatedFormat('d F Y') }}</span>
-                                                            <span>Stok: {{ $sediaan->jumlah }}</span>
+                                                            <span>Stok: {{ $sediaan->obat->stok_total }}</span>
                                                             <select
                                                                 name="sediaan[{{ $resep->id }}][{{ $sediaan->id }}]"
                                                                 class="select-jumlah" disabled>

@@ -25,7 +25,7 @@
                     <th>Tanggal</th>
                     <th>Dokter</th>
                     <th>Perawat</th>
-                    <th>Catatan</th>
+                    <th>Keluhan</th>
                     {{-- <th>Aksi</th> --}}
                 </tr>
             </thead>

@@ -54,31 +54,55 @@
                                 <a href="{{ route('pencatatan-diagnosa.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
 
-                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}"
-                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                                    data-master-id="{{ $item->diagnosaAwal->master_diagnosa_id ?? '' }}"
-                                    data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
-                                    onclick="openModalDiagnosa(this)"
-                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-stethoscope"></i>
-                                </button>
+                                @if ($item->diagnosaAkhir == null)
+                                    <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
+                                        data-pasien-nama="{{ $item->pasien->nama }}"
+                                        data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                        data-master-id="{{ $item->diagnosaAwal->master_diagnosa_id ?? '' }}"
+                                        data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
+                                        onclick="openModalDiagnosa(this)"
+                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                        <i class="fas fa-stethoscope"></i>
+                                    </button>
+                                @else
+                                    <button class="btn-diagnosa"
+                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;"
+                                        disabled>
+                                        <i class="fas fa-stethoscope"></i>
+                                    </button>
+                                @endif
 
-                                <button class="btn-tindakan" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}"
-                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}" onclick="openModalTindakan(this)"
-                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-hand-holding-heart"></i>
-                                </button>
+                                @if ($item->diagnosaAkhir->tanggal == null)
+                                    <button class="btn-tindakan" data-pasien-id="{{ $item->pasien->id }}"
+                                        data-pasien-nama="{{ $item->pasien->nama }}"
+                                        data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                        onclick="openModalTindakan(this)"
+                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                        <i class="fas fa-hand-holding-heart"></i>
+                                    </button>
+                                @else
+                                    <button class="btn-tindakan"
+                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;">
+                                        <i class="fas fa-hand-holding-heart"></i>
+                                    </button>
+                                @endif
 
-                                <button class="btn-resep" data-pasien-id="{{ $item->pasien->id }}"
-                                    data-pasien-nama="{{ $item->pasien->nama }}"
-                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                                    data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
-                                    onclick="openModalResep(this)"
-                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                    <i class="fas fa-prescription-bottle-alt"></i>
-                                </button>
+                                @if ($item->pengkajianAwal->pelayanan_id == null)
+                                    <button class="btn-resep" data-pasien-id="{{ $item->pasien->id }}"
+                                        data-pasien-nama="{{ $item->pasien->nama }}"
+                                        data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                        data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
+                                        onclick="openModalResep(this)"
+                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                        <i class="fas fa-prescription-bottle-alt"></i>
+                                    </button>
+                                @else
+                                    <button class="btn-diagnosa"
+                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;"
+                                        disabled>
+                                        <i class="fas fa-prescription-bottle-alt"></i>
+                                    </button>
+                                @endif
 
                                 <a href="{{ route('rekam-medis.index') }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
@@ -141,7 +165,8 @@
                     <textarea name="diagnosa" rows="3" required class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
-                    <select name="master_diagnosa_id" required class="input-style" onmousedown="return false;" style="pointer-events: none;">
+                    <select name="master_diagnosa_id" required class="input-style" onmousedown="return false;"
+                        style="pointer-events: none;">
                         <option value="">-- Pilih Diagnosa --</option>
                         @foreach ($masters as $master)
                             <option value="{{ $master->id }}">{{ $master->nama }}</option>
@@ -150,7 +175,8 @@
 
                     <!-- Pelayanan -->
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan_id" class="input-style" required onmousedown="return false;" style="pointer-events: none;">
+                    <select name="pelayanan_id" class="input-style" required onmousedown="return false;"
+                        style="pointer-events: none;">
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $layanan)
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
@@ -161,7 +187,8 @@
                     <textarea name="catatan" rows="2" class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
-                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}" readonly>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}"
+                        readonly>
                     <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
@@ -202,13 +229,15 @@
                     </select>
 
                     <label style="display:block; text-align:left;"><strong>Tarif</strong></label>
-                    <input type="number" step="0.01" name="tarif" id="tarif" required class="input-style" readonly>
+                    <input type="number" step="0.01" name="tarif" id="tarif" required class="input-style"
+                        readonly>
 
                     <label style="display:block; text-align:left;"><strong>Catatan</strong></label>
                     <textarea name="catatan" rows="2" class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
-                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}" readonly>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}"
+                        readonly>
                     <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <div style="display:flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
@@ -241,11 +270,13 @@
                     <input type="date" name="tanggal" class="input-style" id="inputTanggalResep" required>
 
                     <label style="display:block; text-align:left;"><strong>Dokter</strong></label>
-                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}" readonly>
+                    <input type="hidden" name="user_id" class="input-style" required value="{{ $dokters->id }}"
+                        readonly>
                     <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan_id" required class="input-style" onmousedown="return false;" style="pointer-events: none;">
+                    <select name="pelayanan_id" required class="input-style" onmousedown="return false;"
+                        style="pointer-events: none;">
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $pelayanan)
                             <option value="{{ $pelayanan->id }}">{{ $pelayanan->nama_pelayanan }}</option>
@@ -485,7 +516,7 @@
 
     <script>
         // Sembunyikan alert setelah 5 detik
-        window.onload = function () {
+        window.onload = function() {
             const successAlert = document.getElementById('successAlert');
             if (successAlert) {
                 setTimeout(() => {
@@ -647,11 +678,11 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('jenis_tindakan');
             const tarifInput = document.getElementById('tarif');
 
-            select.addEventListener('change', function () {
+            select.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
                 const biaya = selectedOption.getAttribute('data-biaya');
                 tarifInput.value = biaya ? parseFloat(biaya) : '';
