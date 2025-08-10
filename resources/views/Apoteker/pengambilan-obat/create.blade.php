@@ -331,18 +331,18 @@
                                     let sediaanOptions = '';
                                     if (obat.sediaan && obat.sediaan.length > 0) {
                                         obat.sediaan.forEach(sediaan => {
-                                            const stokClass = sediaan.stok <= 0 ?
+                                            const stokClass = obat.stok_total <= 0 ?
                                                 'stok-empty' :
-                                                (sediaan.stok < obat.jumlah ?
+                                                (obat.stok_total < obat.jumlah ?
                                                     'stok-low' : 'stok-available');
 
                                             sediaanOptions += `
                                             <div class="sediaan-item">
                                                 <span class="stok-info ${stokClass}">
-                                                    Stok: ${sediaan.stok} | Kadaluarsa: ${sediaan.kadaluarsa}
+                                                    Stok: ${obat.stok_total} | Kadaluarsa: ${sediaan.kadaluarsa}
                                                 </span>
                                                 <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
-                                                    ${generateJumlahOptions(obat.jumlah, sediaan.stok)}
+                                                    ${generateJumlahOptions(obat.jumlah, obat.stok_total)}
                                                 </select>
                                             </div>
                                         `;

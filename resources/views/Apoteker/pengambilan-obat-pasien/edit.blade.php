@@ -83,7 +83,7 @@
                                             @foreach ($resep->obat->sediaan as $sediaan)
                                                 @php
                                                     // Cari detail pengambilan yang sudah ada
-                                                    $existingDetail = $resep->pengambilanObatDetail->firstWhere(
+                                                    $existingDetail = $resep->pengambilanObatDetail?->firstWhere(
                                                         'sediaan_obat_id',
                                                         $sediaan->id,
                                                     );
@@ -125,7 +125,7 @@
                                 <td>
                                     <input type="checkbox" class="obat-checkbox" name="checklist_ids[]"
                                         value="{{ $resep->id }}"
-                                        {{ $resep->tanggal_pengambilan ? 'checked disabled' : '' }}>
+                                        {{ $resep->tanggal_pengambilan ? 'checked disabled' : '' }} checked>
                                 </td>
                             </tr>
                         @endforeach

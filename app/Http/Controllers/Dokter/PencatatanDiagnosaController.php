@@ -59,7 +59,7 @@ class PencatatanDiagnosaController extends Controller
             'tanggal' => 'required|date',
             'diagnosa' => 'required|string',
             'master_diagnosa_id' => 'required|exists:master_diagnosa,id',
-            'pelayanan' => 'nullable|string',
+            'pelayanan_id' => 'required|exists:pelayanan,id',
             'catatan' => 'nullable|string',
         ]);
 

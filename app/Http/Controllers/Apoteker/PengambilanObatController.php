@@ -62,6 +62,7 @@ class PengambilanObatController extends Controller
                     'jumlah' => $item->jumlah,
                     'dosis' => $item->dosis,
                     'aturan_pakai' => $item->aturan_pakai,
+                    'stok_total' => $item->obat->stok_total,
                     'sediaan' => $item->obat->sediaan->map(function ($sediaan) {
                         return [
                             'id' => $sediaan->id,
@@ -133,7 +134,10 @@ class PengambilanObatController extends Controller
                                 throw new \Exception("Stok tidak mencukupi untuk {$resepDetail->obat->nama_obat}");
                             }
 
-                            $sediaan->decrement('jumlah', $jumlahDiambil);
+                            // $sediaan->decrement('jumlah', $jumlahDiambil);
+
+                            $obat = $sediaan->obat;
+                            $obat->decrement('stok_total', $jumlahDiambil);
 
                             PengambilanObatDetail::create([
                                 'pengambilan_obat_id' => $pengambilan->id,

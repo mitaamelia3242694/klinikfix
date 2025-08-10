@@ -13,7 +13,7 @@
             <div style="flex: 1; min-width: 300px;">
                 <!-- Pilih Pasien -->
                 <label style="display:block; text-align:left;"><strong>Pasien</strong></label>
-                <select name="pendaftaran_id" class="form-input" required>
+                <select name="pendaftaran_id" class="form-input" required onmousedown="return false;">
                     <option value="">-- Pilih Pasien --</option>
                     @foreach ($pendaftarans as $item)
                         <option value="{{ $item->id }}" {{ isset($selectedPasien) && $selectedPasien == $item->id ? 'selected' : '' }}>{{ $item->pasien->nama }}</option>
@@ -53,7 +53,7 @@
 
                 <!-- Pelayanan -->
                 <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                <select name="pelayanan_id" class="form-input" required>
+                <select name="pelayanan_id" class="form-input" required onemousedown="return false;" style="pointer-events: none;">
                     <option value="">-- Pilih Pelayanan --</option>
                     @foreach ($layanans as $layanan)
                         <option value="{{ $layanan->id }}" {{ isset($selectedPelayanan) && $selectedPelayanan == $layanan->id ? 'selected' : '' }}>{{ $layanan->nama_pelayanan }}</option>

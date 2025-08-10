@@ -141,7 +141,7 @@
                     <textarea name="diagnosa" rows="3" required class="input-style"></textarea>
 
                     <label style="display:block; text-align:left;"><strong>Master Diagnosa</strong></label>
-                    <select name="master_diagnosa_id" required class="input-style" disabled>
+                    <select name="master_diagnosa_id" required class="input-style" onmousedown="return false;" style="pointer-events: none;">
                         <option value="">-- Pilih Diagnosa --</option>
                         @foreach ($masters as $master)
                             <option value="{{ $master->id }}">{{ $master->nama }}</option>
@@ -150,7 +150,7 @@
 
                     <!-- Pelayanan -->
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan_id" class="input-style" required disabled>
+                    <select name="pelayanan_id" class="input-style" required onmousedown="return false;" style="pointer-events: none;">
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $layanan)
                             <option value="{{ $layanan->id }}">{{ $layanan->nama_pelayanan }}</option>
@@ -245,7 +245,7 @@
                     <input type="text" class="input-style" value="{{ $dokters->nama_lengkap }}" readonly>
 
                     <label style="display:block; text-align:left;"><strong>Pelayanan</strong></label>
-                    <select name="pelayanan_id" required class="input-style" disabled>
+                    <select name="pelayanan_id" required class="input-style" onmousedown="return false;" style="pointer-events: none;">
                         <option value="">-- Pilih Pelayanan --</option>
                         @foreach ($layanans as $pelayanan)
                             <option value="{{ $pelayanan->id }}">{{ $pelayanan->nama_pelayanan }}</option>

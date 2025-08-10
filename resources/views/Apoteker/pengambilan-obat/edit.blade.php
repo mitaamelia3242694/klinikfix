@@ -79,7 +79,7 @@
                                             @foreach ($resep->obat->sediaan as $sediaan)
                                                 @php
                                                     // Cari detail pengambilan yang sudah ada
-                                                    $existingDetail = $resep->pengambilanObatDetail->firstWhere(
+                                                    $existingDetail = $resep->pengambilanObatDetail?->firstWhere(
                                                         'sediaan_obat_id',
                                                         $sediaan->id,
                                                     );

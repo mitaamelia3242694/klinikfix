@@ -42,7 +42,15 @@ class DataKajianAwalController extends Controller
     {
         $user = Auth::user()->id;
         $selectedPasien = $request->pendaftaran_id;
-        $selectedPelayanan = $request->pelayanan_id;
+        // $selectedPelayanan = $request->pelayanan_id;
+        $selectedPelayanan = null;
+
+        if ($selectedPasien) {
+            $pendaftaran = Pendaftaran::with('tindakan')->find($selectedPasien);
+            if ($pendaftaran && $pendaftaran->tindakan) {
+                $selectedPelayanan = $pendaftaran->tindakan->id; // ambil dari data pasien
+            }
+        }
         return view('Perawat.data-kajian-awal.create', [
             'pasiens' => Pasien::all(),
             'perawats' => User::where('id', $user)->first(),

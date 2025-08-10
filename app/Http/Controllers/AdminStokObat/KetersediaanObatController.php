@@ -16,34 +16,48 @@ class KetersediaanObatController extends Controller
         SediaanObat::where('tanggal_kadaluarsa', '<', Carbon::now())
             ->where('status', 'aktif')
             ->update(['status' => 'kadaluarsa']);
-        $query = SediaanObat::with('obat.satuan', 'obat.resepDetails')->where('status', 'aktif')->latest();
 
-        // Filter untuk obat hampir kadaluarsa
+        $query = SediaanObat::with([
+            'obat.satuan',
+            'obat.resepDetails',
+            'obat.pengambilanDetails' // pastikan relasi ini ada
+        ])->where('status', 'aktif')->latest();
+
         if ($request->has('expiring_soon')) {
             $query->whereDate('tanggal_kadaluarsa', '<=', Carbon::now()->addDays(7));
         }
 
         $sediaans = $query->get();
-        $obats = Obat::with('satuan', 'resepDetails')->get();
+        $obats = Obat::with('satuan', 'resepDetails', 'sediaan')->get();
 
         foreach ($sediaans as $sediaan) {
             $obat = $sediaan->obat;
 
-            // Total resep keluar keseluruhan
-            $sediaan->jumlah_keluar_total = $obat->pengambilanDetails->sum('jumlah_diambil');
-
-            // Jumlah keluar hari ini
-            $sediaan->jumlah_keluar_hari_ini = $obat->pengambilanDetails
+            // Total keluar (global) dari stok_total
+            $totalKeluar = $obat->pengambilanDetails->sum('jumlah_diambil');
+            $keluarHariIni = $obat->pengambilanDetails
                 ->where('created_at', '>=', Carbon::today())
                 ->sum('jumlah_diambil');
+
+            $sediaan->jumlah_keluar_total = $totalKeluar;
+            $sediaan->jumlah_keluar_hari_ini = $keluarHariIni;
+
+            // stok awal global sebelum batch ini masuk
+            $stokAwalGlobal = $obat->stok_total - $sediaan->jumlah;
+            $sediaan->stok_awal = max($stokAwalGlobal, 0);
+
+            // stok akhir = stok_total - total keluar (global)
+            $sediaan->stok_akhir = max($obat->stok_total - $totalKeluar, 0);
+
+            // Simpan stok_total global biar view bisa akses
+            $sediaan->stok_total_global = $obat->stok_total;
         }
 
-        // Hitung stok tersisa per obat (tidak wajib jika tidak digunakan)
+        // Hitung stok tersisa per obat
         foreach ($obats as $obat) {
-            $jumlahTerpakai = $obat->resepDetails()->sum('jumlah');
-            $obat->stok_tersisa = $obat->stok_total - $jumlahTerpakai;
+            // $jumlahTerpakai = $obat->resepDetails()->sum('jumlah');
+            $obat->stok_tersisa = $obat->stok_total;
         }
-
 
         $start = Carbon::now()->startOfMonth()->toDateString();
         $end = Carbon::now()->endOfMonth()->toDateString();
@@ -52,14 +66,7 @@ class KetersediaanObatController extends Controller
             ->whereBetween('created_at', [$start, $end])
             ->groupBy('obat_id', 'tanggal')
             ->get()
-            ->groupBy('obat_id'); // hasilnya: $riwayatObat[obat_id] => list harian
-
-        foreach ($obats as $obat) {
-            $obat->jumlah = $obat->sediaan->sum('jumlah') ?? 0;
-            $obat->stok_awal = 0;
-            $obat->stok_akhir = 0;
-            $obat->stok_total = $obat->stok_total ?? 0;
-        }
+            ->groupBy('obat_id');
 
         return view('AdminStokObat.kesediaan-obat.index', compact('sediaans', 'obats', 'riwayatObat'));
     }
