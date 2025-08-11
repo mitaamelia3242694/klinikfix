@@ -23,7 +23,7 @@ class PencatatanDiagnosaController extends Controller
     {
         $keyword = $request->keyword;
 
-        $pendaftarans = Pendaftaran::with(['pasien', 'dokter'])
+        $pendaftarans = Pendaftaran::with(['pasien', 'dokter', 'diagnosaAwal'])
             ->when($keyword, function ($query, $keyword) {
                 $query->whereHas('pasien', function ($q) use ($keyword) {
                     $q->where('nama', 'like', "%{$keyword}%");
@@ -63,7 +63,25 @@ class PencatatanDiagnosaController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        DiagnosaAkhir::create($request->all());
+        // Ambil ID pendaftaran dari terbaru
+        $pendaftaran = Pendaftaran::where('pasien_id', $request->pasien_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$pendaftaran) {
+            return redirect()->back()->withErrors(['error' => 'Pendaftaran tidak ditemukan untuk pasien ini.']);
+        }
+
+        DiagnosaAkhir::create([
+            'pendaftaran_id' => $pendaftaran->id,
+            'pasien_id' => $request->pasien_id,
+            'user_id' => $request->user_id,
+            'tanggal' => $request->tanggal,
+            'diagnosa' => $request->diagnosa,
+            'master_diagnosa_id' => $request->master_diagnosa_id,
+            'pelayanan_id' => $request->pelayanan_id,
+            'catatan' => $request->catatan,
+        ]);
 
         return redirect()->route('pencatatan-diagnosa.index')->with('success', 'Diagnosa berhasil ditambahkan.');
     }

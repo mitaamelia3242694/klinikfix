@@ -73,7 +73,17 @@ class DataDiagnosaAwalController extends Controller
                 'catatan' => 'nullable|string',
             ]);
 
+            // Ambil ID pendaftaran terbaru
+            $pendaftaran = Pendaftaran::where('pasien_id', $request->pasien_id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if (!$pendaftaran) {
+                return redirect()->back()->with('error', 'Pendaftaran tidak ditemukan untuk pasien ini.');
+            }
+
             DiagnosaAwal::create([
+                'pendaftaran_id' => $pendaftaran->id,
                 'pasien_id' => $request->pasien_id,
                 'user_id' => $request->user_id,
                 'tanggal' => $request->tanggal,

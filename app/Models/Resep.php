@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Resep extends Model
 {
     protected $table = 'resep';
-    protected $fillable = ['pasien_id', 'user_id', 'tanggal', 'catatan',   'pelayanan_id'];
+    protected $fillable = ['pendaftaran_id', 'pasien_id', 'user_id', 'pelayanan_id', 'tanggal', 'catatan'];
 
     public function pasien()
     {

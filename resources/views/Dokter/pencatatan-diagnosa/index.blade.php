@@ -54,55 +54,54 @@
                                 <a href="{{ route('pencatatan-diagnosa.edit', $item->id) }}"
                                     class="btn btn-warning no-underline"><i class="fas fa-pen"></i></a>
 
-                                @if ($item->diagnosaAkhir == null)
-                                    <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
-                                        data-pasien-nama="{{ $item->pasien->nama }}"
-                                        data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                                        data-master-id="{{ $item->diagnosaAwal->master_diagnosa_id ?? '' }}"
-                                        data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
-                                        onclick="openModalDiagnosa(this)"
-                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                        <i class="fas fa-stethoscope"></i>
-                                    </button>
-                                @else
+                                {{-- @if ($item->diagnosaAkhir == null) --}}
+                                <button class="btn-diagnosa" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    {{-- data-master-id="{{ \App\Models\DiagnosaAwal::where('pasien_id', $item->pasien_id)->whereDate('tanggal', $item->created_at)->value('master_diagnosa_id') ?? '' }}" --}}
+                                    data-master-id="{{ $item->diagnosaAwal->master_diagnosa_id ?? '' }}"
+                                    data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
+                                    onclick="openModalDiagnosa(this)"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-stethoscope"></i>
+                                </button>
+                                {{-- @else
                                     <button class="btn-diagnosa"
-                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;"
-                                        disabled>
-                                        <i class="fas fa-stethoscope"></i>
-                                    </button>
-                                @endif
+                                    style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;" disabled>
+                                    <i class="fas fa-stethoscope"></i>
+                                </button>
+                                @endif --}}
 
-                                @if ($item->diagnosaAkhir->tanggal == null)
-                                    <button class="btn-tindakan" data-pasien-id="{{ $item->pasien->id }}"
-                                        data-pasien-nama="{{ $item->pasien->nama }}"
-                                        data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                                        onclick="openModalTindakan(this)"
-                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                        <i class="fas fa-hand-holding-heart"></i>
-                                    </button>
-                                @else
+                                {{-- @if ($item->jenis_tindakan == null) --}}
+                                <button class="btn-tindakan" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    onclick="openModalTindakan(this)"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                </button>
+                                {{-- @else
                                     <button class="btn-tindakan"
-                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;">
-                                        <i class="fas fa-hand-holding-heart"></i>
-                                    </button>
-                                @endif
+                                    style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                </button>
+                                @endif --}}
 
-                                @if ($item->pengkajianAwal->pelayanan_id == null)
-                                    <button class="btn-resep" data-pasien-id="{{ $item->pasien->id }}"
-                                        data-pasien-nama="{{ $item->pasien->nama }}"
-                                        data-created-at="{{ $item->created_at->format('Y-m-d') }}"
-                                        data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
-                                        onclick="openModalResep(this)"
-                                        style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
-                                        <i class="fas fa-prescription-bottle-alt"></i>
-                                    </button>
-                                @else
+                                {{-- @if ($item->pengkajianAwal->pelayanan_id == null) --}}
+                                <button class="btn-resep" data-pasien-id="{{ $item->pasien->id }}"
+                                    data-pasien-nama="{{ $item->pasien->nama }}"
+                                    data-created-at="{{ $item->created_at->format('Y-m-d') }}"
+                                    data-pelayanan-id="{{ $item->pengkajianAwal->pelayanan_id ?? '' }}"
+                                    onclick="openModalResep(this)"
+                                    style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
+                                    <i class="fas fa-prescription-bottle-alt"></i>
+                                </button>
+                                {{-- @else
                                     <button class="btn-diagnosa"
-                                        style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;"
-                                        disabled>
-                                        <i class="fas fa-prescription-bottle-alt"></i>
+                                    style="padding: 0.5rem 1rem; background:#ccc; color:#666; border:none; border-radius:8px; cursor:pointer;" disabled>
+                                    <i class="fas fa-prescription-bottle-alt"></i>
                                     </button>
-                                @endif
+                                @endif --}}
 
                                 <a href="{{ route('rekam-medis.index') }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">

@@ -155,7 +155,7 @@
                                     <i class="fas fa-notes-medical"></i>
                                 </button> -->
 
-                                @if ($item->diagnosaAwal == null)
+                                @if ($item->diagnosaAwal != null)
                                     <a href="{{ route('data-diagnosa-awal.create', ['pendaftaran_id' => $item->id, 'pasien_id' => $item->pasien->id]) }}"
                                     style="padding: 0.5rem 1rem; background:rgb(33, 106, 178); color:#fff; border:none; border-radius:8px; cursor:pointer;">
                                     <i class="fas fa-notes-medical"></i>

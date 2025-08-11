@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Resep;
 use App\Models\Pasien;
 use App\Models\Pelayanan;
+use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -45,7 +46,19 @@ class ResepController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        Resep::create($request->all());
+        // Ambil ID Pendaftaran Pasien
+        $pendaftaran = Pendaftaran::where('pasien_id', $request->pasien_id)
+            ->where('created_at', 'desc')
+            ->first();
+
+        Resep::create([
+            'pendaftaran_id' => $pendaftaran->id,
+            'pasien_id' => $request->pasien_id,
+            'user_id' => $request->user_id,
+            'pelayanan_id' => $request->pelayanan_id,
+            'tanggal' => $request->tanggal,
+            'catatan' => $request->catatan,
+        ]);
 
         return redirect()->route('data-resep.index')->with('success', 'Data resep berhasil ditambahkan.');
     }

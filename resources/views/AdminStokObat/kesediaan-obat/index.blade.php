@@ -492,7 +492,7 @@
                             '<span style="color:gray;">-</span>'
                         }
                     </td>
-                    <td>${formatDate(sediaan.tanggal_keluar)}</td>
+                    <td>${formatDate(sediaan.pengambilanDetails?.created_at)}</td>
                     <td style="font-weight: bold; color: ${sediaan.obat?.stok_total <= 10 ? '#dc3545' : sediaan.obat?.stok_total <= 50 ? '#ffc107' : '#28a745'};">
                         ${sediaan.obat?.stok_total}
                         ${sediaan.obat?.stok_total <= 10 ? ' <small style="color: #dc3545;">(Stok Rendah)</small>' : ''}

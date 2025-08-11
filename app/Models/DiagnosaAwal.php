@@ -11,13 +11,14 @@ class DiagnosaAwal extends Model
     protected $table = 'diagnosa_awal';
     protected $fillable = [
         'pasien_id',
+        'pendaftaran_id',
         'user_id',
+        'master_diagnosa_id',
+        'pelayanan_id',
         'tanggal',
         'diagnosa',
         'catatan',
-        'master_diagnosa_id',
         'status',
-        'pelayanan_id',
     ];
 
     public function pasien()
