@@ -173,16 +173,29 @@
         .stok-empty {
             color: red;
         }
+
+        .kadaluarsa-aman {
+            color: green;
+        }
+
+        .kadaluarsa-warning {
+            color: orange;
+        }
+
+        .kadaluarsa-dekat {
+            color: red;
+            font-weight: bold;
+        }
     </style>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const resepSelect = document.getElementById('resep_id');
             const pasienInfoDiv = document.getElementById('pasien-info');
             const daftarObatDiv = document.getElementById('daftar-obat');
 
             // Jika ada resep yang dipilih dari parameter
-            @if(isset($selected_resep_id) && $selected_resep_id)
+            @if (isset($selected_resep_id) && $selected_resep_id)
                 resepSelect.value = '{{ $selected_resep_id }}';
 
                 // Trigger change event untuk memuat data obat
@@ -218,19 +231,19 @@
             //                 // Update medicine list
             //                 if (data.obat && data.obat.length > 0) {
             //                     let html = `
-            //                             <table class="table-obat">
-            //                                 <thead>
-            //                                     <tr>
-            //                                         <th>#</th>
-            //                                         <th>Nama Obat</th>
-            //                                         <th>Jumlah</th>
-            //                                         <th>Dosis & Aturan Pakai</th>
-            //                                         <th>Sediaan & Stok</th>
-            //                                         <th>Checklist</th>
-            //                                     </tr>
-            //                                 </thead>
-            //                                 <tbody>
-            //                         `;
+        //                             <table class="table-obat">
+        //                                 <thead>
+        //                                     <tr>
+        //                                         <th>#</th>
+        //                                         <th>Nama Obat</th>
+        //                                         <th>Jumlah</th>
+        //                                         <th>Dosis & Aturan Pakai</th>
+        //                                         <th>Sediaan & Stok</th>
+        //                                         <th>Checklist</th>
+        //                                     </tr>
+        //                                 </thead>
+        //                                 <tbody>
+        //                         `;
 
             //                     data.obat.forEach((obat, index) => {
             //                         // Prepare sediaan options
@@ -243,16 +256,16 @@
             //                                         'stok-low' : 'stok-available');
 
             //                                 sediaanOptions += `
-            //                                         <div class="sediaan-item">
+        //                                         <div class="sediaan-item">
 
-            //                                             <span class="stok-info ${stokClass}">
-            //                                                 Stok: ${sediaan.stok} | Kadaluarsa: ${sediaan.kadaluarsa}
-            //                                             </span>
-            //                                             <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
-            //                                                 ${generateJumlahOptions(obat.jumlah, sediaan.stok)}
-            //                                             </select>
-            //                                         </div>
-            //                                     `;
+        //                                             <span class="stok-info ${stokClass}">
+        //                                                 Stok: ${sediaan.stok} | Kadaluarsa: ${sediaan.kadaluarsa}
+        //                                             </span>
+        //                                             <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
+        //                                                 ${generateJumlahOptions(obat.jumlah, sediaan.stok)}
+        //                                             </select>
+        //                                         </div>
+        //                                     `;
             //                             });
             //                         } else {
             //                             sediaanOptions =
@@ -260,15 +273,15 @@
             //                         }
 
             //                         html += `
-            //                                 <tr>
-            //                                     <td>${index + 1}</td>
-            //                                     <td>${obat.nama_obat}</td>
-            //                                     <td>${obat.jumlah}</td>
-            //                                     <td>${obat.dosis} | ${obat.aturan_pakai}</td>
-            //                                     <td>${sediaanOptions}</td>
-            //                                     <td><input type="checkbox" class="obat-checkbox" name="checklist_ids[]" value="${obat.id}"></td>
-            //                                 </tr>
-            //                             `;
+        //                                 <tr>
+        //                                     <td>${index + 1}</td>
+        //                                     <td>${obat.nama_obat}</td>
+        //                                     <td>${obat.jumlah}</td>
+        //                                     <td>${obat.dosis} | ${obat.aturan_pakai}</td>
+        //                                     <td>${sediaanOptions}</td>
+        //                                     <td><input type="checkbox" class="obat-checkbox" name="checklist_ids[]" value="${obat.id}"></td>
+        //                                 </tr>
+        //                             `;
             //                     });
 
             //                     html += `</tbody></table>`;
@@ -288,6 +301,37 @@
             //             '<p style="text-align: center; padding: 1rem; color: #666;">Pilih resep untuk menampilkan daftar obat</p>';
             //     }
             // });
+            function getKadaluarsaStatus(kadaluarsaDate) {
+                try {
+                    // Pastikan format tanggal benar (YYYY-MM-DD)
+                    const dateParts = kadaluarsaDate.split('-');
+                    const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    const kadaluarsa = new Date(formattedDate);
+                    kadaluarsa.setHours(0, 0, 0, 0);
+
+                    const diffTime = kadaluarsa - today;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                    console.log('Kadaluarsa:', kadaluarsaDate, 'Hari lagi:', diffDays); // Debug log
+
+                    if (diffDays <= 0) {
+                        return 'kadaluarsa-dekat'; // Sudah kadaluarsa
+                    } else if (diffDays <= 7) {
+                        return 'kadaluarsa-dekat'; // Kurang dari 8 hari
+                    } else if (diffDays <= 30) {
+                        return 'kadaluarsa-warning'; // Kurang dari 30 hari
+                    } else {
+                        return 'kadaluarsa-aman'; // Lebih dari 30 hari
+                    }
+                } catch (e) {
+                    console.error('Error parsing date:', kadaluarsaDate, e);
+                    return 'kadaluarsa-aman'; // Default jika parsing error
+                }
+            }
 
             function showResepData(resepId) {
                 // Reset display
@@ -336,16 +380,26 @@
                                                 (obat.stok_total < obat.jumlah ?
                                                     'stok-low' : 'stok-available');
 
+                                            //     sediaanOptions += `
+                                        //     <div class="sediaan-item">
+                                        //         <span class="stok-info ${stokClass}">
+                                        //             Stok: ${obat.stok_total} | Kadaluarsa: ${sediaan.kadaluarsa}
+                                        //         </span>
+                                        //         <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
+                                        //             ${generateJumlahOptions(obat.jumlah, obat.stok_total)}
+                                        //         </select>
+                                        //     </div>
+                                        // `;
                                             sediaanOptions += `
-                                            <div class="sediaan-item">
-                                                <span class="stok-info ${stokClass}">
-                                                    Stok: ${obat.stok_total} | Kadaluarsa: ${sediaan.kadaluarsa}
-                                                </span>
-                                                <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
-                                                    ${generateJumlahOptions(obat.jumlah, obat.stok_total)}
-                                                </select>
-                                            </div>
-                                        `;
+                                                <div class="sediaan-item">
+                                                    <span class="stok-info ${stokClass} ${getKadaluarsaStatus(sediaan.kadaluarsa)}">
+                                                        Stok: ${obat.stok_total} | Kadaluarsa: ${sediaan.kadaluarsa}
+                                                    </span>
+                                                    <select name="sediaan[${obat.id}][${sediaan.id}]" class="select-jumlah">
+                                                        ${generateJumlahOptions(obat.jumlah, obat.stok_total)}
+                                                    </select>
+                                                </div>
+                                            `;
                                         });
                                     } else {
                                         sediaanOptions =
@@ -386,13 +440,13 @@
             }
 
             // Jika ada resep yang dipilih dari parameter
-            @if(isset($selected_resep_id) && $selected_resep_id)
+            @if (isset($selected_resep_id) && $selected_resep_id)
                 resepSelect.value = '{{ $selected_resep_id }}';
                 showResepData('{{ $selected_resep_id }}');
             @endif
 
             // Event listener untuk perubahan select
-            resepSelect.addEventListener('change', function () {
+            resepSelect.addEventListener('change', function() {
                 showResepData(this.value);
             });
 
@@ -435,7 +489,7 @@
             }
 
             // Event delegation for dynamically loaded checkboxes
-            document.addEventListener('change', function (e) {
+            document.addEventListener('change', function(e) {
                 if (e.target.classList.contains('obat-checkbox')) {
                     updateStatusChecklist();
                 }

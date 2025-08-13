@@ -62,8 +62,16 @@ class PenerbitanResepController extends Controller
         ]);
 
         DB::beginTransaction();
+        // ambil pendaftaran_id
+        $pendaftaran = Pendaftaran::where('pasien_id', $request->pasien_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        if (!$pendaftaran) {
+            return redirect()->back()->withErrors(['error' => 'Pendaftaran tidak ditemukan untuk pasien ini.']);
+        }
         try {
             $resep = Resep::create([
+                'pendaftaran_id' => $pendaftaran->id,
                 'pasien_id' => $request->pasien_id,
                 'user_id' => $request->user_id,
                 'pelayanan_id' => $request->pelayanan_id,

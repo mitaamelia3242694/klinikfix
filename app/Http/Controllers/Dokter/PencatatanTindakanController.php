@@ -50,7 +50,24 @@ class PencatatanTindakanController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        Tindakan::create($validated);
+        // ambil pendaftaran_id
+        $pendaftaran = Pendaftaran::where('pasien_id', $request->pasien_id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$pendaftaran) {
+            return redirect()->back()->withErrors(['error' => 'Pendaftaran tidak ditemukan untuk pasien ini.']);
+        }
+
+        Tindakan::create([
+            'pendaftaran_id' => $pendaftaran->id,
+            'pasien_id' => $request->pasien_id,
+            'user_id' => $request->user_id,
+            'tanggal' => $request->tanggal,
+            'jenis_tindakan' => $request->jenis_tindakan,
+            'tarif' => $request->tarif,
+            'catatan' => $request->catatan,
+        ]);
 
         return redirect()->route('pencatatan-tindakan.index')->with('success', 'Tindakan berhasil ditambahkan.');
     }

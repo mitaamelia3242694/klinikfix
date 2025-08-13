@@ -22,7 +22,8 @@ class KetersediaanObatController extends Controller
         $query = SediaanObat::with([
             'obat.satuan',
             'obat.resepDetails',
-            'obat.pengambilanDetails' // pastikan relasi ini ada
+            'obat.pengambilanDetails', // pastikan relasi ini ada
+            'pengambilanDetails.pengambilanObat'
         ])->where('status', 'aktif')->latest();
 
         if ($request->has('expiring_soon')) {

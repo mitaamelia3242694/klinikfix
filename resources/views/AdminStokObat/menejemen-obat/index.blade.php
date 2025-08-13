@@ -56,7 +56,7 @@
                         </td>
 
                         <td>
-                            {{ $obat->sediaan->first()->tanggal_keluar ?? '-'}}
+                            {{ $obat->tanggal_keluar ?? '-'}}
                         </td>
                         <td>{{ $obat->keterangan ?? '-' }}</td>
                         <td>

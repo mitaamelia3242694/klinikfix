@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Tindakan extends Model
 {
     protected $table = 'tindakan';
-    protected $fillable = ['pasien_id', 'user_id', 'tanggal', 'jenis_tindakan', 'tarif', 'catatan'];
+    protected $fillable = ['pendaftaran_id', 'pasien_id', 'user_id', 'tanggal', 'jenis_tindakan', 'tarif', 'catatan'];
+
+    public function pendaftaran()
+    {
+        return $this->belongsTo(Pendaftaran::class, 'pendaftaran_id');
+    }
 
     public function pasien()
     {

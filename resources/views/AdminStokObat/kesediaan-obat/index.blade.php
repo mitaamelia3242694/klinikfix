@@ -474,6 +474,19 @@
                     `Obat: ${sediaan.obat?.nama_obat}, Stok Total: ${stokTotal}, Jumlah Keluar: ${jumlahKeluar}, Stok Akhir: ${stokAkhir}`
                 );
 
+                // Ambil tanggal pengambilan terakhir jika ada
+                let tanggalKeluar = '-';
+                if (pengambilanDetails.length > 0) {
+                    // Asumsi pengambilanDetails sudah diurutkan dari yang terbaru
+                    const latestPengambilan = pengambilanDetails[0];
+                    if (latestPengambilan.pengambilan_obat) {
+                        tanggalKeluar = formatDate(latestPengambilan.pengambilan_obat.tanggal_pengambilan);
+                    }
+                } else if (sediaan.tanggal_keluar) {
+                    // Jika tidak ada pengambilanDetails, gunakan tanggal_keluar langsung
+                    tanggalKeluar = formatDate(sediaan.tanggal_keluar);
+                }
+
                 html += `
                 <tr class="${rowClass}">
                     <td>${index + 1}</td>
@@ -486,13 +499,13 @@
                     <td>
                         ${jumlahKeluar > 0 ?
                             `<span style="color:red; font-weight:bold;">
-                                            Berkurang (${jumlahKeluar}) hari ini
+                                                Berkurang (${jumlahKeluar}) hari ini
 
-                                        </span>` :
+                                            </span>` :
                             '<span style="color:gray;">-</span>'
                         }
                     </td>
-                    <td>${formatDate(sediaan.pengambilanDetails?.created_at)}</td>
+                    <td>${tanggalKeluar}</td>
                     <td style="font-weight: bold; color: ${sediaan.obat?.stok_total <= 10 ? '#dc3545' : sediaan.obat?.stok_total <= 50 ? '#ffc107' : '#28a745'};">
                         ${sediaan.obat?.stok_total}
                         ${sediaan.obat?.stok_total <= 10 ? ' <small style="color: #dc3545;">(Stok Rendah)</small>' : ''}
@@ -640,17 +653,17 @@
             summaryContent.innerHTML = `
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
                 ${expired > 0 ? `<div style="background: #ffcdd2; padding: 12px; border-radius: 8px; border-left: 4px solid #f44336;">
-                                    <div style="font-weight: bold; color: #d32f2f;">🚨 Sudah Kadaluarsa</div>
-                                    <div style="font-size: 24px; color: #d32f2f;">${expired} obat</div>
-                                </div>` : ''}
+                                        <div style="font-weight: bold; color: #d32f2f;">🚨 Sudah Kadaluarsa</div>
+                                        <div style="font-size: 24px; color: #d32f2f;">${expired} obat</div>
+                                    </div>` : ''}
                 ${warning > 0 ? `<div style="background: #ffe0b2; padding: 12px; border-radius: 8px; border-left: 4px solid #ff9800;">
-                                    <div style="font-weight: bold; color: #f57c00;">⚠️ Kritis (≤30 hari)</div>
-                                    <div style="font-size: 24px; color: #f57c00;">${warning} obat</div>
-                                </div>` : ''}
+                                        <div style="font-weight: bold; color: #f57c00;">⚠️ Kritis (≤30 hari)</div>
+                                        <div style="font-size: 24px; color: #f57c00;">${warning} obat</div>
+                                    </div>` : ''}
                 ${caution > 0 ? `<div style="background: #fff9c4; padding: 12px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                                    <div style="font-weight: bold; color: #f9a825;">🔔 Perhatian (31-90 hari)</div>
-                                    <div style="font-size: 24px; color: #f9a825;">${caution} obat</div>
-                                </div>` : ''}
+                                        <div style="font-weight: bold; color: #f9a825;">🔔 Perhatian (31-90 hari)</div>
+                                        <div style="font-size: 24px; color: #f9a825;">${caution} obat</div>
+                                    </div>` : ''}
                 <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; border-left: 4px solid #2196f3;">
                     <div style="font-weight: bold; color: #1976d2;">📋 Total Ditampilkan</div>
                     <div style="font-size: 24px; color: #1976d2;">${data.length} obat</div>

@@ -42,4 +42,17 @@ class Obat extends Model
             'id' // Local key di sediaan_obat
         );
     }
+
+    // App\Models\Obat.php
+    public function getTanggalKeluarAttribute()
+    {
+        // Pastikan relasi sudah di-load: pengambilanDetails.pengambilanObat
+        $detail = $this->pengambilanDetails->first();
+
+        if ($detail && $detail->pengambilanObat) {
+            return $detail->pengambilanObat->tanggal_pengambilan;
+        }
+
+        return null;
+    }
 }

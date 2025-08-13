@@ -6,6 +6,7 @@ use App\Models\Obat;
 use App\Models\SatuanObat;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\SediaanObat;
 
 class ManajemenObatController extends Controller
 {
@@ -14,7 +15,7 @@ class ManajemenObatController extends Controller
         $satuans = SatuanObat::all();
         $filterBulan = $request->filter_bulan;
 
-        $query = Obat::with(['satuan', 'sediaan']);
+        $query = Obat::with(['satuan', 'sediaan', 'pengambilanDetails.pengambilanObat']);
 
         if ($filterBulan) {
             [$tahun, $bulan] = explode('-', $filterBulan);
